@@ -1,0 +1,81 @@
+.bodyAbout {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.background-container {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+}
+
+.overlay {
+    position: flex;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); 
+}
+
+.main-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    position: relative;
+}
+
+.section.izquierda {
+    background: black;
+    width: 40%;
+    height: 100vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+}
+
+.section.izquierda h1 {
+    font-size: 2rem;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+.section.izquierda p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-top: 10px;
+    margin-left: 5%;
+}
+
+.section.izquierda a {
+    padding: 10px 20px;
+    color: black;
+    cursor: pointer;
+    width: 30%;
+    border-radius: 15%;
+}
+
+.section.derecha-transparente {
+    width: 60%;
+    height: 100vh;
+    background: transparent; 
+    background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0,0,0,0) 60%);
+}
+
+.headerAbout {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50;
+}

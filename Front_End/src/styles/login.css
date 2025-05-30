@@ -1,0 +1,192 @@
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    font-family: sans-serif;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.capaL {
+      background-color: rgba(0, 0, 0, 0.2);
+      z-index: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+  }
+
+.left-panel,
+.right-panel {
+    flex: 1;
+    /* Ambos ocupan 50% */
+    height: 100%;
+    width: 100%;
+}
+
+.left-panel {
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
+    z-index: 4;
+}
+
+.left-panel img {
+    width: 40%;
+}
+
+.right-panel {
+    background-color: #7cb5e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.bodyLogin {
+    height: 100vh;
+    /* Asegura que el body ocupe toda la altura de la ventana */
+    display: flex;
+    justify-content: center;
+    /* Centra horizontalmente */
+    align-items: center;
+    /* Centra verticalmente */
+    margin: 0;
+    
+}
+
+
+
+/* Estilo del contenedor del formulario */
+.form-control {
+    margin: 20px;
+    /* Espacio alrededor del formulario */
+    background-color: #ffffff;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+    /* Sombra para resaltar */
+    width: 400px;
+    display: flex;
+    /* Flexbox para organizar el contenido */
+    justify-content: center;
+    /* Centro el contenido verticalmente */
+    flex-direction: column;
+    /* Acomodo los elementos uno debajo del otro */
+    gap: 10px;
+    /* Espacio entre los campos */
+    padding: 25px;
+    /* Espacio interno alrededor del contenido */
+    border-radius: 8px;
+    /* Bordes redondeados suaves */
+}
+
+/* Estilo del título del formulario */
+.title {
+    font-size: 28px;
+    /* Tamano visible */
+    font-weight: 800;
+    /* Negrita */
+    text-align: center;
+    /* Centrado */
+}
+
+/* Contenedor de cada input */
+.input-field {
+    position: relative;
+    /* Necesario para posicionar el label flotante */
+    width: 100%;
+    /* Que ocupe todo el ancho disponible */
+}
+
+/* Campo de entrada */
+.input {
+    margin-top: 15px;
+    /* Espacio respecto al título o elemento anterior */
+    width: 100%;
+    /* Que ocupe todo el ancho */
+    outline: none;
+    /* Sin borde por defecto */
+    border-radius: 8px;
+    /* Bordes redondeados */
+    height: 45px;
+    /* Altura fija */
+    border: 1.5px solid #ecedec;
+    /* Borde sutil */
+    background: transparent;
+    /* Fondo transparente */
+    padding-left: 10px;
+    /* Espacio para escribir */
+}
+
+/* Cuando el input está enfocado */
+.input:focus {
+    border: 1.5px solid #2d79f3;
+    /* Borde azul al enfocar */
+}
+
+/* Etiqueta flotante del input */
+.input-field .label {
+    position: absolute;
+    /* Superpongo sobre el input */
+    top: 25px;
+    /* Inicio más abajo */
+    left: 15px;
+    color: #ccc;
+    /* Color gris claro */
+    transition: all 0.3s ease;
+    /* Transición suave */
+    pointer-events: none;
+    /* No interfiero con el clic */
+    z-index: 2;
+    /* Aseguro que esté por encima del input */
+}
+
+/* Cuando el usuario escribe o enfoca el input */
+.input-field .input:focus~.label,
+.input-field .input:valid~.label {
+    top: 5px;
+    /* Subo la etiqueta */
+    left: 5px;
+    font-size: 12px;
+    /* Tamaño más pequeño */
+    color: #2d79f3;
+    /* Color azul */
+    background-color: #ffffff;
+    /* Fondo blanco */
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Botón de enviar */
+.submit-btn {
+    margin-top: 30px;
+    /* Espacio respecto al campo anterior */
+    height: 55px;
+    /* Tamaño cómodo */
+    background: linear-gradient(180deg, #363636 0%, #1b1b1b 50%, #000000 100%);
+    /* Fondo con gradiente oscuro */
+    border-radius: 11px;
+    /* Bordes redondeados */
+    border: 0;
+    /* Sin borde */
+    outline: none;
+    /* Sin contorno al hacer foco */
+    color: #ffffff;
+    /* Texto blanco */
+    font-size: 18px;
+    /* Tamaño de letra cómodo */
+    font-weight: 700;
+    /* Texto en negrita */
+    cursor: pointer;
+    /* Cursor tipo mano al pasar encima */
+}
+
+/* Efecto hover del botón */
+.submit-btn:hover {
+    box-shadow: 0px 0px 0px 2px #ffffff, 0px 0px 0px 4px #0000003a;
+    /* Sombra al hacer hover */
+}
