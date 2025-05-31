@@ -1,6 +1,7 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, CreateAPIView
 from .models import *
 from .serializers import *
+from django.contrib.auth.models import Group
 
 # importacion de permisos
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -79,6 +80,16 @@ class UserCreateView(CreateAPIView):
     permission_classes = [] # -- permisos para todos
     queryset =  User.objects.all()
     serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        # Guarda el usuario
+        user = serializer.save()
+        
+        # Obtiene o crea el grupo "Regular"
+        regular_group, created = Group.objects.get_or_create(name='Regular')
+        
+        # Asigna el usuario al grupo "Regular"
+        user.groups.add(regular_group)
 
 
 class UserListView(ListAPIView):
