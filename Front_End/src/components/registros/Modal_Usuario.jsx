@@ -33,9 +33,10 @@ function Modal_Usuario({
     };
 
     return (
-        <Modal show={show} onHide={onHide} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>{isEditing ? 'Editar Usuario' : 'Registro'}</Modal.Title>
+        <Modal show={show} onHide={onHide} centered id='Modal_Usuario'>
+            <Modal.Header className='title_modal position-relative'>
+                <Modal.Title className='mx-auto'><b>{isEditing ? 'Editar Usuario' : 'Registro'}</b></Modal.Title>
+                {/* <button type='button' className='btn-close position-absolute end-0 me-2' data-bs-dismiss='modal' arial-label='Close'></button> */}
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}

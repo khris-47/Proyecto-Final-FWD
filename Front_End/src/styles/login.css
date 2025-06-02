@@ -63,7 +63,7 @@
 
 
 /* Estilo del contenedor del formulario */
-.form-control {
+.form-control_login {
     margin: 20px;
     /* Espacio alrededor del formulario */
     background-color: #ffffff;
@@ -103,7 +103,7 @@
 }
 
 /* Campo de entrada */
-.input {
+.input_login {
     margin-top: 15px;
     /* Espacio respecto al título o elemento anterior */
     width: 100%;
@@ -123,13 +123,13 @@
 }
 
 /* Cuando el input está enfocado */
-.input:focus {
+.input_login:focus {
     border: 1.5px solid #2d79f3;
     /* Borde azul al enfocar */
 }
 
 /* Etiqueta flotante del input */
-.input-field .label {
+.input-field .label_login {
     position: absolute;
     /* Superpongo sobre el input */
     top: 25px;
@@ -146,8 +146,8 @@
 }
 
 /* Cuando el usuario escribe o enfoca el input */
-.input-field .input:focus~.label,
-.input-field .input:valid~.label {
+.input-field .input_login:focus~.label_login,
+.input-field .input_login:valid~.label_login {
     top: 5px;
     /* Subo la etiqueta */
     left: 5px;
@@ -189,4 +189,11 @@
 .submit-btn:hover {
     box-shadow: 0px 0px 0px 2px #ffffff, 0px 0px 0px 4px #0000003a;
     /* Sombra al hacer hover */
+}
+
+
+
+.title_modal{
+    background-color:#465875;
+    color: whitesmoke;
 }

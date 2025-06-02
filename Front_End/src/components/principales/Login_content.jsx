@@ -76,7 +76,7 @@ function Login_content() {
     // Registro de nuevo usuario
     const handleRegister = async () => {
         try {
-            await axios.post('http://localhost:8000/api/usuarios/', formData);
+            await axios.post('http://localhost:8000/api/userRegister/', formData);
             alert('Usuario creado correctamente');
 
             // Cerrar modal y limpiar formulario
@@ -110,7 +110,7 @@ function Login_content() {
 
                 <div className="right-panel">
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                        <form className="form-control" onSubmit={handleSubmit}>
+                        <form className="form-control_login" onSubmit={handleSubmit}>
                             <p className="title">Iniciar sesión</p>
 
                             {/* Mensaje de error */}
@@ -120,24 +120,24 @@ function Login_content() {
                             <div className="input-field">
                                 <input
                                     required
-                                    className="input"
+                                    className="input_login"
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                 />
-                                <label className="label">Usuario</label>
+                                <label className="label_login">Usuario</label>
                             </div>
 
                             {/* Campo Contraseña */}
                             <div className="input-field">
                                 <input
                                     required
-                                    className="input"
+                                    className="input_login"
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <label className="label">Contraseña</label>
+                                <label className="label_login">Contraseña</label>
                             </div>
 
                             {/* Enlace para recuperar contraseña */}
