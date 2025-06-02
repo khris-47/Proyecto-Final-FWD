@@ -61,6 +61,12 @@ function Login_content() {
             Cookies.set('accessToken', access, { expires: 1 });
             Cookies.set('userId', userId, { expires: 1 });
 
+            
+
+            console.log(access);
+            console.log(userData);
+
+
             // 5. Redirigir a la página principal
             navigate('/');
 

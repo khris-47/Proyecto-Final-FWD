@@ -28,7 +28,11 @@ function Mi_Perfil_Content() {
 
           <p><strong>Nombre de usuario:</strong> {userData.username}</p>
           <p><strong>Email:</strong> {userData.email}</p>
-          
+          <p><strong>Nombre:</strong> {userData.first_name}</p>
+          <p><strong>Apellidos:</strong> {userData.last_name}</p>
+          <p><strong>Fecha de Ingreso:</strong> {userData.date_joined}</p>
+
+          <button >Editar</button>
         </div>
       ) : (
         <p>Cargando...</p>

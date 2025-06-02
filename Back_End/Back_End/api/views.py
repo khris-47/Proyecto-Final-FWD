@@ -85,10 +85,10 @@ class UserCreateView(CreateAPIView):
         # Guarda el usuario
         user = serializer.save()
         
-        # Obtiene o crea el grupo "Regular"
+        # Obtiene o crea el grupo
         regular_group, created = Group.objects.get_or_create(name='Regular')
         
-        # Asigna el usuario al grupo "Regular"
+        # Asigna el usuario al grupo
         user.groups.add(regular_group)
 
 
