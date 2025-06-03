@@ -14,7 +14,13 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id','username','email','first_name','last_name','password','date_joined']
+
+        extra_kwargs = {
+            'password' : {
+                'write_only':True
+            }
+        }
 
     
     def create(self, validated_data):
@@ -22,7 +28,25 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])  
         user.save()
         return user
+        
+    def update(self, instance, validated_data):
+        try:
+          
+            password = validated_data.pop('password', None)
 
+            for attr, value in validated_data.items() :
+                setattr(instance, attr, value)
+
+            if password : 
+                instance.set_password(password)
+
+            instance.save()
+            return instance
+        
+        except Exception as e:
+            print(f"Error al actualizar usuario: {e}")  # Log para depuración
+            raise serializers.ValidationError({"error": "No se pudo actualizar el usuario."})
+       
 
 # -- Serializer de Ubicaciones ----------------------------
 class UbicacionesSerializer(serializers.ModelSerializer):

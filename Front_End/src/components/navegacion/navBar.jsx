@@ -38,9 +38,7 @@ function NavBar() {
           <li><Link to="/entrevistas" className='links'>Entrevistas</Link></li>
           <li><Link to="/lugares" className='links'>Lugares</Link></li>
           <li><Link to="/menu_juegos" className='links'>Juegos Interactivos</Link></li>
-        </ul>
-
-        {/* Botón de usuario en la esquina derecha */}
+        
         <div className="perfil-btn">
           <label className="popup">
             <input type="checkbox" />
@@ -77,6 +75,11 @@ function NavBar() {
             </nav>
           </label>
         </div>
+        
+        </ul>
+
+
+        
       </nav>
 
 

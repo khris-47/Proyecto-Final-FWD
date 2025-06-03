@@ -80,6 +80,7 @@ function Modal_Usuario({
                             />
                         </Col>
                     </Row>
+
                     <Row className="mb-2">
                         <Col>
                             <Form.Label>Password:</Form.Label>
@@ -101,6 +102,8 @@ function Modal_Usuario({
                             />
                         </Col>
                     </Row>
+
+                    
                     <div className="text-center mt-3">
                         <Button type="submit" variant="primary" className="w-100">
                             {isEditing ? 'Actualizar' : 'Crear'}

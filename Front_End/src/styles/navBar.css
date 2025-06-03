@@ -1,6 +1,8 @@
+
 .bodyNav {
   background-color: transparent;
   font-family: "Roboto Slab", serif;
+  
 }
 
 .navbar {
@@ -29,15 +31,6 @@
   color: whitesmoke;
   font-size: 18px;
 
-}
-
-.perfil-btn {
-  position: absolute;
-  right: 2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
 }
 
 .popup {
@@ -101,6 +94,8 @@
 
 
 .popup-window {
+  right: 0;
+  transform: translateX(-80%);
   transform: scale(var(--nav-default-scale));
   visibility: hidden;
   opacity: 0;
