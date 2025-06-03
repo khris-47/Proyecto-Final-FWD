@@ -1,0 +1,17 @@
+.mi-perfil-container {
+  min-height: 100vh; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.formulario-perfil {
+  background: white;
+  padding: 40px; 
+  border-radius: 10px;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+  width: auto; 
+  z-index: 1;
+  margin-top: 8%;
+}
