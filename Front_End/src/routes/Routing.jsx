@@ -10,6 +10,11 @@ import Quienes_somos from '../pages/principales/quienes_somos'
 import Contacto from '../pages/principales/Contacto'
 import Login from '../pages/principales/Login'
 import Mi_Perfil from '../pages/registros/Mi_Perfil'
+import M_Admin from '../pages/menus/M_Admin'
+import Lista_Usuarios from '../pages/registros/Lista_Usuarios'
+import Aud_Usuarios from '../pages/registros/Aud_Usuarios'
+import Aud_Cuentos from '../pages/registros/Aud_Cuentos'
+import Aud_Entrevistas from '../pages/registros/Aud_Entrevistas'
 
 
 
@@ -27,6 +32,11 @@ function Routing() {
             <Route path='/contact' element={<Contacto/>}></Route>
             <Route path='/login' element={<Login/>}></Route>
             <Route path='/perfil' element={<Mi_Perfil/>}></Route>
+            <Route path='/admin' element={<M_Admin/>}></Route>
+            <Route path='/list_user' element={<Lista_Usuarios/>}></Route>
+            <Route path='/aud_user' element={<Aud_Usuarios/>}></Route>
+            <Route path='/aud_cuentos' element={<Aud_Cuentos/>}></Route>
+            <Route path='/aud_entrevistas' element={<Aud_Entrevistas/>}></Route>
         </Routes>
     </Router>
   )

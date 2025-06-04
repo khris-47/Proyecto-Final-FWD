@@ -1,6 +1,12 @@
-/* Video de fondo */
+
+.bodyIndex {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .video-background-container {
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -9,7 +15,7 @@
   z-index: -2;
 }
 
-.capa{
+.capa {
   z-index: -1;
   background-color: rgba(0, 0, 0, 0.466);
 }
@@ -34,20 +40,20 @@
 
 .content {
   flex-direction: column;
-  z-index: 1; 
+  z-index: 1;
   flex: 1;
   justify-content: space-between;
 }
 
 .headerIndex {
-  z-index: 2; 
+  z-index: 2;
 }
 
 
 .footerIndex {
   padding: 1rem;
   text-align: center;
-  position:fixed;
+  position: fixed;
   width: 100%;
   bottom: 0;
 }

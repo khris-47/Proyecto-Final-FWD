@@ -40,8 +40,8 @@ function Contacto_content() {
           </div>
         </main>
 
-        <footer className='footerC'>
-          <Footer></Footer>
+        <footer>
+          
         </footer>
 
       </div>

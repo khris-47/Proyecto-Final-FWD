@@ -1,6 +1,8 @@
   .bodyContacto {
     font-family: "Roboto Slab", serif;
-    height: 110vh;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
     position: relative;
     z-index: 0;
   }
@@ -15,6 +17,7 @@
     z-index: 2;
     border-radius: 15px;
     width: 80%;
+    margin-top: 20px;
   }
 
   .sectionC {
