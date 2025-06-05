@@ -1,0 +1,41 @@
+  .bodyEntrevistas {
+      font-family: "Roboto Slab", serif;
+      height: 125vh;
+      position: relative;
+      z-index: 0;
+  }
+
+  .background-image-entrevistas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      overflow: hidden;
+      z-index: -4;
+  }
+
+  .content-entrevistas {
+      flex-direction: column;
+      z-index: 1;
+      flex: 1;
+      justify-content: space-around;
+  }
+
+
+  .mainEntrevistas {
+      margin-top: 3%;
+      z-index: 2;
+      text-align: center;
+  }
+
+   .capaEntrevistas {
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: -3;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+  }

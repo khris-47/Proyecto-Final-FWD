@@ -33,7 +33,7 @@ class Cuentos (models.Model):
     cuento = models.TextField()
     fecha_creacion = models.DateField(auto_now_add=True)
     ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
-    estado = models.OneToOneField(Estados, on_delete=models.SET_NULL, null=True, blank=True) # No dependera de si existe o no el estado
+    estado = models.ForeignKey(Estados, on_delete=models.CASCADE) # No dependera de si existe o no el estado
     
 
     def __str__(self):
@@ -46,7 +46,7 @@ class Entrevistas (models.Model):
     descripcion = models.TextField()
     fecha_creacion = models.DateField(auto_now_add=True)
     ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
-    estado = models.OneToOneField(Estados, on_delete=models.SET_NULL, null=True, blank=True) # No dependera de si existe o no el estado
+    estado = models.ForeignKey(Estados, on_delete=models.CASCADE) # No dependera de si existe o no el estado
 
     def __str__(self):
         return self.nombre_Persona

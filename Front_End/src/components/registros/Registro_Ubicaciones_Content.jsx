@@ -6,55 +6,67 @@ import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
 
 
-function Aud_Usuarios_Content() {
-    const [auditorias, setAuditorias] = useState([]);
+function Registro_Ubicaciones_Content() {
+
+    const [ubicaciones, setUbicaciones] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
 
     useEffect(() => {
-        const fetchAuditorias = async () => {
+        const fetchUbicaciones = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/Auditoria_Usuarios/', {
+                const response = await axios.get('http://localhost:8000/api/listUbicaciones/', {
                     headers: {
                         Authorization: `Bearer ${access}`,
                     },
                 });
 
-                setAuditorias(response.data);
+                setUbicaciones(response.data);
             } catch (err) {
                 console.error(err);
-                setError('Error al obtener los datos de auditoría');
+                setError('Error al obtener los datos de las entrevistas');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchAuditorias();
+        fetchUbicaciones();
     });
 
-    return (
 
+
+  return (
         <div className='bodyForm'>
-            
+
             <div className="background-container-form">
                 <img className="background-image-form" src={Fondo} alt=".." />
                 <header className="headerAbout">
                     <NavBar />
                 </header>
             </div>
-            
+
             <div className='capa'></div>
 
             <main className='mainForm'>
+
                 <div className='style-form'>
                     <div className='container'>
-                        
+
                         <div className='row justify-content-center align-items-center g-2'>
-                            <div>
-                                <h1>Auditoria de Usuarios</h1>
+                            <div className='col'>
+                                <h1>Modulo de Ubicaciones</h1>
                             </div>
                         </div>
+
+                        <div className="row justify-content-center align-items-center g-2 " style={{width : '20%'}}>
+                            <div className='row'>
+                                <button type='button' className='btn btn-primary bx bxs-message-square-add'>
+                                    Agregar
+                                </button>
+                            </div>
+                        </div>
+
 
                         <div className='row justify-content-center align-items-center g-2'>
                             <div className='col'>
@@ -71,20 +83,23 @@ function Aud_Usuarios_Content() {
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th>Tipo de Movimiento</th>
+                                                    <th>Nombre</th>
                                                     <th>Descripción</th>
-                                                    <th>Fecha</th>
-                                                    <th>Usuario</th>
+                                                    <th>Portada</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {auditorias.map((item) => (
+                                                {ubicaciones.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
-                                                        <td>{item.tipoMovimiento}</td>
-                                                        <td dangerouslySetInnerHTML={{ __html: item.descripcion}} />
-                                                        <td>{new Date(item.fechaMovimiento).toLocaleString()}</td>
-                                                        <td>{item.user}</td>
+                                                        <td>{item.nombre}</td>
+                                                        <td>{item.descripcion}</td>
+                                                        <td>{item.portada}</td>
+                                                        <td>
+                                                            <a className='btn btn-dark bx bx-edit' > </a>
+                                                            ||
+                                                            <a className='btn btn-danger bx bxs-trash' > </a>
+                                                        </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -107,9 +122,11 @@ function Aud_Usuarios_Content() {
 
         </div>
 
+    )
 
 
-    );
+
+
 }
 
-export default Aud_Usuarios_Content;
+export default Registro_Ubicaciones_Content

@@ -43,7 +43,7 @@ function Menu_admin() {
                                         <div className="card-body">
                                             <h5 className="card-title">Manejo de Entrevistas</h5>
 
-                                            <Link to="/juego01" className="btn btn-primary">¡Entrar!</Link>
+                                            <Link to="/reg_entrevistas" className="btn btn-primary">¡Entrar!</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@ function Menu_admin() {
                                         <div className="card-body">
                                             <h5 className="card-title">Manejo de Cuentos</h5>
 
-                                            <Link to="/juego02" className="btn btn-primary">¡Entrar!</Link>
+                                            <Link to="/reg_cuentos" className="btn btn-primary">¡Entrar!</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@ function Menu_admin() {
                                         <div className="card-body">
                                             <h5 className="card-title">Manejo de Ubicaciones</h5>
 
-                                            <Link to="/juego03" className="btn btn-primary">¡Entrar!</Link>
+                                            <Link to="/reg_ubicaciones" className="btn btn-primary">¡Entrar!</Link>
                                         </div>
                                     </div>
                                 </div>

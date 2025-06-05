@@ -15,6 +15,7 @@ function NavBar() {
     Cookies.remove('user');
     Cookies.remove('accessToken');
     Cookies.remove('refreshToken');
+    Cookies.remove('userId');
     navigate('/');
   };
 
@@ -38,7 +39,7 @@ function NavBar() {
             <li className="submenu-hover popup">
               <input type="checkbox" id="submenu-toggle" />
 
-              <label htmlFor="submenu-toggle" className="submenu-toggle-label" tabIndex="0">
+              <label htmlFor="submenu-toggle" className="submenu-toggle-label " tabIndex="0">
                 <span className='links'>Auditorías</span>
               </label>
 

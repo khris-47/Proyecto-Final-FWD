@@ -15,7 +15,10 @@ import Lista_Usuarios from '../pages/registros/Lista_Usuarios'
 import Aud_Usuarios from '../pages/registros/Aud_Usuarios'
 import Aud_Cuentos from '../pages/registros/Aud_Cuentos'
 import Aud_Entrevistas from '../pages/registros/Aud_Entrevistas'
-
+import Reg_Entrevistas from '../pages/registros/Reg_Entrevistas'
+import Reg_Cuentos from '../pages/registros/Reg_Cuentos'
+import Reg_Ubicaciones from '../pages/registros/Reg_Ubicaciones'
+import Entrevistas from '../pages/principales/Entrevistas'
 
 
 function Routing() {
@@ -37,6 +40,10 @@ function Routing() {
             <Route path='/aud_user' element={<Aud_Usuarios/>}></Route>
             <Route path='/aud_cuentos' element={<Aud_Cuentos/>}></Route>
             <Route path='/aud_entrevistas' element={<Aud_Entrevistas/>}></Route>
+            <Route path='/reg_entrevistas' element={<Reg_Entrevistas/>}></Route>
+            <Route path='/reg_cuentos' element={<Reg_Cuentos/>}></Route>
+            <Route path='/reg_ubicaciones' element={<Reg_Ubicaciones/>}></Route>
+            <Route path='/entrevistas' element={<Entrevistas/>}></Route>
         </Routes>
     </Router>
   )
