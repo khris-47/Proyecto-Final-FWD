@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import Fondo from '../../assets/img/fondos/fondo_login.jpg'
 import Logo from '../../assets/img/logos/logo_blanco.png'
-import { Link, useNavigate } from 'react-router-dom';
+import Modal_Usuario from '../registros/Modal_Usuario'; // Modal de registro de usuario
 
 import { jwtDecode } from 'jwt-decode'; // npm install jwt-decode
 import Cookies from 'js-cookie'; // npm install js-cookie
@@ -9,19 +11,21 @@ import axios from 'axios'; // npm install axios
 
 import '../../styles/login.css'
 
-import Modal_Usuario from '../registros/Modal_Usuario'; // Modal de registro de usuario
+
 
 function Login_content() {
 
-    // Estados para login
+    // Estados para controlar el login
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
+    // Constante para manejar la navegacion de paginas
     const navigate = useNavigate();
 
     // Estados para el modal de registro
-    const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({
+    const [showModal, setShowModal] = useState(false); // controla la visibilidad del modal
+    const [formData, setFormData] = useState({ // datos del nuevo usuario
         username: '',
         email: '',
         first_name: '',
@@ -29,45 +33,41 @@ function Login_content() {
         password: ''
     });
 
-    // Login
+    // Funcion para manejar el incio de sesion
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+        e.preventDefault(); // previene la acciones por defecto
+        setError(''); // limpia errores anteriores
 
         try {
-            // 1. Obtener token JWT
+            // 1. Obtener token JWT 
             const response = await axios.post('http://localhost:8000/api/token/', {
                 username,
                 password
             });
 
-            const { access } = response.data;
+            const { access } = response.data; // extraemos el token de acceso
 
             // 2. Decodificar token para obtener user_id
             const decoded = jwtDecode(access);
             const userId = decoded.user_id;
 
-            // 3. Obtener detalles del usuario
+            // 3. Obtener detalles del usuario autenticado
             const userResponse = await axios.get(`http://localhost:8000/api/UserDetails/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${access}`
                 }
             });
 
+            // guardamos los datos completos del usuario
             const userData = userResponse.data;
 
-            // 4. Guardar datos en cookies
-            Cookies.set('user', JSON.stringify(userData), { expires: 1 });
-            Cookies.set('accessToken', access, { expires: 1 });
-            Cookies.set('userId', userId, { expires: 1 });
-
-            
-
-            console.log(access);
-            console.log(userData);
+            // 4. Guardar los datos obtenidos en cookies
+            Cookies.set('user', JSON.stringify(userData), { expires: 1 }); // guardamos el objeto como un string
+            Cookies.set('accessToken', access, { expires: 1 }); // token
+            Cookies.set('userId', userId, { expires: 1 }); // id de usuario
 
 
-            // 5. Redirigir a la página principal
+            // 5. Redirigir a la pagina principal
             navigate('/');
 
         } catch (err) {
@@ -79,13 +79,14 @@ function Login_content() {
         }
     };
 
-    // Registro de nuevo usuario
+    // Funcion para manejar el registro de un nuevo usuario desde el modal
     const handleRegister = async () => {
         try {
+            // Enviamos los datos del modal a la api
             await axios.post('http://localhost:8000/api/userRegister/', formData);
             alert('Usuario creado correctamente');
 
-            // Cerrar modal y limpiar formulario
+            // Cerramos el modal y limpiamos el formulario
             setShowModal(false);
             setFormData({
                 username: '',
@@ -134,7 +135,7 @@ function Login_content() {
                                 <label className="label_login">Usuario</label>
                             </div>
 
-                            {/* Campo Contraseña */}
+                            {/* Campo Contrasenha */}
                             <div className="input-field">
                                 <input
                                     required
@@ -146,12 +147,12 @@ function Login_content() {
                                 <label className="label_login">Contraseña</label>
                             </div>
 
-                            {/* Enlace para recuperar contraseña */}
+                            {/* Enlace para recuperar contrasenha */}
                             <Link to="" style={{ display: 'block', marginBottom: '10px', fontSize: '14px' }}>
                                 ¿Olvidaste la contraseña?
                             </Link>
 
-                            {/* Botón de login */}
+                            {/* Boton de login */}
                             <button type="submit" className="submit-btn">Ingresar</button>
 
                             {/* Link para abrir el modal de registro */}
@@ -171,11 +172,11 @@ function Login_content() {
 
             {/* Modal para registro de nuevo usuario */}
             <Modal_Usuario
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                onSubmit={handleRegister}
-                formData={formData}
-                setFormData={setFormData}
+                show={showModal} // mostrar u ocultar el modal
+                onHide={() => setShowModal(false)} //cierra el modal
+                onSubmit={handleRegister} // enviar los datos al registro
+                formData={formData} // registra los datos del modal
+                setFormData={setFormData} // actualiza los datos del formulario
             />
         </div>
     );

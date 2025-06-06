@@ -7,10 +7,12 @@ import Cookies from 'js-cookie';
 
 function NavBar() {
 
+  // Obtengo los datos de la cokkies
   const navigate = useNavigate();
   const userCookie = Cookies.get('user');
   const userId = Cookies.get('userId');
 
+  // cuando se cierra la sesion, se limpian las cookies y se redirecciona al index
   const handleLogout = () => {
     Cookies.remove('user');
     Cookies.remove('accessToken');
@@ -19,6 +21,7 @@ function NavBar() {
     navigate('/');
   };
 
+  // recuperamos el objeto que esta dentro de la cookie, si no hay, queda en nulo
   const user = userCookie ? JSON.parse(userCookie) : null;
 
   return (
