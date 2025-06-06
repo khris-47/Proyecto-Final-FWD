@@ -13,7 +13,7 @@ const getYouTubeId = (url) => {
 
 function Entrevistas_content() {
     const [entrevistas, setEntrevistas] = useState([]);
-    
+
 
     // Carga las entrevistas al montar el componente
     useEffect(() => {
@@ -49,33 +49,40 @@ function Entrevistas_content() {
                         {/* Contenedor de las tarjetas */}
                         <div className="row row-cols-1 row-cols-md-2 g-4 justify-content-center mt-2" id='cards_cuentos'>
                             {entrevistas.map((item) => {
-                                const videoId = getYouTubeId(item.entrevista);
-                                if (!videoId) return null; // Omitimos la card si el enlace no es válido
 
-                                return (
-                                    <div className="col" key={item.id}>
-                                        <div className="card h-100 shadow bg-dark text-white">
-                                            <div className="ratio ratio-16x9">
-                                                <iframe
-                                                    src={`https://www.youtube.com/embed/${videoId}`}
-                                                    title={item.nombre_Persona}
-                                                    allowFullScreen
-                                                ></iframe>
-                                            </div>
-                                            <div className="card-body">
-                                                <h5 className="card-title">Entrevista a {item.nombre_Persona} || {item.ubicacion}</h5>
-                                                <p className="card-text text-md-center">{item.descripcion}</p>
+                                if (item.estado == 1) {
+
+                                    const videoId = getYouTubeId(item.entrevista);
+                                    if (!videoId) return null; // Omitimos la card si el enlace no es válido
+
+                                    return (
+                                        <div className="col" key={item.id}>
+                                            <div className="card h-100 shadow bg-dark text-white">
+                                                <div className="ratio ratio-16x9">
+                                                    <iframe
+                                                        src={`https://www.youtube.com/embed/${videoId}`}
+                                                        title={item.nombre_Persona}
+                                                        allowFullScreen
+                                                    ></iframe>
+                                                </div>
+                                                <div className="card-body">
+                                                    <h5 className="card-title">Entrevista a {item.nombre_Persona} || {item.ubicacion}</h5>
+                                                    <p className="card-text text-md-center">{item.descripcion}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
+                                    );
+
+                                }
+
+
                             })}
                         </div>
                     </div>
                 </main>
             </div>
 
-           
+
         </div>
     );
 }

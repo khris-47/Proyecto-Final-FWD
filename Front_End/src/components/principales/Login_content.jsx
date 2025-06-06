@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import * as Usuarios_Services from '../../services/Usuarios_Services'
 import Fondo from '../../assets/img/fondos/fondo_login.jpg'
 import Logo from '../../assets/img/logos/logo_blanco.png'
 import Modal_Usuario from '../registros/Modal_Usuario'; // Modal de registro de usuario
 
+import Swal from 'sweetalert2';
 import { jwtDecode } from 'jwt-decode'; // npm install jwt-decode
 import Cookies from 'js-cookie'; // npm install js-cookie
-import axios from 'axios'; // npm install axios
 
 import '../../styles/login.css'
 
@@ -40,10 +41,7 @@ function Login_content() {
 
         try {
             // 1. Obtener token JWT 
-            const response = await axios.post('http://localhost:8000/api/token/', {
-                username,
-                password
-            });
+            const response = await Usuarios_Services.loginUsuario(username, password);
 
             const { access } = response.data; // extraemos el token de acceso
 
@@ -52,11 +50,7 @@ function Login_content() {
             const userId = decoded.user_id;
 
             // 3. Obtener detalles del usuario autenticado
-            const userResponse = await axios.get(`http://localhost:8000/api/UserDetails/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${access}`
-                }
-            });
+            const userResponse = await Usuarios_Services.obtenerUsuarioPorId(userId, access);
 
             // guardamos los datos completos del usuario
             const userData = userResponse.data;
@@ -72,7 +66,12 @@ function Login_content() {
 
         } catch (err) {
             if (err.response && err.response.status === 401) {
-                setError('Usuario o contraseña incorrectos.');
+                Swal.fire({
+                    title: '¡Datos Erroneos!',
+                    text: 'Credenciales incorrectas',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
             } else {
                 setError('Error del servidor.');
             }
@@ -83,8 +82,15 @@ function Login_content() {
     const handleRegister = async () => {
         try {
             // Enviamos los datos del modal a la api
-            await axios.post('http://localhost:8000/api/userRegister/', formData);
-            alert('Usuario creado correctamente');
+            await Usuarios_Services.registrarUsuario(formData);
+
+
+            Swal.fire({
+                title: '¡Éxito!',
+                text: 'Usuario creado correctamente',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
 
             // Cerramos el modal y limpiamos el formulario
             setShowModal(false);
@@ -97,7 +103,14 @@ function Login_content() {
             });
         } catch (error) {
             console.error('Error al registrar usuario:', error);
-            alert('Error al registrar usuario');
+            
+            Swal.fire({
+                    title: '¡Datos Erroneos!',
+                    text: 'Error al registrar el usuario', error,
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+
         }
     };
 

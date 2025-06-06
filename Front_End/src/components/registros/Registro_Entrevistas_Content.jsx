@@ -1,90 +1,197 @@
 import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import axios from 'axios';
 import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
+import Swal from 'sweetalert2';
+import * as Entrevistas_Services from '../../services/Entrevistas_Services';
 
 import Modal_Entrevista from '../registros/Modal_Entevista'
 
 
 function Registro_Entrevistas() {
 
-    const [entrevistas, setEntrevistas] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const access = Cookies.get('accessToken');
 
+    const [entrevistas, setEntrevistas] = useState([]); // Lisa de entrevistas obtenidas de la API
+    const [loading, setLoading] = useState(true);       // controla si se estan cargando los datos
+    const [error, setError] = useState(null);           // manejo de errores
+    const [isEditing, setIsEditing] = useState(false);  // determina si el modal se usara para editar 
+    const [editId, setEditId] = useState(null);         // guarda el ID de la entrevisa a editar
+    const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
 
-    // Estados para el modal
-        const [showModal, setShowModal] = useState(false);
-        const [formData, setFormData] = useState({
-            nombre_Persona: '',
-            entrevista: '',
-            descripcion: '',
-            ubicacion: ''
-        });
-
-
-    useEffect(() => {
-        const fetchEntrevistas = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/api/listEntrevistas/', {
-                    headers: {
-                        Authorization: `Bearer ${access}`,
-                    },
-                });
-
-                setEntrevistas(response.data);
-            } catch (err) {
-                console.error(err);
-                setError('Error al obtener los datos de las entrevistas');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEntrevistas();
+    const [formData, setFormData] = useState({         //  estado del formulario
+        nombre_Persona: '',
+        entrevista: '',
+        descripcion: '',
+        ubicacion: ''
     });
 
 
+    // obtenemos todas las entrevistas desde el services
+    const fetchEntrevistas = async () => {
+        try {
+            const response = await Entrevistas_Services.getEntrevistas(); // llamamos al servicio para obtener entrevistas
+            setEntrevistas(response.data); // almacena las entrevistas en el estado
+        } catch (err) {
+            console.error(err);
+            setError('Error al obtener los datos de las entrevistas'); // muestra mensaje de error en el form
+
+        } finally {
+            setLoading(false); // finaliza la carga (exito o no)
+        }
+    };
+
+    // al ejecutar el componente, montamos la carga de objeto
+    useEffect(() => {
+        fetchEntrevistas();
+    }, []);
+
+    // maneja el registro o edicion de una entrevista
     const handleRegister = async () => {
-    try {
-        // Asegurar estado = 1 por defecto
-        const dataToSend = {
-            ...formData,
-            estado: 1,
-            ubicacion: Number(formData.ubicacion)
-        };
+        try {
 
-        await axios.post('http://localhost:8000/api/entrevistas/', dataToSend, {
-            headers: {
-                Authorization: `Bearer ${access}`,
-            },
-        });
+            // preparamos ls datos del formulario a enviar
+            const dataToSend = {
+                ...formData,
+                estado: 1, // le damos un estado por defecto
+                ubicacion: Number(formData.ubicacion) // nos aseguramos que se envie un int
+            };
 
-        alert('Entrevista registrada correctamente');
-        setShowModal(false);
+            // pregunta si se esta editando
+            if (isEditing && editId) {
 
-        // Limpiar formulario
+                // enviamos los datos para la edicion
+                await Entrevistas_Services.editarEntrevista(editId, dataToSend);
+
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Entrevista actualizada correctamente',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+
+
+            } else {
+
+                // caso contrario, enviamos los datos a creacion
+                await Entrevistas_Services.crearEntrevista(dataToSend);
+
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Entrevista registrada correctamente',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+
+                // ocultamos el modal
+                setShowModal(false);
+            }
+
+            // limpia los datos del modal despues de la accion
+            setFormData({
+                nombre_Persona: '',
+                entrevista: '',
+                descripcion: '',
+                ubicacion: ''
+            });
+
+            // recargamos la lista de entrevistas
+            fetchEntrevistas();
+
+        } catch (err) {
+            console.error('Error al registrar entrevista:', err);
+
+            Swal.fire({
+                title: '¡Error!',
+                text: 'Hubo un problema al registrar la entrevista',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+
+        }
+    };
+
+    // llena los datos del form
+    const handleEdit = (entrevista) => {
+
+        // conformea la entrevsta seleccionada, llena los datos del modal
         setFormData({
-            nombre_Persona: '',
-            entrevista: '',
-            descripcion: '',
-            ubicacion: ''
+            nombre_Persona: entrevista.nombre_Persona,
+            entrevista: entrevista.entrevista,
+            descripcion: entrevista.descripcion,
+            ubicacion: entrevista.ubicacion.toString() // convierte numero a string para el input
         });
+        setEditId(entrevista.id);   // guarda el id para la edicion
+        setIsEditing(true);        //  activa el modo edicion
+        setShowModal(true);       //   muestra el modal con  los datos cargados
+    };
 
-        // Recargar entrevistas
-        const response = await axios.get('http://localhost:8000/api/listEntrevistas/', {
-            headers: { Authorization: `Bearer ${access}` }
+    // maneja la desactivacion de la entrevista
+    const handleDeleteEntrevista = (id) => {
+
+
+        // confirmacin de desactivacio
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción desactivará la entrevista (no se eliminará).',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, desactivar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            // el admin desea desactivar el objeto
+            if (result.isConfirmed) {
+                try {
+
+                    // cambia el esatdo de la entrevista a 2 (inactivo)
+                    await Entrevistas_Services.cambiarEstadoEntrevista(id, 2);
+                    Swal.fire('Entrevista desactivada', 'La entrevista ha sido desactivada correctamente.', 'success');
+
+                    // Recargar la lista de entrevistas
+                    fetchEntrevistas();
+
+                } catch (error) {
+                    console.error('Error al desactivar la entrevista:', error);
+                    Swal.fire('Error', 'No se pudo desactivar la entrevista.', 'error');
+                }
+            }
         });
-        setEntrevistas(response.data);
+    };
 
-    } catch (err) {
-        console.error('Error al registrar entrevista:', err);
-        alert('Error al registrar entrevista');
+    // maneja la reactivacion de las entrevistas
+    const handleActiveEntrevista = (id) => {
+
+        // confirmacion
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción volvera a activar la entrevista.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, activar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            // el admin desea reativar
+            if (result.isConfirmed) {
+                try {
+
+                    // ambia el estado de vuelta a 1 (activo)
+                    await Entrevistas_Services.cambiarEstadoEntrevista(id, 1);
+
+                    Swal.fire('Entrevista activada', 'La entrevista ha sido activada correctamente.', 'success');
+
+                    // Recargar la lista de entrevistas
+                    fetchEntrevistas();
+
+                } catch (error) {
+                    console.error('Error al activar la entrevista:', error);
+                    Swal.fire('Error', 'No se pudo activar la entrevista.', 'error');
+                }
+            }
+        });
     }
-};
 
 
     return (
@@ -113,7 +220,7 @@ function Registro_Entrevistas() {
                         <div className="row justify-content-center align-items-center g-2 " style={{ width: '20%' }}>
                             <div className='row'>
                                 <button type='button' className='btn btn-primary bx bxs-message-square-add'
-                                onClick={() => setShowModal(true)}>
+                                    onClick={() => setShowModal(true)}>
                                     Agregar
                                 </button>
                             </div>
@@ -152,9 +259,13 @@ function Registro_Entrevistas() {
                                                         <td>{item.ubicacion}</td>
                                                         <td>{item.estado}</td>
                                                         <td>
-                                                            <a className='btn btn-dark bx bx-edit' > </a>
+                                                            <a className='btn btn-dark bx bx-edit' onClick={() => handleEdit(item)} > </a>
                                                             ||
-                                                            <a className='btn btn-danger bx bxs-trash' > </a>
+                                                            {item.estado === 1 ? (
+                                                                <a className='btn btn-danger bx bxs-trash' onClick={() => handleDeleteEntrevista(item.id)} > </a>
+                                                            ) : (
+                                                                <a className='btn btn-primary bx bx-check-circle' onClick={() => handleActiveEntrevista(item.id)} > </a>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -176,11 +287,17 @@ function Registro_Entrevistas() {
 
             <Modal_Entrevista
                 show={showModal}
-                onHide={() => setShowModal(false)}
+                onHide={() => {
+                    setShowModal(false);
+                    setIsEditing(false);
+                    setEditId(null);
+                }}
                 onSubmit={handleRegister}
                 formData={formData}
                 setFormData={setFormData}
+                isEditing={isEditing}
             />
+
 
 
         </div>

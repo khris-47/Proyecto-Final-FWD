@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import NavBar from '../navegacion/navBar';
 import Fondo from '../../assets/img/fondos/fondo_principal.JPG';
@@ -7,13 +6,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import Modal_Usuario from '../registros/Modal_Usuario';
 import Swal from 'sweetalert2';
 
+import * as Usuario_Services from '../../services/Usuarios_Services'
+
 import '../../styles/mi_perfil.css'
 
 function MiPerfilContent() {
-  const [userData, setUserData] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [userData, setUserData] = useState(null);     // almacena los datos del usuario (usado para mostrar datos en pantalla)
+  const [showModal, setShowModal] = useState(false); //  modal de edicion
+  const navigate = useNavigate();                   //   variable para redireccion
+  const userId = Cookies.get('userId');            //    ID del usuario logueado
+  const token = Cookies.get('accessToken');       //     token del usuario logueado 
+
+  const [formData, setFormData] = useState({       //    formulario editable (rellnado con datos del usuario)
     username: '',
     email: '',
     first_name: '',
@@ -21,55 +25,72 @@ function MiPerfilContent() {
     password: '' // Puede quedar vacío si no se va a cambiar la contraseña
   });
 
+  // cuando se abre el componente, verificamos si hay un usuario logueado
   useEffect(() => {
-    const userId = Cookies.get('userId');
-    const token = Cookies.get('accessToken');
+    const userCookie =  Cookies.get('user'); // traemos la cookie con los datos del usuario
 
-    if (userId && token) {
-      axios.get(`http://localhost:8000/api/UserDetails/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => {
-          setUserData(res.data);
-          setFormData(prev => ({ ...prev, ...res.data }));
-        })
-        .catch((err) => console.error(err));
+    if (userCookie && token) { // verificamos que las cookies no esten vacias
+      
+      const user = JSON.parse(userCookie); // convertirmos el string en objeto
+
+      setUserData(user); // dato visibles en pantalla
+
+      setFormData(prev => ({  // 'prev =>' funcion que toma el valor anterior del estado (formData y devuelve un nuevo objeto actualizado) 
+        ...prev, // copiamos todo lo que ya habia en el estado formData
+        ...user, // sobreescribimos los datos del prev, con los del usuario
+        password: '' // dejamos el password vacio por seguridad del usuario
+      }))
+
     }
+
   }, []);
 
-  // Manejo del modal de edición
+  // abre el modal cuando al hacer click en e boton de  editar
   const handleEdit = () => {
     setShowModal(true);
   };
 
   // Manejo de la actualización de datos
   const handleUpdate = async () => {
-    const userId = Cookies.get('userId');
-    const token = Cookies.get('accessToken');
-
-    console.log(formData);
 
     try {
-      await axios.patch(`http://localhost:8000/api/UserDetails/${userId}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
+      // llamamos al aapi para actualizar los datos del usuario
+      await Usuario_Services.actualizarUsuario(userId, formData, token)
+
+      // guardamos los nuevos datos en cookies
+      Cookies.set('user', JSON.stringify(formData), { expires: 1 });
+
+      // alerta de exito
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'Usuario actualizado correctamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
       });
 
-      Cookies.set('user', JSON.stringify(formData), { expires: 1 });
-      alert('Perfil actualizado correctamente');
+      // actualizamos en pantalla
       setUserData(formData);
-      setShowModal(false);
+
+      setShowModal(false); // cerramos el modal
+
     } catch (error) {
+
       console.error('Error al actualizar perfil:', error);
-      alert('Error al actualizar perfil');
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Hubo un problema al actualizar el usuario', error,
+        icon: 'error',
+        confirmButtonText: 'Intentar de nuevo'
+      });
+
     }
   };
 
 
   // Manejo de la eliminacion de datos
   const handleDelete = async () => {
-    const userId = Cookies.get('userId');
-    const token = Cookies.get('accessToken');
 
+    // ventana de confirmacion
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción eliminará tu cuenta permanentemente.',
@@ -80,26 +101,35 @@ function MiPerfilContent() {
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
+
+      // si el usuario confirma la eliminacion
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:8000/api/UserDetails/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+
+          // llamamos al servicio para eliminar al usuario
+          await Usuario_Services.eliminarUsuario(userId, token);
 
           // Eliminar cookies y redirigir al usuario
           Cookies.remove('user');
           Cookies.remove('accessToken');
           Cookies.remove('userId');
 
+          // mostramos un mensaje de exito
           Swal.fire('Cuenta eliminada', 'Tu perfil ha sido eliminado.', 'success');
+
+          // redireccionamos
           navigate('/');
+
         } catch (error) {
+
           console.error('Error al eliminar perfil:', error);
           Swal.fire('Error', 'No se pudo eliminar el perfil.', 'error');
+
         }
       }
     });
   };
+
   return (
     <div className="mi-perfil-container">
 
@@ -141,7 +171,7 @@ function MiPerfilContent() {
           <button className="btn btn-primary mt-3 m-1" onClick={handleEdit}>Editar</button>
           <Link to='/' className='btn btn-dark mt-3 m-1'>Menú</Link>
 
-          {/* Solo mostrar el botón de eliminación si el usuario NO es el admin */}
+          {/* Solo mostrar el boton de eliminación si el usuario NO es el admin */}
           {(userData?.id !== 1 && !userData?.is_superuser) && (
             <button className='btn btn-danger mt-3 m-1' onClick={handleDelete}>Eliminar Perfil</button>
           )}
