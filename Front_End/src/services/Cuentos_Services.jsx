@@ -7,23 +7,26 @@ const access = Cookies.get('accessToken');
 // Obtener todas los cuentos
 export const getCuentos = async () => {
     return await axios.get(`${API_BASE}/listCuentos/`, {
-        headers: { Authorization: `Bearer ${access}` }
+        headers: {
+            Authorization: `Bearer ${access}`,
+            'Content-Type': 'multipart/form-data',
+        }
     });
 };
 
 // Crear un nuevo cuento
 export const crearCuentos = async (data) => {
     return await axios.post(`${API_BASE}/cuentos/`, data, {
-    headers: {
-      Authorization: `Bearer ${access}`,
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+        headers: {
+            Authorization: `Bearer ${access}`,
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 };
 
 
 // Editar cuentos por ID
-export const editarCuentos= async (id, data) => {
+export const editarCuentos = async (id, data) => {
     return await axios.patch(`${API_BASE}/cuentos/${id}`, data, {
         headers: { Authorization: `Bearer ${access}` }
     });
