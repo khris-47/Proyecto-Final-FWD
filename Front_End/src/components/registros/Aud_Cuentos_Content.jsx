@@ -43,7 +43,7 @@ function Aud_Cuentos_Content() {
         // ejecutamos la funcion de carga
         fetchAuditorias();
 
-    });
+    }, []);
 
     // Configurar DOMPurify para permitir solo <br> y <b>
     const purifyConfig = {

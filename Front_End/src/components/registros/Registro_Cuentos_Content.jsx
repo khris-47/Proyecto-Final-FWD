@@ -1,39 +1,209 @@
 import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import axios from 'axios';
+import Swal from 'sweetalert2';
 import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
+import * as Cuentos_Services from '../../services/Cuentos_Services'
+
+import Modal_Cuento from '../registros/Modal_Cuento'
 
 
 function Registro_Cuentos() {
 
-  const [cuentos, setCuentos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const access = Cookies.get('accessToken');
+  const [cuentos, setCuentos] = useState([]);         // lista de objetos obtenidos delservices - api
+  const [loading, setLoading] = useState(true);       // controla si se estan cargando los datos
+  const [error, setError] = useState(null);           // manejo de errores
+  const [isEditing, setIsEditing] = useState(false);  // determina si el modal se usara para editar 
+  const [editId, setEditId] = useState(null);         // guarda el ID del objeto a editar
+  const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
 
-  useEffect(() => {
-    const fetchCuentos = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/listCuentos/', {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-
-        setCuentos(response.data);
-      } catch (err) {
-        console.error(err);
-        setError('Error al obtener los datos de las entrevistas');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCuentos();
+  const [formData, setFormData] = useState({         //  estado del formulario
+    portada: '',
+    nombre_Cuento: '',
+    cuento: '',
+    ubicacion: ''
   });
 
+  const fetchCuentos = async () => {
+    try {
+
+      const response = await Cuentos_Services.getCuentos(); // llamamos al servicio para obtener los cuentos
+      setCuentos(response.data); // almacena las cuentos en el estado
+
+      console.log(response.data);
+      
+
+    } catch (err) {
+      console.error(err);
+      setError('Error al obtener los datos de los cuentos'); // muestra mensaje de error en el form
+
+    } finally {
+      setLoading(false); // finaliza la carga (exito o no)
+    }
+  }
+
+  // al ejecutar el componente, montamos la carga de objeto
+  useEffect(() => {
+    fetchCuentos();
+  }, []);
+
+
+  // maneja el registro o edicion del objeto
+  const handleRegister = async () => {
+    try {
+
+      // preparamos los datos del formulario a enviar
+      const formPayload = new FormData();
+      formPayload.append("portada", formData.portada);
+      formPayload.append("nombre_Cuento", formData.nombre_Cuento);
+      formPayload.append("cuento", formData.cuento);
+      formPayload.append("ubicacion", Number(formData.ubicacion));
+      formPayload.append("estado", 1);
+
+      // pregunta si se esta editando
+      if (isEditing && editId) {
+
+        // enviamos los datos para la edicion
+        await Cuentos_Services.editarCuentos(editId, formPayload);
+
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Cuento actualizado correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+
+
+      } else {
+
+        // ver como se estan enviando los datos
+        console.log("Datos del formulario:");
+        for (let [key, value] of formPayload.entries()) {
+          console.log(`${key}:`, value);
+        }
+        // caso contrario, enviamos los datos a creacion
+        await Cuentos_Services.crearCuentos(formPayload);
+
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Cuento registrado correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+
+        // ocultamos el modal
+        setShowModal(false);
+      }
+
+      // limpia los datos del modal despues de la accion
+      setFormData({
+        portada: '',
+        nombre_Cuento: '',
+        cuento: '',
+        ubicacion: ''
+      });
+
+      // recargamos la lista de cuentos
+      fetchCuentos();
+
+    } catch (err) {
+      console.error('Error al registrar el cuento:', err);
+
+      console.log("Detalles del error:", err?.response?.data);
+
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Hubo un problema al registrar el cuento',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+
+    }
+  };
+
+  // llena los datos del form
+  const handleEdit = (cuento) => {
+
+    // conformea el cuento seleccionado, llena los datos del modal
+    setFormData({
+
+      portada: cuento.portada,
+      nombre_Cuento: cuento.nombre_Cuento,
+      cuento: cuento.cuento,
+      ubicacion: cuento.ubicacion.toString() // convierte numero a string para el input
+    });
+    setEditId(cuento.id);   // guarda el id para la edicion
+    setIsEditing(true);        //  activa el modo edicion
+    setShowModal(true);       //   muestra el modal con  los datos cargados
+  };
+
+  // maneja la desactivacion del cuento
+  const handleDesactivarCuento = (id) => {
+
+
+    // confirmacion de desactivacion
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción desactivará el cuento (no se eliminará).',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, desactivar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      // el admin desea desactivar el objeto
+      if (result.isConfirmed) {
+        try {
+
+          // cambia el esatdo del objeto a 2 (inactivo)
+          await Cuentos_Services.cambiarEstadoCuentos(id, 2);
+          Swal.fire('Cuento desactivado', 'El cuento ha sido desactivado correctamente.', 'success');
+
+          // Recargar la lista de cuentos
+          fetchCuentos();
+
+        } catch (error) {
+          console.error('Error al desactivar el cuento:', error);
+          Swal.fire('Error', 'No se pudo desactivar el cuento.', 'error');
+        }
+      }
+    });
+  };
+
+  // maneja la re-activacion del cuento
+  const handleActivarCuentos = (id) => {
+
+    // confirmacion
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción volvera a activar el cuento.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, activar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      // el admin desea reativar
+      if (result.isConfirmed) {
+        try {
+
+          // ambia el estado de vuelta a 1 (activo)
+          await Cuentos_Services.cambiarEstadoCuentos(id, 1);
+
+          Swal.fire('Cuento activado', 'El cuento ha sido activado correctamente.', 'success');
+
+          // Recargar la lista de cuento
+          fetchCuentos();
+
+        } catch (error) {
+          console.error('Error al activar el cuento:', error);
+          Swal.fire('Error', 'No se pudo activar el cuento.', 'error');
+        }
+      }
+    });
+  }
 
   return (
     <div className='bodyForm'>
@@ -60,7 +230,7 @@ function Registro_Cuentos() {
 
             <div className="row justify-content-center align-items-center g-2 " style={{ width: '20%' }}>
               <div className='row'>
-                <button type='button' className='btn btn-primary bx bxs-message-square-add'>
+                <button type='button' className='btn btn-primary bx bxs-message-square-add' onClick={() => setShowModal(true)}>
                   Agregar
                 </button>
               </div>
@@ -83,6 +253,7 @@ function Registro_Cuentos() {
                         <tr>
                           <th>ID</th>
                           <th>Portada</th>
+                          <th>Cuento</th>
                           <th>Nombre Cuento</th>
                           <th>Fecha de Subida</th>
                           <th>Ubicacion</th>
@@ -93,15 +264,20 @@ function Registro_Cuentos() {
                         {cuentos.map((item) => (
                           <tr key={item.id}>
                             <td>{item.id}</td>
-                            <td>{item.portada}</td>
+                            <td>{item.portada} </td>
+                            <td>{item.cuento} </td>
                             <td>{item.nombre_Cuento}</td>
                             <td>{new Date(item.fecha_creacion).toLocaleString()}</td>
                             <td>{item.ubicacion}</td>
                             <td>{item.estado}</td>
                             <td>
-                              <a className='btn btn-dark bx bx-edit' > </a>
+                              <a className='btn btn-dark bx bx-edit' onClick={() => handleEdit(item)}> </a>
                               ||
-                              <a className='btn btn-danger bx bxs-trash' > </a>
+                              {item.estado === 1 ? (
+                                <a className='btn btn-danger bx bxs-trash' onClick={() => handleDesactivarCuento(item.id)} > </a>
+                              ) : (
+                                <a className='btn btn-primary bx bx-check-circle' onClick={() => handleActivarCuentos(item.id)} > </a>
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -121,6 +297,20 @@ function Registro_Cuentos() {
 
       </footer>
 
+      <Modal_Cuento
+        show={showModal} // Muestra u oculta el modal segun el estado 'showModal'
+
+        onHide={() => {
+          setShowModal(false);   // Cierra el modal
+          setIsEditing(false);   // Asegura que no se encuentre en modo edición
+          setEditId(null);       // Limpia el ID del objeto que se estaba editando (si habia)
+        }}
+
+        onSubmit={handleRegister}     // Funcion que se ejecuta al enviar el formulario (registrar o actualizar)
+        formData={formData}           // Datos actuales del formulario que se están editando o registrando
+        setFormData={setFormData}     // Funcion para actualizar los datos del formulario
+        isEditing={isEditing}         // Indica si el modal está en modo edición (true) o creacion (false)
+      />
 
 
     </div>

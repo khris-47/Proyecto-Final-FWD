@@ -286,16 +286,18 @@ function Registro_Entrevistas() {
             </footer>
 
             <Modal_Entrevista
-                show={showModal}
+                show={showModal} // Muestra u oculta el modal segun el estado 'showModal'
+
                 onHide={() => {
-                    setShowModal(false);
-                    setIsEditing(false);
-                    setEditId(null);
+                    setShowModal(false);   // Cierra el modal
+                    setIsEditing(false);   // Asegura que no se encuentre en modo edición
+                    setEditId(null);       // Limpia el ID de la entrevista que se estaba editando (si habia)
                 }}
-                onSubmit={handleRegister}
-                formData={formData}
-                setFormData={setFormData}
-                isEditing={isEditing}
+
+                onSubmit={handleRegister}     // Funcion que se ejecuta al enviar el formulario (registrar o actualizar entrevista)
+                formData={formData}           // Datos actuales del formulario que se están editando o registrando
+                setFormData={setFormData}     // Funcion para actualizar los datos del formulario
+                isEditing={isEditing}         // Indica si el modal está en modo edición (true) o creacion (false)
             />
 
 

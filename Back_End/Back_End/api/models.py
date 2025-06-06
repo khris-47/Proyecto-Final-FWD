@@ -28,9 +28,9 @@ class Estados (models.Model):
 
 # -- Modelado de los cuentos --------------------------------------
 class Cuentos (models.Model):
-    portada = models.TextField()
+    portada = models.TextField() # imagen
     nombre_Cuento = models.CharField(max_length=250, unique=True)
-    cuento = models.TextField()
+    cuento = models.TextField() # pdf
     fecha_creacion = models.DateField(auto_now_add=True)
     ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
     estado = models.ForeignKey(Estados, on_delete=models.CASCADE) # No dependera de si existe o no el estado

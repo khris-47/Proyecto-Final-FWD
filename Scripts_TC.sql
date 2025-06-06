@@ -154,12 +154,14 @@ begin
 	insert into api_auditoria_user (tipoMovimiento, descripcion, fechaMovimiento, user) values
     (
 		'CREATE',
-        concat('Se creo un nuevo usuario <br> </b>Los datos son: </b>,<br>Usuario:  ',new.username, '<br>Nombre: ',new.first_name,' ',new.last_name, '<br>Correo: ',new.email),
+        concat('Se creo un nuevo usuario <br> <b>Los datos son: </b>,<br>Usuario:  ',new.username, '<br>Nombre: ',new.first_name,' ',new.last_name, '<br>Correo: ',new.email),
         now(),
         new.id
 	);
 end $$
 delimiter ;
+
+
 
 
 
@@ -174,7 +176,7 @@ begin
 	insert into api_auditoria_user (tipoMovimiento, descripcion, fechaMovimiento, user) values
      (
 		'UPDATE',
-        concat('Se actualizo un usuario <br> </b>Los nuevo datos son: </b>,<br>Usuario:  ',new.username, '<br>Nombre: ',new.first_name,' ',new.last_name, '<br>Correo: ',new.email, '<br>Estado: ',new.is_active,
+        concat('Se actualizo un usuario <br> <b>Los nuevo datos son: </b>,<br>Usuario:  ',new.username, '<br>Nombre: ',new.first_name,' ',new.last_name, '<br>Correo: ',new.email, '<br>Estado: ',new.is_active,
         '<br><b>Los datos anteriores eran: </b>',
 			'<br>Usuario:  ',old.username, '<br>Nombre: ',old.first_name,' ',old.last_name, '<br>Correo: ',old.email, '<br>Estado: ',old.is_active),
         now(),
@@ -182,6 +184,7 @@ begin
 	);
 end $$
 delimiter ;
+
 
 -- ################################################################
 -- Auditoria para la eliminacion de usuarios
