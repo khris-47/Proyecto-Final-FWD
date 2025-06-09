@@ -1,8 +1,9 @@
 import React from 'react'
+import Cuentos_Content from '../../components/principales/Cuentos_Content'
 
 function Cuentos() {
   return (
-    <div>Cuentos</div>
+    <Cuentos_Content></Cuentos_Content>
   )
 }
 

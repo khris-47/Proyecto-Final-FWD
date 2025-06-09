@@ -96,7 +96,6 @@
 
 .popup-window {
   right: 0;
-  transform: translateX(-80%);
   transform: scale(var(--nav-default-scale));
   visibility: hidden;
   opacity: 0;
@@ -153,10 +152,6 @@
 .popup-window ul li:nth-child(4) svg,
 .popup-window ul li:nth-child(5) svg {
   color: rgb(153, 153, 153);
-}
-
-.popup-window ul li:nth-child(7) svg {
-  color: red;
 }
 
 .popup-window hr {

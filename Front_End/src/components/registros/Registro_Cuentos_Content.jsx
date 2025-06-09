@@ -31,7 +31,7 @@ function Registro_Cuentos() {
       setCuentos(response.data); // almacena las cuentos en el estado
 
       console.log(response.data);
-      
+
 
     } catch (err) {
       console.error(err);
@@ -264,8 +264,20 @@ function Registro_Cuentos() {
                         {cuentos.map((item) => (
                           <tr key={item.id}>
                             <td>{item.id}</td>
-                            <td>{item.portada} </td>
-                            <td>{item.cuento} </td>
+
+                            <td>
+                              <img src={item.portada_url} alt="portada" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '5px' }} />
+                            </td>
+
+                            <td>
+                              <a
+                                href={item.cuento_url}
+                                className="btn btn-outline-primary btn-sm"
+                              >
+                                Ver PDF
+                              </a>
+                            </td>
+
                             <td>{item.nombre_Cuento}</td>
                             <td>{new Date(item.fecha_creacion).toLocaleString()}</td>
                             <td>{item.ubicacion}</td>

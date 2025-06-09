@@ -3,6 +3,7 @@ import NavBar from '../navegacion/navBar';
 import fondo from '../../assets/img/fondos/fondo_secundario.jpg';
 import '../../styles/entrevistas.css';
 
+
 // Funcion para extraer el ID del video de un enlace de YouTube
 const getYouTubeId = (url) => {
     if (!url || typeof url !== 'string') return null;
@@ -26,6 +27,7 @@ function Entrevistas_content() {
 
 
     return (
+
         <div className='bodyEntrevistas'>
             {/* Fondo de la pagina */}
             <img alt="" className="background-image-entrevistas" src={fondo} />
@@ -84,6 +86,7 @@ function Entrevistas_content() {
 
 
         </div>
+        
     );
 }
 

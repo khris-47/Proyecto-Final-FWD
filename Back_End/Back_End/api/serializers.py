@@ -82,15 +82,30 @@ class EstadosSerializer(serializers.ModelSerializer):
 # -- Serializer de Cuentos --------------------------------
 class CuentosSerializer(serializers.ModelSerializer):
     
+    # Entrada:
     # esto permite que portada y cuento sean aceptados como archivos en la solicitud, pero, no se devolvera en la respuesta
     # al momento del create hacemos el manejo de los mismos
     portada = serializers.FileField(write_only=True, required=False)
     cuento = serializers.FileField(write_only=True, required=False)
 
+    # Salida: Mostrar URL guardad
+    portada_url = serializers.CharField(source='portada', read_only=True)
+    cuento_url = serializers.CharField(source='cuento', read_only=True)
 
     class Meta:
         model = Cuentos
-        fields = '__all__'
+        fields = [
+            'id',
+            'nombre_Cuento',
+            'portada',        # solo en escritura
+            'portada_url',    # para lectura
+            'cuento',         # solo en escritua
+            'cuento_url',     # solo lectura
+            'fecha_creacion',
+            'estado',
+            'ubicacion'
+        ]
+   
 
     def validate_nombre_Cuento(self,value):
         if len(value) < 5:
@@ -119,7 +134,7 @@ class CuentosSerializer(serializers.ModelSerializer):
         if cuento_file:
             result =  cloudinary.uploader.upload(
                 cuento_file,                # archibo recibido
-                resource_type='raw')        # raw permite subir archivos como PDF, ZIP, DOC, etc.
+                resource_type='auto')        # raw permite subir archivos como PDF, ZIP, DOC, etc.
             
             # guardmos la URL del archivo PDF en el campo de cuento
             validate_data['cuento'] = result.get('secure_url')
@@ -138,7 +153,7 @@ class CuentosSerializer(serializers.ModelSerializer):
             instance.portada = result.get('secure_url')
 
         if cuento_file:
-            result = cloudinary.uploader.upload(cuento_file, resource_type='raw')
+            result = cloudinary.uploader.upload(cuento_file, resource_type='auto')
             instance.cuento = result.get('secure_url')
 
         # Para cualquier otro campo, se actualiza normalmente

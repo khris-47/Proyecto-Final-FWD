@@ -16,6 +16,7 @@ function MiPerfilContent() {
   const navigate = useNavigate();                   //   variable para redireccion
   const userId = Cookies.get('userId');            //    ID del usuario logueado
   const token = Cookies.get('accessToken');       //     token del usuario logueado 
+  const userCookie =  Cookies.get('user');       // traemos la cookie con los datos del usuario
 
   const [formData, setFormData] = useState({       //    formulario editable (rellnado con datos del usuario)
     username: '',
@@ -27,7 +28,7 @@ function MiPerfilContent() {
 
   // cuando se abre el componente, verificamos si hay un usuario logueado
   useEffect(() => {
-    const userCookie =  Cookies.get('user'); // traemos la cookie con los datos del usuario
+    
 
     if (userCookie && token) { // verificamos que las cookies no esten vacias
       

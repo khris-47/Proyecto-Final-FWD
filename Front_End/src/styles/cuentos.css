@@ -1,0 +1,57 @@
+  .bodyCuentos {
+      font-family: "Roboto Slab", serif;
+      align-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 0;
+  }
+
+  #cards_cuentos {
+      margin: auto;
+      align-self: center;
+  }
+
+  .content-cuentos {
+      flex-direction: column;
+      z-index: 1;
+      flex: 1;
+      justify-content: space-around;
+  }
+
+
+  .mainCuentos {
+      margin-top: 3%;
+      z-index: 2;
+      text-align: center;
+  }
+
+
+.bb{
+    padding: 10%;
+}
+
+  .img-card-cuento {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      position: relative;
+      z-index: 5;
+  }
+
+  .card-cuento {
+      position: relative;
+      overflow: visible;
+      z-index: 4;
+      max-width: 350px;
+      background-color: black;
+  }
+
+  .sombreado-cuento {
+      position: absolute;
+      bottom: -10px;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 90%);
+      z-index: 6;
+  }
