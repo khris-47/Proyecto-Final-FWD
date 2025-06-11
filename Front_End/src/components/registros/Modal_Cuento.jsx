@@ -70,7 +70,7 @@ function Modal_Cuento({
                                     name="portada"
                                     type='file'
                                     onChange={handleChange}
-                                    required = {!isEditing} // obligatoriosolo en creacion
+                                    required = {!isEditing} // obligatorio solo en creacion
                                 />
                             </Col>
                         </Row>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 
-import fondo from '../../assets/img/fondos/fondo_principal.JPG';
+import fondo from '../../assets/img/fondos/fondo_secundario.jpg';
 import memo01 from '../../assets/img/cards/memorama01.png';
 import memo02 from '../../assets/img/cards/memorama02.png';
 import adivi from '../../assets/img/cards/adivinanza.png';

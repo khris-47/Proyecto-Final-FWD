@@ -23,7 +23,7 @@ function Modal_Entevista({
         //extraemos el name y value del campo que dispara el evento
         const { name, value } = e.target;
 
-        // use el setFormData para actiualizar dinamicamente el valor dprrespndiente dle campo en el objeto formData
+        // usamos el setFormData para actiualizar dinamicamente el valor dprrespndiente dle campo en el objeto formData
         setFormData(prev => ({ ...prev, [name]: value }));
         // el ...prev es para mantener los otros campos del formulario sin cambios
     };
@@ -62,7 +62,7 @@ function Modal_Entevista({
                                 name="nombre_Persona"
                                 value={formData.nombre_Persona || ''}
                                 onChange={handleChange}
-                                required
+                                required = {!isEditing} // obligatoriosolo en creacion
                             />
                         </Col>
                         <Col>
@@ -71,7 +71,7 @@ function Modal_Entevista({
                                 name="entrevista"
                                 value={formData.entrevista || ''}
                                 onChange={handleChange}
-                                required
+                                required = {!isEditing} // obligatorio solo en creacion
                             />
                         </Col>
                     </Row>
@@ -82,6 +82,7 @@ function Modal_Entevista({
                                 name="descripcion"
                                 value={formData.descripcion || ''}
                                 onChange={handleChange}
+                                required = {!isEditing} // obligatorio solo en creacion
                             />
                         </Col>
                         <Col>
@@ -90,6 +91,7 @@ function Modal_Entevista({
                                 name="ubicacion"
                                 value={formData.ubicacion || ''}
                                 onChange={handleChange}
+                                required = {!isEditing} // obligatorio solo en creacion
                             />
                         </Col>
                     </Row>

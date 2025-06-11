@@ -6,6 +6,8 @@ import '../../styles/About.css'
 import { Link } from 'react-router-dom';
 
 function About_content() {
+
+
     return (
         <div className="bodyAbout">
 
@@ -45,6 +47,7 @@ function About_content() {
             </div>
         </div>
     )
+    
 }
 
 export default About_content

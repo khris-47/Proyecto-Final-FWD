@@ -20,6 +20,7 @@ import Reg_Cuentos from '../pages/registros/Reg_Cuentos'
 import Reg_Ubicaciones from '../pages/registros/Reg_Ubicaciones'
 import Entrevistas from '../pages/principales/Entrevistas'
 import Cuentos from '../pages/principales/Cuentos'
+import Lugares from '../pages/principales/Lugares'
 
 
 function Routing() {
@@ -46,6 +47,7 @@ function Routing() {
             <Route path='/reg_ubicaciones' element={<Reg_Ubicaciones/>}></Route>
             <Route path='/entrevistas' element={<Entrevistas/>}></Route>
             <Route path='/cuentos' element={<Cuentos/>}></Route>
+            <Route path='/lugares' element={<Lugares/>}></Route>
         </Routes>
     </Router>
   )

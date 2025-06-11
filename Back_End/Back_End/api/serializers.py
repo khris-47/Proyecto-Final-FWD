@@ -51,9 +51,24 @@ class UserSerializer(serializers.ModelSerializer):
 
 # -- Serializer de Ubicaciones ----------------------------
 class UbicacionesSerializer(serializers.ModelSerializer):
+
+    # Entrada:
+    # esto permite que portada sea adapatada como archivos en la solicitud, pero, no se devolvera en la respuesta
+    # al momento del create hacemos el manejo de los mismos
+    portada = serializers.FileField(write_only=True, required=False)
+
+    # Salida: Mostrar URL guardada
+    portada_url = serializers.CharField(source='portada', read_only=True)
+
     class Meta:
         model = Ubicaciones
-        fields = '__all__'
+        fields = [
+            'id',
+            'nombre',
+            'portada',        # solo en escritura
+            'portada_url',    # para lectura
+            'descripcion'
+        ]
 
     # -- Validaciones -----------------------------------------------
     def validate_nombre(self,value):
@@ -65,6 +80,45 @@ class UbicacionesSerializer(serializers.ModelSerializer):
         if len(value) < 20: 
             raise serializers.ValidationError("La descripcion no puede ser tan corta, no menos de 20 caracteres")
         return value
+
+
+    def create(self, validate_data):
+
+        print("Datos recibidos en serializer create:", validate_data)
+
+        # extraemos los archivos de la data y los quitamos del diccionario / objeto
+        # ya que el modelo espera URLs (TextField), no archivos directamente.
+        portada_file = validate_data.pop('portada', None)
+
+        # en caso de que, se haya recibido una imagen, se sube a cloudinary
+        if portada_file:
+            result =  cloudinary.uploader.upload(
+                portada_file,               # el archivo recibido
+                resource_type='image')      # indicamos que es una imagen
+            
+            # guardamos la URL segura de la imagen subida en el campo de portada
+            validate_data['portada'] = result.get('secure_url')
+
+        # creamos y retornamos la instacia del modelo con las URLs ya listas
+        return super().create(validate_data)
+
+    def update(self, instance, validated_data):
+
+        # la configuracion es practicamente la misma que en el create
+        portada_file = validated_data.pop('portada', None)
+
+        if portada_file:
+            result = cloudinary.uploader.upload(portada_file, resource_type='image')
+            instance.portada = result.get('secure_url')
+
+        # Para cualquier otro campo, se actualiza normalmente
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        # Guardamos los cambios
+        instance.save()
+        return instance
+    
     
     
 # -- Serializer de Estados --------------------------------
@@ -88,7 +142,7 @@ class CuentosSerializer(serializers.ModelSerializer):
     portada = serializers.FileField(write_only=True, required=False)
     cuento = serializers.FileField(write_only=True, required=False)
 
-    # Salida: Mostrar URL guardad
+    # Salida: Mostrar URL guardada
     portada_url = serializers.CharField(source='portada', read_only=True)
     cuento_url = serializers.CharField(source='cuento', read_only=True)
 
