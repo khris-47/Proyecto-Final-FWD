@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import NavBar from '../navegacion/navBar'
-import Footer from '../navegacion/Footer'
 import fondo from '../../assets/img/fondos/fondo_principal.JPG'
 import Contacto from '../../assets/img/cards/contacto.jpg'
 
