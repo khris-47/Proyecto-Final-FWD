@@ -242,7 +242,7 @@ function Registro_Entrevistas() {
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th>Nombre Entrevistado</th>
+                                                    <th>Persona(s)</th>
                                                     <th>Descripción</th>
                                                     <th>Fecha de Subida</th>
                                                     <th>Ubicacion</th>
@@ -256,8 +256,8 @@ function Registro_Entrevistas() {
                                                         <td>{item.nombre_Persona}</td>
                                                         <td>{item.descripcion}</td>
                                                         <td>{new Date(item.fecha_creacion).toLocaleString()}</td>
-                                                        <td>{item.ubicacion}</td>
-                                                        <td>{item.estado}</td>
+                                                        <td>{item.ubicacion_nombre}</td>
+                                                        <td>{item.estado === 1 ? 'Activo' : 'Inactivo'}</td>
                                                         <td>
                                                             <a className='btn btn-dark bx bx-edit' onClick={() => handleEdit(item)} > </a>
                                                             ||

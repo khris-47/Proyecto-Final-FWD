@@ -16,18 +16,18 @@ function Modal_Ubicaciones({
     // manejador de cambios en el formulario
     // esta funcion se ejecuta cada vez que el usuario modifica un campo del formulario
     const handleChange = (e) => {
-    
-            //extraemos el name y value del campo que dispara el evento
-            const { name, value, files, type} = e.target;
-    
-            // si es un archvo, usamos files [0]
-            const fieldValue = type === 'file' ? files[0] : value
+
+        //extraemos el name y value del campo que dispara el evento
+        const { name, value, files, type } = e.target;
+
+        // si es un archvo, usamos files [0]
+        const fieldValue = type === 'file' ? files[0] : value
 
 
-            // use el setFormData para actiualizar dinamicamente el valor dprrespndiente dle campo en el objeto formData
-            setFormData(prev => ({ ...prev, [name]: fieldValue }));
-            // el ...prev es para mantener los otros campos del formulario sin cambios
-        };
+        // use el setFormData para actiualizar dinamicamente el valor dprrespndiente dle campo en el objeto formData
+        setFormData(prev => ({ ...prev, [name]: fieldValue }));
+        // el ...prev es para mantener los otros campos del formulario sin cambios
+    };
 
     // manejador del envio del formulario
     const handleSubmit = async (e) => {
@@ -63,15 +63,15 @@ function Modal_Ubicaciones({
                                 name="nombre"
                                 value={formData.nombre || ''}
                                 onChange={handleChange}
-                                required={!isEditing} // obligatorio solo en creacion
+                                required
                             />
                         </Col>
                         <Col>
-                            <Form.Label>Imagen de Portada</Form.Label>
+                            <Form.Label>Portada:</Form.Label>
                             <Form.Control
                                 name="portada"
-                                onChange={handleChange}
                                 type='file'
+                                onChange={handleChange}
                                 required={!isEditing} // obligatorio solo en creacion
                             />
                         </Col>
@@ -83,7 +83,7 @@ function Modal_Ubicaciones({
                                 name="descripcion"
                                 value={formData.descripcion || ''}
                                 onChange={handleChange}
-                                required={!isEditing} // obligatorio solo en creacion
+                                required
                             />
                         </Col>
                     </Row>

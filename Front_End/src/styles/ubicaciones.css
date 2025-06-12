@@ -2,7 +2,7 @@
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0,0,0,0) 60%);
+    background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0,0,0,0) 40%);
 }
 
 .carrusel {
@@ -53,7 +53,7 @@
 }
 
 .capa-lugares {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.4);
     position: fixed;
     top: 0;
     left: 0;

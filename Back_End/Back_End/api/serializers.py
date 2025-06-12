@@ -82,13 +82,13 @@ class UbicacionesSerializer(serializers.ModelSerializer):
         return value
 
 
-    def create(self, validate_data):
+    def create(self, validated_data):
 
-        print("Datos recibidos en serializer create:", validate_data)
+        print("Datos recibidos en serializer create:", validated_data)
 
         # extraemos los archivos de la data y los quitamos del diccionario / objeto
         # ya que el modelo espera URLs (TextField), no archivos directamente.
-        portada_file = validate_data.pop('portada', None)
+        portada_file = validated_data.pop('portada', None)
 
         # en caso de que, se haya recibido una imagen, se sube a cloudinary
         if portada_file:
@@ -97,17 +97,18 @@ class UbicacionesSerializer(serializers.ModelSerializer):
                 resource_type='image')      # indicamos que es una imagen
             
             # guardamos la URL segura de la imagen subida en el campo de portada
-            validate_data['portada'] = result.get('secure_url')
+            validated_data['portada'] = result.get('secure_url')
 
         # creamos y retornamos la instacia del modelo con las URLs ya listas
-        return super().create(validate_data)
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
 
         # la configuracion es practicamente la misma que en el create
         portada_file = validated_data.pop('portada', None)
 
-        if portada_file:
+        # tambien valida si el archivo es una cadena vacia
+        if portada_file and portada_file != "":
             result = cloudinary.uploader.upload(portada_file, resource_type='image')
             instance.portada = result.get('secure_url')
 
@@ -118,7 +119,6 @@ class UbicacionesSerializer(serializers.ModelSerializer):
         # Guardamos los cambios
         instance.save()
         return instance
-    
     
     
 # -- Serializer de Estados --------------------------------
@@ -145,6 +145,9 @@ class CuentosSerializer(serializers.ModelSerializer):
     # Salida: Mostrar URL guardada
     portada_url = serializers.CharField(source='portada', read_only=True)
     cuento_url = serializers.CharField(source='cuento', read_only=True)
+    # mostrar nombre de la ubicacion
+    ubicacion_nombre = serializers.CharField(source='ubicacion.nombre', read_only=True)
+
 
     class Meta:
         model = Cuentos
@@ -157,23 +160,23 @@ class CuentosSerializer(serializers.ModelSerializer):
             'cuento_url',     # solo lectura
             'fecha_creacion',
             'estado',
-            'ubicacion'
+            'ubicacion',
+            'ubicacion_nombre' # solo lectura
         ]
    
-
     def validate_nombre_Cuento(self,value):
         if len(value) < 5:
             raise serializers.ValidationError("El nombre es muy corto, minimo 5 caracteres")
         return value
     
-    def create(self, validate_data):
+    def create(self, validated_data):
 
-        print("Datos recibidos en serializer create:", validate_data)
+        print("Datos recibidos en serializer create:", validated_data)
 
         # extraemos los archivos de la data y los quitamos del diccionario / objeto
         # ya que el modelo espera URLs (TextField), no archivos directamente.
-        portada_file = validate_data.pop('portada', None)
-        cuento_file = validate_data.pop('cuento', None)
+        portada_file = validated_data.pop('portada', None)
+        cuento_file = validated_data.pop('cuento', None)
 
         # en caso de que, se haya recibido una imagen, se sube a cloudinary
         if portada_file:
@@ -182,7 +185,7 @@ class CuentosSerializer(serializers.ModelSerializer):
                 resource_type='image')      # indicamos que es una imagen
             
             # guardamos la URL segura de la imagen subida en el campo de portada
-            validate_data['portada'] = result.get('secure_url')
+            validated_data['portada'] = result.get('secure_url')
 
         # en caso de haber recibido un cuento en PDF, se sube a Cloudinary
         if cuento_file:
@@ -191,22 +194,23 @@ class CuentosSerializer(serializers.ModelSerializer):
                 resource_type='auto')        # raw permite subir archivos como PDF, ZIP, DOC, etc.
             
             # guardmos la URL del archivo PDF en el campo de cuento
-            validate_data['cuento'] = result.get('secure_url')
+            validated_data['cuento'] = result.get('secure_url')
 
         # creamos y retornamos la instacia del modelo con las URLs ya listas
-        return super().create(validate_data)
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
 
-        # la configuracion es practicamente la misma que en el create
+        # Extraer y limpiar archivos si existen y no están vacíos
         portada_file = validated_data.pop('portada', None)
         cuento_file = validated_data.pop('cuento', None)
 
-        if portada_file:
+        # tambien valida si el archivo es una cadena vacia ("")
+        if portada_file and portada_file != "":
             result = cloudinary.uploader.upload(portada_file, resource_type='image')
             instance.portada = result.get('secure_url')
 
-        if cuento_file:
+        if cuento_file and cuento_file != "":
             result = cloudinary.uploader.upload(cuento_file, resource_type='auto')
             instance.cuento = result.get('secure_url')
 
@@ -221,6 +225,10 @@ class CuentosSerializer(serializers.ModelSerializer):
     
 # -- Serializer de Entrevistas ----------------------------
 class EntrevistasSerializer(serializers.ModelSerializer):
+
+    # mostrar nombre de la ubicacion
+    ubicacion_nombre = serializers.CharField(source='ubicacion.nombre', read_only=True)
+
     class Meta:
         model = Entrevistas
         fields =  '__all__'

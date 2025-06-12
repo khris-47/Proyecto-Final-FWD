@@ -68,7 +68,7 @@ function Entrevistas_content() {
                                                     ></iframe>
                                                 </div>
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Entrevista a {item.nombre_Persona} || {item.ubicacion}</h5>
+                                                    <h5 className="card-title">Entrevista a {item.nombre_Persona} || {item.ubicacion_nombre}</h5>
                                                     <p className="card-text text-md-center">{item.descripcion}</p>
                                                 </div>
                                             </div>

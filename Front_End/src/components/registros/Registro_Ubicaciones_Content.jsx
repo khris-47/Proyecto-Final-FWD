@@ -45,22 +45,64 @@ function Registro_Ubicaciones_Content() {
         }
     }
 
-
     // al 'ejecutar' la pantalla, montamos el fetch
     useEffect(() => {
         fetchUbicaciones();
     }, []);
 
+    // encargado de validar tipo y tamanho de imagen
+    const validarArchivos = () => {
+
+        // tamanho maximo permitido (10mb)
+        const MAX_SIZE_MB = 10 * 1024 * 1024;
+
+        if (formData.portada) {
+            if (!formData.portada.type.startsWith('image/')) {
+                Swal.fire({
+                    title: 'Archivo no válido',
+                    text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+            if (formData.portada.size > MAX_SIZE_MB) {
+                Swal.fire({
+                    title: 'Archivo demasiado grande',
+                    text: 'La portada no debe superar los 10MB',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+        }
+
+        return true;
+
+    };
+
     // manejo del registro o edicion del objeto
     const handleRegister = async () => {
         try {
 
+            // valdar archivos correspondientes
+            if (!validarArchivos()) return;
+
             //preparamos los datos el formulario a enviar
             const formPayload = new FormData();
 
-            formPayload.append("portada", formData.portada);
+            
             formPayload.append('nombre', formData.nombre);
             formPayload.append('descripcion', formData.descripcion)
+
+            // si al momento de actualizar, este campo vienen vacio, eliminarlo del form data para evitar errores
+            // es decir, si el usuario no lo quiere actualizar
+            // recordemos que en el modal tenemos un requerid solo para al momento de crear, entonces si o si tendria datos al momento de crear, mas no es necesario para editar
+            if (formData.portada) {
+                formPayload.append("portada", formData.portada);
+            }
+
+            console.log(formData.portada)
 
             // pregunta si esta editando
             if (isEditing && editId) {
@@ -79,10 +121,10 @@ function Registro_Ubicaciones_Content() {
 
 
                 // ver como se estan enviando los datos
-                console.log("Datos del formulario:");
-                for (let [key, value] of formPayload.entries()) {
-                    console.log(`${key}:`, value);
-                }
+                // console.log("Datos del formulario:");
+                // for (let [key, value] of formPayload.entries()) {
+                //     console.log(`${key}:`, value);
+                // }
 
                 // en caso de un create
                 await Ubicaciones_services.crearUbicacion(formPayload);
@@ -103,7 +145,7 @@ function Registro_Ubicaciones_Content() {
             setFormData({
                 portada: '',
                 nombre: '',
-                dscripcion: ''
+                descripcion: ''
             });
 
             // recargamos a=la lista
@@ -199,11 +241,33 @@ function Registro_Ubicaciones_Content() {
                             </div>
                         </div>
 
-                        <div className="row justify-content-center align-items-center g-2 " style={{ width: '20%' }}>
-                            <div className='row'>
+                        <div className="row justify-content-center align-items-center">
+                            <div className='d-flex align-items-center'>
+
                                 <button type='button' className='btn btn-primary bx bxs-message-square-add' onClick={() => setShowModal(true)}>
                                     Agregar
                                 </button>
+
+                                {/* From Uiverse.io by Cksunandh  */}
+                                <div className="tooltip-container">
+                                    <div className="icon">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="30"
+                                            height="30"
+                                        >
+                                            <path
+                                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.518 0-10-4.482-10-10s4.482-10 10-10 10 4.482 10 10-4.482 10-10 10zm-1-16h2v6h-2zm0 8h2v2h-2z"
+                                            ></path>
+                                        </svg>
+                                    </div>
+                                    <div className="tooltip">
+                                        <p>Debido al plan de uso, no es posible subir archivos mayores a 10MB. En el caso de imágenes, se recomienda utilizar el formato WebP para una mejor optimización.</p>
+
+                                        <p>https://convertio.co/es/download/9cdbb519f54e24d475ec0b1e24fbd1c4eb6db7/</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -226,6 +290,7 @@ function Registro_Ubicaciones_Content() {
                                                     <th>Nombre</th>
                                                     <th>Descripción</th>
                                                     <th>Portada</th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -241,9 +306,9 @@ function Registro_Ubicaciones_Content() {
 
 
                                                         <td>
-                                                            <a className='btn btn-dark bx bx-edit' onClick={() => handleEdit(item)} > </a>
-                                                            ||
-                                                            <a className='btn btn-danger bx bxs-trash' onClick={() => handleDelete(item.id)}> </a>
+                                                            <a className='btn btn-dark bx bx-edit mt-1' onClick={() => handleEdit(item)} > </a>
+
+                                                            <a className='btn btn-danger bx bxs-trash mt-1' onClick={() => handleDelete(item.id)}> </a>
                                                         </td>
                                                     </tr>
                                                 ))}

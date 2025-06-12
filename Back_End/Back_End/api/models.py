@@ -12,7 +12,7 @@ User = get_user_model()
 
 # -- Modelado de Ubicaciones --------------------------------------
 class Ubicaciones (models.Model):
-    nombre= models.CharField(max_length=50, unique=True)
+    nombre = models.CharField(max_length=50, unique=True)
     descripcion = models.TextField()
     portada = models.TextField()
 
@@ -33,7 +33,7 @@ class Cuentos (models.Model):
     cuento = models.TextField() # pdf
     fecha_creacion = models.DateField(auto_now_add=True)
     ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
-    estado = models.ForeignKey(Estados, on_delete=models.CASCADE) # No dependera de si existe o no el estado
+    estado = models.ForeignKey(Estados, on_delete=models.CASCADE)
     
 
     def __str__(self):
@@ -46,7 +46,7 @@ class Entrevistas (models.Model):
     descripcion = models.TextField()
     fecha_creacion = models.DateField(auto_now_add=True)
     ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
-    estado = models.ForeignKey(Estados, on_delete=models.CASCADE) # No dependera de si existe o no el estado
+    estado = models.ForeignKey(Estados, on_delete=models.CASCADE) 
 
     def __str__(self):
         return self.nombre_Persona

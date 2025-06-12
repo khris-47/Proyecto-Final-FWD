@@ -6,13 +6,9 @@ const access = Cookies.get('accessToken');
 
 // Obtener todas las ubicaciones
 export const getUbicaciones = async () => {
-    return await axios.get(`${API_BASE}/listUbicaciones/`, {
-         headers: {
-            Authorization: `Bearer ${access}`,
-            'Content-Type': 'multipart/form-data',
-        }
-    });
+  return await axios.get(`${API_BASE}/listUbicaciones/`);
 };
+
 
 // Crear nueva ubicacion
 export const crearUbicacion = async (data) => {
