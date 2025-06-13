@@ -9,6 +9,10 @@ urlpatterns = [
     # ==============================================================================
 
 
+    # prueba de envio de email
+    # path('test-email/', TestEmailView.as_view()),
+
+
     # -- Rutas para las Ubicaciones
     path('listUbicaciones/', UbicacionesListView.as_view(), name='Ubicaciones-list'),
     path('ubicaciones/<int:pk>',UbicacionesDetailsView.as_view(), name='Ubicaciones-update-delete'),
@@ -32,6 +36,10 @@ urlpatterns = [
     path('userRegister/', UserCreateView.as_view(), name='usuarios-create'),
     path('listUser/', UserListView.as_view(), name='usuarios-list'),
     path('UserDetails/<int:pk>', UserDetailsView.as_view(), name='usuarios-update-delete'),
+    path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
+    path('cambiar-password-reset/', CambiarPasswordTrasResetView.as_view()),
+    path('por-username/<str:username>/', ObtenerUsuarioPorUsernameView.as_view()),
+
 
     # -- Rutas para comentarios 
     path('comentariosRegister/', ComentariosCreateView.as_view(), name='comentarios-create'),

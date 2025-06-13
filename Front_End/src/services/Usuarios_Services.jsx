@@ -32,3 +32,22 @@ export const eliminarUsuario = async (userId, token) => {
         headers: { Authorization: `Bearer ${token}` }
     });
 };
+
+// cambio de contrasenha y reinicio de estado
+export const resetPassword = (username, email) => {
+    return axios.post(`${API_URL}/reset-password/`, { username, email });
+};
+
+// reactivar al usuario y hacerle el cambio de contrasenha
+export const cambiarPasswordTrasReset = (username, temp_password, nueva_password) => {
+    return axios.post(`${API_URL}/cambiar-password-reset/`, {
+        username,
+        temp_password,
+        nueva_password
+    });
+};
+
+// Buscar usuario por username
+export const obtenerUsuarioPorUsername = (username) => {
+    return axios.get(`${API_URL}/por-username/${username}/`);
+};

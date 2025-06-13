@@ -1,11 +1,31 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, CreateAPIView
 from .models import *
 from .serializers import *
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
+
+# importacion para el envio de email
+from django.core.mail import send_mail
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import random
+import string
 
 # importacion de permisos
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from .permission import *
+
+# prueba de envio de email
+# class TestEmailView(APIView):
+#     def get(self, request):
+#         send_mail(
+#             'Correo de prueba',
+#             'Hola, este es un correo de prueba desde Django.',
+#             'tc782.pruebas@gmail.com',
+#             ['rootkingjr@gmail.com'], 
+#             fail_silently=False,
+#         )
+#         return Response({'message': 'Correo enviado correctamente'})
 
 
 # =============================================================================
@@ -91,7 +111,6 @@ class UserCreateView(CreateAPIView):
         # Asigna el usuario al grupo
         user.groups.add(regular_group)
 
-
 class UserListView(ListAPIView):
     permission_classes = [IsAdminUserGroup, IsAuthenticated] #--solo admin
     queryset = User.objects.all()
@@ -101,6 +120,77 @@ class UserDetailsView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated] # -- solo autenticados
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class ResetPasswordView(APIView):
+    permission_classes = [] # -- permisos para todos
+
+    def post(self, request):
+        username = request.data.get('username')
+        email = request.data.get('email')
+
+        if not username or not email:
+            return Response({
+                'error' : 'Se requieren de nombre de usuario y correo.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            user = User.objects.get(username=username, email=email)
+
+        except User.DoesNotExist:
+            return Response({
+                'error' : 'No se encontró al usuario con ese nombre y correo.'}, status=status.HTTP_400_BAD_REQUEST) 
+
+        # Generar nueva contrasenha aleatoria
+        new_password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+        user.set_password(new_password)
+        user.is_active = False
+        user.save()
+
+        #Envio de correo con la nueva contrasenha
+        send_mail(
+            'Restablecimiento de Contraseña',
+            f'Hola {user.first_name}, \n\n Tu nueva contraseña es: {new_password}\n Por seguridad, cámbiala después de iniciar sesión.',
+            'tc782.pruebas@gmail.com', 
+            [email],
+            fail_silently= False,
+        )
+
+        return Response({'message': 'Contraseña restablecida. Revisa tu correo.'}, status=status.HTTP_200_OK)
+
+class CambiarPasswordTrasResetView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        username = request.data.get("username")
+        temp_password = request.data.get("temp_password")
+        nueva_password = request.data.get("nueva_password")
+
+        try:
+            user = User.objects.get(username=username, is_active=False)
+
+            # Verificamos que la contra temporal sea correcta
+            if not user.check_password(temp_password):
+                return Response({"error": "La contraseña temporal es incorrecta."}, status=400)
+
+            user.set_password(nueva_password)
+            user.is_active = True
+            user.save()
+
+            return Response({"message": "Contraseña actualizada correctamente. Ya podés iniciar sesión."}, status=200)
+
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado o ya activo."}, status=400)
+
+class ObtenerUsuarioPorUsernameView(APIView):
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            return Response({
+                "username": user.username,
+                "email": user.email,
+                "is_active": user.is_active
+            })
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado."}, status=404)
 
 
 # -- Vistas para los comentarios ---------------------------------------------

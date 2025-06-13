@@ -65,17 +65,54 @@ function Login_content() {
             navigate('/');
 
         } catch (err) {
+            // Si las credenciales fallan
             if (err.response && err.response.status === 401) {
-                Swal.fire({
-                    title: '¡Datos Erroneos!',
-                    text: 'Credenciales incorrectas',
-                    icon: 'error',
-                    confirmButtonText: 'Intentar de nuevo'
-                });
+
+                try {
+                    // Verificamos si el usuario existe pero se encuentra inactivo
+                    const usuarioInactivo = await Usuarios_Services.obtenerUsuarioPorUsername(username);
+
+                    if (!usuarioInactivo.data.is_active) {
+                        // Si se encuentra inactivo, lo mandamos al flujo de recuperacion
+                        const confirmar = await Swal.fire({
+                            title: 'Cuenta inactiva',
+                            text: 'Tu cuenta está desactivada. ¿Deseas actualizar tu contraseña para activarla?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Sí, actualizar',
+                            cancelButtonText: 'Cancelar'
+                        });
+
+                        if (confirmar.isConfirmed) {
+                            handleActualizarPasswordPostReset(username);
+                            return;
+                        }
+
+                    } else {
+                        // Si esta activo, entonces son credenciales incorrectas
+                        Swal.fire({
+                            title: '¡Datos Erróneos!',
+                            text: 'Credenciales incorrectas',
+                            icon: 'error',
+                            confirmButtonText: 'Intentar de nuevo'
+                        });
+                    }
+
+                } catch {
+                    // Si el usuario no existe o hubo otro error
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Credenciales incorrectas o usuario no encontrado.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+
             } else {
                 setError('Error del servidor.');
             }
         }
+
     };
 
     // Funcion para manejar el registro de un nuevo usuario desde el modal
@@ -103,16 +140,107 @@ function Login_content() {
             });
         } catch (error) {
             console.error('Error al registrar usuario:', error);
-            
+
             Swal.fire({
-                    title: '¡Datos Erroneos!',
-                    text: 'Error al registrar el usuario', error,
-                    icon: 'error',
-                    confirmButtonText: 'Intentar de nuevo'
-                });
+                title: '¡Datos Erroneos!',
+                text: 'Error al registrar el usuario', error,
+                icon: 'error',
+                confirmButtonText: 'Intentar de nuevo'
+            });
 
         }
     };
+
+
+    // Manejo del envio de correo para restablecimiento de contra
+    const handleForgotPassword = async () => {
+        const { value: formValues } = await Swal.fire({
+            title: 'Recuperar Contraseña',
+            html:
+                '<input id="swal-username" class="swal2-input" placeholder="Nombre de usuario">' +
+                '<input id="swal-email" type="email" class="swal2-input" placeholder="Correo electrónico">',
+            focusConfirm: false,
+            confirmButtonText: 'Enivar',
+            showCancelButton: true,
+            preConfirm: () => {
+                const username = document.getElementById('swal-username').value;
+                const email = document.getElementById('swal-email').value;
+
+                if (!username || !email) {
+                    Swal.showValidationMessage('Los campos son obligatorios');
+                    return false;
+                }
+                return { username, email };
+            }
+        });
+
+        if (formValues) {
+            try {
+                await Usuarios_Services.resetPassword(formValues.username, formValues.email)
+
+                Swal.fire(
+                    '¡Correo enviado!',
+                    'Se ha enviado una nueva contraseña a tu correo.',
+                    'success'
+                );
+
+            } catch (error) {
+                Swal.fire(
+                    'Error',
+                    error.response?.data?.error || 'No se pudo restablecer la contraseña.',
+                    'error'
+                );
+            }
+        }
+    }
+
+    // funcion para reactivar contrasenha y reactivar 
+    const handleActualizarPasswordPostReset = async (prefilledUsername = '') => {
+        const { value: formValues } = await Swal.fire({
+            title: 'Actualizar contraseña',
+            html:
+                `<input id="swal-username-reset" class="swal2-input" placeholder="Nombre de usuario" value="${prefilledUsername}" readonly>` +
+                '<input id="swal-temp-password" type="password" class="swal2-input" placeholder="Contraseña temporal">' +
+                '<input id="swal-new-password" type="password" class="swal2-input" placeholder="Nueva contraseña">',
+            focusConfirm: false,
+            confirmButtonText: 'Actualizar',
+            showCancelButton: true,
+            preConfirm: () => {
+                const username = document.getElementById('swal-username-reset').value;
+                const temp_password = document.getElementById('swal-temp-password').value;
+                const nueva_password = document.getElementById('swal-new-password').value;
+
+                if (!username || !temp_password || !nueva_password) {
+                    Swal.showValidationMessage('Todos los campos son obligatorios');
+                    return false;
+                }
+                return { username, temp_password, nueva_password };
+            }
+        });
+
+        if (formValues) {
+            try {
+                await Usuarios_Services.cambiarPasswordTrasReset(
+                    formValues.username,
+                    formValues.temp_password,
+                    formValues.nueva_password
+                );
+
+                Swal.fire(
+                    '¡Contraseña actualizada!',
+                    'Tu contraseña fue cambiada correctamente. Ya puedes iniciar sesión.',
+                    'success'
+                );
+            } catch (error) {
+                Swal.fire(
+                    'Error',
+                    error.response?.data?.error || 'No se pudo actualizar la contraseña.',
+                    'error'
+                );
+            }
+        }
+    };
+
 
     return (
         <div className='bodyLogin'>
@@ -161,9 +289,9 @@ function Login_content() {
                             </div>
 
                             {/* Enlace para recuperar contrasenha */}
-                            <Link to="" style={{ display: 'block', marginBottom: '10px', fontSize: '14px' }}>
+                            <span onClick={handleForgotPassword} style={{ color: '#0d6efd', display: 'block', marginBottom: '10px', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }}>
                                 ¿Olvidaste la contraseña?
-                            </Link>
+                            </span>
 
                             {/* Boton de login */}
                             <button type="submit" className="submit-btn">Ingresar</button>
