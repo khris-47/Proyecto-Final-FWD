@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../navegacion/navBar'
 import fondo from '../../assets/img/fondos/fondo_principal.JPG'
@@ -16,7 +16,7 @@ function Contacto_content() {
   const navigate = useNavigate();
 
   const [comentario, setComentario] = useState('');
-  const [usuario, setUsuario] = useState(null);
+  const [usuario] = useState(null);
 
   // Función para enviar comentario al "admin"
   const enviarComentario = async () => {
