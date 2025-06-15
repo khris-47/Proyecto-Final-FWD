@@ -84,7 +84,12 @@ function NavBar() {
           {/* derecha */}
           <li><Link to="/entrevistas" className='links'>Entrevistas</Link></li>
           <li><Link to="/lugares" className='links'>Lugares</Link></li>
-          <li><Link to="/menu_juegos" className='links'>Juegos Interactivos</Link></li>
+          <li>
+            <a href="https://khris-47.github.io/Juegos_Pagina/index.html" className="links" target="_blank" rel="noopener noreferrer">
+              Juegos Interactivos
+            </a>
+          </li>
+
 
           <div className="perfil-btn">
             <label className="popup">
