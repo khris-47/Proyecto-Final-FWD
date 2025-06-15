@@ -13,3 +13,25 @@
 .right img {
     max-width: 100px;
 }
+
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 600px) {
+    .footer {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        align-items: center; /* Centra los elementos */
+        text-align: center; /* Alinea el texto al centro */
+    }
+
+    .left, .right {
+        margin-bottom: 10px; /* Espacio entre los elementos */
+    }
+
+    .left svg {
+        max-width: 40px; /* Reduce el tamaño del logo de Instagram */
+    }
+
+    .right img {
+        max-width: 80px; /* Reduce el tamaño de las imágenes */
+    }
+}
