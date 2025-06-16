@@ -70,7 +70,7 @@ function Contacto_content() {
 
       <img alt="" className="background-image" src={fondo} />
 
-      <div className="capa"></div>
+      <div className="capaContacto"></div>
 
       <div className='contenido'>
 

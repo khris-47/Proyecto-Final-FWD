@@ -4,6 +4,13 @@ import Cookies from 'js-cookie'
 const API_BASE = 'http://localhost:8000/api';
 const access = Cookies.get('accessToken');
 
+// Obtener todas las entrevistas sin acceso
+export const getPublicEntrevistas = async () => {
+    return await axios.get(`${API_BASE}/listEntrevistas/`, {
+    });
+};
+
+
 // Obtener todas las entrevistas
 export const getEntrevistas = async () => {
     return await axios.get(`${API_BASE}/listEntrevistas/`, {

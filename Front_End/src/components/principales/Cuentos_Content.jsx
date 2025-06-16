@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
 import fondo from '../../assets/img/fondos/fondo_secundario.jpg';
 import '../../styles/cuentos.css';
+import { getPublicCuentos } from '../../services/Cuentos_Services';
+
 
 function Cuentos_Content() {
 
@@ -9,10 +11,19 @@ function Cuentos_Content() {
 
     // carga lso cuentos al montar el componente
     useEffect(() => {
-        fetch('http://localhost:8000/api/listCuentos/')
-            .then(response => response.json())
-            .then(data => setCuentos(data))
-            .catch(error => console.error('Error al cargar los cuentos:', error));
+        
+            const cargarCuentos = async () => {
+                try{
+                    const response = await getPublicCuentos();
+                    setCuentos(response.data);
+
+                }catch (error){
+                    console.error('Error al cargar los cuentos:', error)
+                }
+            };
+
+            cargarCuentos();
+
     }, []);
 
 
@@ -47,7 +58,7 @@ function Cuentos_Content() {
 
                                     return (
                                         <div className="col bb" key={item.id}>
-                                            <div className="card card-cuento h-100 shadow text-white position-relative overflow-hidden">
+                                            <div className="card card-cuento h-100 shadow text-white position-relative overflow-hidden" style={{backgroundColor: 'black'}}>
 
                                                 {/* Imagen de la tarjeta */}
                                                 <div className="position-relative">

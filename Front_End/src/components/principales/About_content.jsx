@@ -1,7 +1,7 @@
 import React from 'react'
 import Footer from '../navegacion/Footer'
 import NavBar from '../navegacion/navBar'
-import Fondo from '../../assets/img/fondos/fondo_AboutUs.png'
+import Fondo from '../../assets/img/cards/adivinanza.png'
 import '../../styles/About.css'
 import { useNavigate } from 'react-router-dom'
 
@@ -28,7 +28,6 @@ function About_content() {
             
             <div className="content">
 
-                
                 <main className="main-content">
                     <div className="section izquierda">
                         <h1>Entre Olas y </h1>

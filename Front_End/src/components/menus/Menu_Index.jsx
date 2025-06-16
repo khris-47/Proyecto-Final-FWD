@@ -15,7 +15,7 @@ function Menu_Index() {
                 </video>
             </div>
 
-            <div className='capa'></div>
+            <div className='capaIndex'></div>
 
             {/* CONTENIDO SOBRE EL VIDEO */}
             <div className="content">

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
 import fondo from '../../assets/img/fondos/fondo_secundario.jpg';
 import '../../styles/entrevistas.css';
-
+import { getPublicEntrevistas } from '../../services/Entrevistas_Services';
 
 // Funcion para extraer el ID del video de un enlace de YouTube
 const getYouTubeId = (url) => {
@@ -18,10 +18,16 @@ function Entrevistas_content() {
 
     // Carga las entrevistas al montar el componente
     useEffect(() => {
-        fetch('http://localhost:8000/api/listEntrevistas/')
-            .then(response => response.json())
-            .then(data => setEntrevistas(data))
-            .catch(error => console.error('Error al cargar entrevistas:', error));
+        const cargarEntrevistas = async () => {
+            try {
+                const response = await getPublicEntrevistas();
+                setEntrevistas(response.data);
+            } catch (error) {
+                console.error('Error al cargar las entrevistas: ', error);
+            }
+        };
+
+        cargarEntrevistas();
     }, []);
 
 
@@ -86,7 +92,7 @@ function Entrevistas_content() {
 
 
         </div>
-        
+
     );
 }
 

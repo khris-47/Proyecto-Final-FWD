@@ -4,6 +4,14 @@ import Cookies from 'js-cookie'
 const API_BASE = 'http://localhost:8000/api';
 const access = Cookies.get('accessToken');
 
+
+// Obtener todas los cuentos sin acceso
+export const getPublicCuentos = async () => {
+    return await axios.get(`${API_BASE}/listCuentos/`, {
+    });
+};
+
+
 // Obtener todas los cuentos
 export const getCuentos = async () => {
     return await axios.get(`${API_BASE}/listCuentos/`, {

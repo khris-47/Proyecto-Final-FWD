@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import '../../styles/ubicaciones.css'
 import NavBar from '../navegacion/navBar'
+import { getUbicaciones } from "../../services/Ubicaciones_services";
 
 function Ubicaciones_content() {
 
@@ -11,11 +12,13 @@ function Ubicaciones_content() {
   const [datosCargados, setDatosCargados] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/listUbicaciones/')
-      .then(response => response.json())
-      .then(data => {
+
+    const cargarUbicaciones = async () => {
+      try {
+        const response = await getUbicaciones();
+
         // Ajustamos la estructura de los datos para asegurar que la propiedad 'portada' esté correcta
-        const ubicacionesFormateadas = data.map(item => ({
+        const ubicacionesFormateadas = response.data.map(item => ({
           ...item,
           portada: item.portada_url
         }));
@@ -29,8 +32,14 @@ function Ubicaciones_content() {
           setAnimacionFondo("fondo-entrando");
           setAnimacionImagen("entrando");
         }
-      })
-      .catch(error => console.error('Error al cargar las ubicaciones:', error));
+
+      } catch (error) {
+        console.error('Error al cargar las ubicaciones:', error);
+      }
+    }
+
+    cargarUbicaciones();
+
   }, []);
 
 
