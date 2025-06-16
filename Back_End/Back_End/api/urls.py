@@ -45,7 +45,9 @@ urlpatterns = [
     path('comentariosRegister/', ComentariosCreateView.as_view(), name='comentarios-create'),
     path('listComentarios/', ComentariosListView.as_view(), name='comentarios-list'),
     path('comentariosDetails/', ComentariosDetailsView.as_view(), name='comentarios-update-delete'),
-    
+    path('comentariosUser/<int:pk>/', ComentariosPorUsuarioView.as_view(), name='comentarios-user'),
+
+
     # =============================================================================
     # -- Rutas de Auditorias -------------------------------------------------------
     # ==============================================================================

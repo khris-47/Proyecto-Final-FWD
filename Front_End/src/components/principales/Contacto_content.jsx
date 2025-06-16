@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../navegacion/navBar'
 import fondo from '../../assets/img/fondos/fondo_principal.JPG'
@@ -8,61 +8,44 @@ import '../../styles/contacto.css'
 
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
-import * as Usuarios_Services from '../../services/Usuarios_Services'; // asumimos que aquí está el servicio para enviar el correo
+import * as Usuarios_Services from '../../services/Usuarios_Services';
 
 
 function Contacto_content() {
 
   const navigate = useNavigate();
-
   const [comentario, setComentario] = useState('');
-  const [usuario] = useState(null);
+  const token = Cookies.get('accessToken');
 
-  // Función para enviar comentario al "admin"
-  const enviarComentario = async () => {
-    if (!usuario) {
-      Swal.fire({
-        title: 'Debes iniciar sesión',
-        text: 'Por favor, inicia sesión para enviar un comentario.',
-        icon: 'warning',
-        confirmButtonText: 'Ok'
-      });
+  // Manejo del envio del comentario
+  const handleEnviarComentario = async () => {
+
+    //verificar que haya iniciado sesion
+    if (!token) {
+      Swal.fire('Acceso Denegado', 'Debes iniciar sesión para enviar un comentario.', 'warning');
       return;
     }
 
-    if (!comentario.trim()) {
-      Swal.fire({
-        title: 'Campo vacío',
-        text: 'Por favor, escribe tu comentario antes de enviarlo.',
-        icon: 'info'
-      });
+    // varificar la longitud del comentario
+    if (comentario.trim().length < 5) {
+      Swal.fire('Comentario inválido', 'El comentario debe tener al menos 5 caracteres.', 'error');
       return;
     }
 
     try {
-      // Construimos el cuerpo del mensaje
-      const cuerpoMensaje = `El usuario ${usuario.email} envió el siguiente mensaje:\n\n${comentario}`;
 
-      // Llamada al servicio que maneja el envío (lo vemos abajo)
-      await Usuarios_Services.enviarComentarioAdmin(cuerpoMensaje);
+      await Usuarios_Services.enviarComentario({ comentario }, token);
 
-      Swal.fire({
-        title: '¡Comentario enviado!',
-        text: 'Gracias por comunicarte con nosotros.',
-        icon: 'success'
-      });
-
+      Swal.fire('¡Gracias!', 'Tu comentario ha sido enviado correctamente.', 'success');
       setComentario('');
 
+
     } catch (error) {
-      console.error('Error al enviar el comentario:', error);
-      Swal.fire({
-        title: 'Error',
-        text: 'No se pudo enviar el comentario. Intenta más tarde.',
-        icon: 'error'
-      });
+      console.error('Error al enviar comentario:', error);
+      Swal.fire('Error', 'Ocurrió un error al enviar tu comentario.', 'error');
     }
-  };
+
+  }
 
 
   return (
@@ -87,10 +70,10 @@ function Contacto_content() {
           <div className='sectionC derechaC'>
             <h1>Contáctanos</h1>
             <p>Nos encantaría escuchar de ti!, Si tienes alguna pregunta, comentario, consulta, o si vives en alguna de las zonas costeras y quieres comentarnos sobre tu emprendimiento, no dudes en comunicarte con nosotros. Puedes enviarnos un comentario directamente desde aquí o bien hablarnos por medio de nuestras redes sociales, nuestro equipo estará encantado por conocerte o ayudarte!</p>
-            <input type="text" placeholder='Ingrese su comentario Aqui' onChange={(e) => setComentario(e.target.value)}/>
+            <input type="text" placeholder='Ingrese su comentario Aqui'  onChange={(e) => setComentario(e.target.value)} />
             <div className='botones'>
-              <button className='btn btn-primary'  onClick={enviarComentario}>Enviar</button>
-              <button className='btn btn-dark'onClick={() => navigate('/')} >Volver</button>
+              <button className='btn btn-primary' onClick={handleEnviarComentario}>Enviar</button>
+              <button className='btn btn-dark' onClick={() => navigate('/')} >Volver</button>
 
             </div>
 

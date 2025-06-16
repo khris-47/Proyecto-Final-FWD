@@ -7,6 +7,13 @@ export const loginUsuario = (username, password) => {
     return axios.post(`${API_URL}/token/`, { username, password });
 };
 
+// obtener usuarios
+export const getUsuarios = async (token) => {
+  return await axios.get(`${API_URL}/listUser/`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
 // Obtener detalles del usuario autenticado
 export const obtenerUsuarioPorId = (id, token) => {
     return axios.get(`${API_URL}/UserDetails/${id}`, {
@@ -50,4 +57,20 @@ export const cambiarPasswordTrasReset = (username, temp_password, nueva_password
 // Buscar usuario por username
 export const obtenerUsuarioPorUsername = (username) => {
     return axios.get(`${API_URL}/por-username/${username}/`);
+};
+
+// Envio del comentario del usuario
+export const enviarComentario = async (data, token) => {
+  return await axios.post(`${API_URL}/comentariosRegister/`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// Obtener comentarios de un usuario
+export const getComentariosPorUsuario = async (userId, token) => {
+  return await axios.get(`${API_URL}/comentariosUser/${userId}/`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
 };

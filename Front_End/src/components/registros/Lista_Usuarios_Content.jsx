@@ -3,8 +3,8 @@ import Cookies from 'js-cookie';
 import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import * as Usuarios_services from '../../services/Usuarios_Services'
+import ModalComentarios from './ModalComentarios';
 
 function Lista_Usuarios_Content() {
 
@@ -13,29 +13,41 @@ function Lista_Usuarios_Content() {
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
 
+    const [comentarios, setComentarios] = useState([]);
+    const [mostrarComentarios, setMostrarComentarios] = useState(false);
+    const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+
+    const fetchUsuarios = async () => {
+        try {
+
+            const response = await Usuarios_services.getUsuarios(access);
+            setUsuarios(response.data);
+
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchUsuarios = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8000/api/listUser/`, {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${access}`
-                    }
-                });
-
-
-                setUsuarios(response.data); 
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchUsuarios();
-    });
+    }, []);
 
+    // funcion para obtener los comentarios de un usuario
+    const handleVerComentarios = async (usuario) => {
+        try {
 
+            const response = await Usuarios_services.getComentariosPorUsuario(usuario.id, access);
+
+            setComentarios(response.data);
+            setUsuarioSeleccionado(usuario);
+            setMostrarComentarios(true);
+
+        } catch (error) {
+            console.log("Error al cargar comentarios", error);
+        }
+    }
 
     return (
 
@@ -85,6 +97,7 @@ function Lista_Usuarios_Content() {
                                                     <th scope='col'>Nombre</th>
                                                     <th scope='col'>Apellidos</th>
                                                     <th scope='col'>Fecha Registro</th>
+                                                    <th scope='col'>Comentarios</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -96,6 +109,14 @@ function Lista_Usuarios_Content() {
                                                         <td>{usuario.first_name}</td>
                                                         <td>{usuario.last_name}</td>
                                                         <td>{usuario.date_joined}</td>
+
+                                                        <td>
+                                                            <button className='btn btn-info bx bxs-comment-detail' onClick={() => handleVerComentarios(usuario)}>
+                                                                
+                                                            </button>
+                                                        </td>
+
+
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -113,6 +134,14 @@ function Lista_Usuarios_Content() {
             <footer>
 
             </footer>
+
+            {mostrarComentarios && (
+                <ModalComentarios
+                    comentarios={comentarios}
+                    usuarioNombre={usuarioSeleccionado.first_name || usuarioSeleccionado.username}
+                    onClose={() => setMostrarComentarios(false)}
+                />
+            )}
 
         </div>
     )

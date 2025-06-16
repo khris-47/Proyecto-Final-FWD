@@ -199,16 +199,72 @@ class ComentariosCreateView(CreateAPIView):
     queryset =  Comentarios.objects.all()
     serializer_class = ComentariosSerializer
 
+    def perform_create(self, serializer):
+
+        print("Usuario autenticado:", self.request.user)
+        print("Datos recibidos:", self.request.data)
+
+        comentario = serializer.save(usuario=self.request.user)
+    
+        print("Comentario guardado:", comentario.comentario)
+        print("Usuario asociado al comentario:", comentario.usuario)
+
+        #Datos del comentario
+        contenido = comentario.comentario
+        nombre_usuario = self.request.user.get_full_name()
+        correo_usuario = self.request.user.email
+
+        # -- Enviar el correo al admin --
+        send_mail(
+
+            # -- subject
+            f"Nuevo comentario de {nombre_usuario}", 
+            # -- message
+            f'Hemos recibido un comentario del Usuario: {nombre_usuario}\nComentario: \n{contenido} \nCorreo del Usuario: {correo_usuario}',
+            
+            # -- from_email
+            'tc782.pruebas@gmail.com', 
+            
+            # -- recipient_list
+            ['tc782.pruebas@gmail.com'],
+
+            fail_silently=False,
+        )
+
+        # -- Enviar la respuesta automatica al usuarios
+        send_mail(
+            'Gracias por tu comentario',
+            f'Hola {nombre_usuario}, hemos recibido tu mensaje. Gracias por compartir tu opinion con nosotros. 😊',
+            'tc782.pruebas@gmail.com', 
+            [correo_usuario],
+            fail_silently=False,
+        )
+
+# -- de momento es opcional
 class ComentariosListView(ListAPIView):
     permission_classes = [IsAdminUserGroup, IsAuthenticated] #--solo admin
     queryset =  Comentarios.objects.all()
     serializer_class = ComentariosSerializer
 
+# -- de momento es opcional
 class ComentariosDetailsView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUserGroup, IsAuthenticated] #--solo admin
     queryset =  Comentarios.objects.all()
     serializer_class = ComentariosSerializer
 
+class ComentariosPorUsuarioView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ComentariosSerializer
+    
+
+    def get_queryset(self):
+        usuario_id = self.kwargs['pk']
+        try:
+            queryset = Comentarios.objects.filter(usuario__id=usuario_id)
+            return queryset
+        except Exception as e:
+            print("Error en ComentariosPorUsuario:", str(e))
+            return Comentarios.objects.none() 
 
 
 # ===========================================================================

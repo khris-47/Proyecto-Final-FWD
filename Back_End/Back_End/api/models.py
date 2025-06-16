@@ -55,6 +55,18 @@ class Entrevistas (models.Model):
 class Comentarios (models.Model):
     comentario =  models.TextField()
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha_creacion = models.DateField(auto_now_add=True)
+
+# -- Modelado de los formularios de emprendimientos -------------
+class Emprendimiento (models.Model):
+    Nombre_Emprendimiento = models.CharField(max_length=250)
+    Propietario = models.CharField(max_length=250)
+    contacto = models.CharField(max_length=20)
+    foto =  models.TextField()
+    Descripcion = models.TextField()
+    fecha_creacion = models.DateField(auto_now_add=True)
+    ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 # ===========================================================================

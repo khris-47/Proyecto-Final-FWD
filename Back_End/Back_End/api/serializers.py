@@ -246,6 +246,8 @@ class EntrevistasSerializer(serializers.ModelSerializer):
 
 # -- Serializer de Comentarios ----------------------------
 class ComentariosSerializer(serializers.ModelSerializer):
+    usuario = serializers.StringRelatedField(read_only=True)
+    
     class Meta:
         model = Comentarios
         fields = '__all__'
