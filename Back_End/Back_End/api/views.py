@@ -219,6 +219,7 @@ class ComentariosCreateView(CreateAPIView):
 
             # -- subject
             f"Nuevo comentario de {nombre_usuario}", 
+            
             # -- message
             f'Hemos recibido un comentario del Usuario: {nombre_usuario}\nComentario: \n{contenido} \nCorreo del Usuario: {correo_usuario}',
             

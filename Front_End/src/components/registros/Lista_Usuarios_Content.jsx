@@ -108,12 +108,10 @@ function Lista_Usuarios_Content() {
                                                         <td>{usuario.email}</td>
                                                         <td>{usuario.first_name}</td>
                                                         <td>{usuario.last_name}</td>
-                                                        <td>{usuario.date_joined}</td>
+                                                        <td>{new Date(usuario.date_joined).toLocaleString()}</td>
 
                                                         <td>
-                                                            <button className='btn btn-info bx bxs-comment-detail' onClick={() => handleVerComentarios(usuario)}>
-                                                                
-                                                            </button>
+                                                            <button className='btn btn-info bx bxs-comment-detail' onClick={() => handleVerComentarios(usuario)}></button>
                                                         </td>
 
 
