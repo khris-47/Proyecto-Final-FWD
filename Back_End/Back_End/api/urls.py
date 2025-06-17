@@ -9,10 +9,6 @@ urlpatterns = [
     # ==============================================================================
 
 
-    # prueba de envio de email
-    # path('test-email/', TestEmailView.as_view()),
-
-
     # -- Rutas para las Ubicaciones
     path('listUbicaciones/', UbicacionesListView.as_view(), name='Ubicaciones-list'),
     path('ubicaciones/<int:pk>',UbicacionesDetailsView.as_view(), name='Ubicaciones-update-delete'),
