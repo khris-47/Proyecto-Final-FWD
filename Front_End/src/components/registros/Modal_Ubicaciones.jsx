@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 function Modal_Ubicaciones({
     show,           // controla si el modal se muestra o no
@@ -29,10 +30,58 @@ function Modal_Ubicaciones({
         // el ...prev es para mantener los otros campos del formulario sin cambios
     };
 
+
+    // encargado de validar tipo y tamanho de imagen
+    const validarArchivos = () => {
+
+        // tamanho maximo permitido (10mb)
+        const MAX_SIZE_MB = 10 * 1024 * 1024;
+
+        if (formData.portada) {
+            if (!formData.portada.type.startsWith('image/')) {
+                Swal.fire({
+                    title: 'Archivo no válido',
+                    text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+            if (formData.portada.size > MAX_SIZE_MB) {
+                Swal.fire({
+                    title: 'Archivo demasiado grande',
+                    text: 'La portada no debe superar los 10MB',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+        }
+
+        // Validar nombre del lugar
+        if (!formData.nombre.trim() || formData.nombre.length < 5) {
+            Swal.fire('Nombre inválido', 'El nombre debe tener al menos 5 caracteres.', 'warning');
+            return false;
+        }
+
+        // Validar la descripcion
+        if (!formData.descripcion?.trim() || formData.descripcion.length < 20) {
+            Swal.fire('Descripción muy corta', 'Debe contener al menos 20 caracteres.', 'warning');
+            return false;
+        }
+
+        return true;
+
+    };
+
     // manejador del envio del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        // valdar archivos correspondientes
+        if (!validarArchivos()) return;
+
 
         try {
             await onSubmit();

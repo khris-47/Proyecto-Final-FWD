@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getUbicaciones } from '../../services/Ubicaciones_services';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 function Modal_Cuento({
     show,           // controla si el modal se muestra o no
@@ -11,8 +12,10 @@ function Modal_Cuento({
     isEditing = false // inidca si el modal se esta usando para editar o crear
 }) {
 
+    // cosntante para traer las ubicaciones actuales
     const [ubicaciones, setUbicaciones] = useState([]);
 
+    // cuando inicia, renderizamos la ubicaciones
     useEffect(() => {
         const fetchUbicaciones = async () => {
             try {
@@ -40,17 +43,82 @@ function Modal_Cuento({
         // si es un archvo, usamos files [0]
         const fieldValue = type === 'file' ? files[0] : value
 
-
         // use el setFormData para actiualizar dinamicamente el valor dprrespndiente dle campo en el objeto formData
         setFormData(prev => ({ ...prev, [name]: fieldValue }));
         // el ...prev es para mantener los otros campos del formulario sin cambios
     };
+
+    // validaciones para los inputs
+    const validarArchivos = () => {
+
+        // tamanho maximo permitido (10mb)
+        const MAX_SIZE_MB = 10 * 1024 * 1024;
+
+        // validaciones para las portadas
+        if (formData.portada) {
+            if (!formData.portada.type.startsWith('image/')) {
+                Swal.fire({
+                    title: 'Archivo no válido',
+                    text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+            if (formData.portada.size > MAX_SIZE_MB) {
+                Swal.fire({
+                    title: 'Archivo demasiado grande',
+                    text: 'La portada no debe superar los 10MB',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+        }
+
+        // validaciones para los cuentos
+        if (formData.cuento) {
+            if (formData.cuento.type !== 'application/pdf') {
+                Swal.fire({
+                    title: 'Archivo no válido',
+                    text: 'El cuento debe ser un archivo PDF',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+            if (formData.cuento.size > MAX_SIZE_MB) {
+                Swal.fire({
+                    title: 'Archivo demasiado grande',
+                    text: 'El archivo del cuento no debe superar los 10MB',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return false;
+            }
+        }
+
+        // validar el nombre del cuento 
+        if (formData.nombre_Cuento.trim() || formData.nombre_Cuento.length < 5) {
+            Swal.fire('Nombre inválido', 'El nombre debe tener al menos 5 caracteres.', 'warning');
+            return false;
+        }
+
+        return true;
+
+
+
+    };
+
 
     // manejador del envio del formulario
     const handleSubmit = async (e) => {
 
         e.preventDefault(); // previene el comportamiento por defecto del formulario
         setError('');       // limpia mensajes de error previos, en caso de que los hubo
+
+        // valdar archivos correspondientes
+        if (!validarArchivos()) return;
 
         try {
             await onSubmit(); // espera a que se complete la funcion
@@ -114,11 +182,10 @@ function Modal_Cuento({
                                 <option value="">Seleccione una ubicación</option>
                                 {ubicaciones.map((ubi) => (
                                     <option key={ubi.id} value={ubi.id}>
-                                        {ubi.nombre} 
+                                        {ubi.nombre}
                                     </option>
                                 ))}
                             </Form.Select>
-
                         </Col>
                     </Row>
 

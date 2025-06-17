@@ -74,3 +74,29 @@ export const getComentariosPorUsuario = async (userId, token) => {
     headers: { Authorization: `Bearer ${token}` }
   });
 };
+
+// Crear un nuevo emprendimiento
+export const crearEmprendimiento = async (formData, token) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    };
+
+    const response = await axios.post(`${API_URL}/crearEmprendimiento/`, formData, config);
+    return response;
+  } catch (error) {
+    console.error("Error al crear el emprendimiento:", error);
+    throw error;
+  }
+};
+
+// Obtener emprendimientos de un usuario
+export const getEmprendimientosPorUsuario = async (userId, token) => {
+  return await axios.get(`${API_URL}/emprendimientosUser/${userId}/`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+

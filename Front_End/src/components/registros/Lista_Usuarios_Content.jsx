@@ -5,6 +5,7 @@ import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
 import * as Usuarios_services from '../../services/Usuarios_Services'
 import ModalComentarios from './ModalComentarios';
+import Modal_Mostrar_Emprendimiento from './Modal_Mostrar_Emprendimiento';
 
 function Lista_Usuarios_Content() {
 
@@ -16,6 +17,9 @@ function Lista_Usuarios_Content() {
     const [comentarios, setComentarios] = useState([]);
     const [mostrarComentarios, setMostrarComentarios] = useState(false);
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+
+    const [emprendimientos, setEmprendimientos] = useState([]);
+    const [mostrarEmprendimiento, setMostrarEmprendimiento] = useState(false);
 
     const fetchUsuarios = async () => {
         try {
@@ -46,6 +50,20 @@ function Lista_Usuarios_Content() {
 
         } catch (error) {
             console.log("Error al cargar comentarios", error);
+        }
+    }
+
+    // funcion para obtener los formularios de un usuarios
+    const handleVerEmprendimientos = async (usuario) => {
+        try{
+            const response = await Usuarios_services.getEmprendimientosPorUsuario(usuario.id, access);
+
+            setEmprendimientos(response.data);
+            setUsuarioSeleccionado(usuario);
+            setMostrarEmprendimiento(true);
+
+        } catch (error) {
+            console.log("Error al cargar los emprendimientos", error);
         }
     }
 
@@ -97,7 +115,7 @@ function Lista_Usuarios_Content() {
                                                     <th scope='col'>Nombre</th>
                                                     <th scope='col'>Apellidos</th>
                                                     <th scope='col'>Fecha Registro</th>
-                                                    <th scope='col'>Comentarios</th>
+                                                    <th scope='col'>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -111,7 +129,9 @@ function Lista_Usuarios_Content() {
                                                         <td>{new Date(usuario.date_joined).toLocaleString()}</td>
 
                                                         <td>
-                                                            <button className='btn btn-info bx bxs-comment-detail' onClick={() => handleVerComentarios(usuario)}></button>
+                                                            <button className='btn btn-primary bx bxs-comment-detail' title='Comentarios' onClick={() => handleVerComentarios(usuario)}></button>
+                                                            ||
+                                                            <button className='btn btn-dark bx bxs-file' title='Formularios' onClick={() => handleVerEmprendimientos(usuario)}></button>
                                                         </td>
 
 
@@ -138,6 +158,14 @@ function Lista_Usuarios_Content() {
                     comentarios={comentarios}
                     usuarioNombre={usuarioSeleccionado.first_name || usuarioSeleccionado.username}
                     onClose={() => setMostrarComentarios(false)}
+                />
+            )}
+
+            {mostrarEmprendimiento && (
+                <Modal_Mostrar_Emprendimiento
+                    emprendimientos={emprendimientos}
+                    usuarioNombre={usuarioSeleccionado.first_name || usuarioSeleccionado.username}
+                    onClose={() => setMostrarEmprendimiento(false)}
                 />
             )}
 

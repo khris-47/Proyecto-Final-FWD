@@ -15,19 +15,6 @@ import string
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from .permission import *
 
-# prueba de envio de email
-# class TestEmailView(APIView):
-#     def get(self, request):
-#         send_mail(
-#             'Correo de prueba',
-#             'Hola, este es un correo de prueba desde Django.',
-#             'tc782.pruebas@gmail.com',
-#             ['rootkingjr@gmail.com'], 
-#             fail_silently=False,
-#         )
-#         return Response({'message': 'Correo enviado correctamente'})
-
-
 # =============================================================================
 # -- Vistas Principales -------------------------------------------------------
 # ==============================================================================
@@ -241,20 +228,8 @@ class ComentariosCreateView(CreateAPIView):
             fail_silently=False,
         )
 
-# -- de momento es opcional
-class ComentariosListView(ListAPIView):
-    permission_classes = [IsAdminUserGroup, IsAuthenticated] #--solo admin
-    queryset =  Comentarios.objects.all()
-    serializer_class = ComentariosSerializer
-
-# -- de momento es opcional
-class ComentariosDetailsView(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUserGroup, IsAuthenticated] #--solo admin
-    queryset =  Comentarios.objects.all()
-    serializer_class = ComentariosSerializer
-
 class ComentariosPorUsuarioView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminUserGroup]
     serializer_class = ComentariosSerializer
     
 
@@ -266,6 +241,69 @@ class ComentariosPorUsuarioView(ListAPIView):
         except Exception as e:
             print("Error en ComentariosPorUsuario:", str(e))
             return Comentarios.objects.none() 
+
+
+# -- Vistas para los formularios de Emprendimientos -------------------------
+class EmprendimientoCreateView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Emprendimiento.objects.all()
+    serializer_class = EmprendimientoSerializer
+        
+    def create(self, request, *args, **kwargs):
+        print("Datos  recibidos:", request.data)
+        print("Usuario autenticado:", self.request.user)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=False)
+        print("Errores de validación:", serializer.errors)  # guardar esto, es de suma importancia para ver errores, en caso de que no sean xplicitos
+
+        return super().create(request, *args, **kwargs)
+
+
+    def perform_create(self, serializer):
+
+        # Asociamos e usuario autenticado
+        user = self.request.user
+        instance = serializer.save(usuario=user)
+
+        print("Usuario autenticado:", self.request.user)
+        print("Datos recibidos:", self.request.data)
+
+        # Enviamos el correo de agradecimiento al usuario
+        send_mail(
+            subject='Gracias por contactarnos!',
+            message=f'Hola {user.first_name}\n\n Hemos recibido los datos sobre tu emprendimiento.\n Nuestro equipo se encargara de leerlo, nos comunicaremos contigo si es necesario. \n\n ¡Muchas gracias por tu aporte!',
+            from_email= 'tc782.pruebas@gmail.com',
+            recipient_list= [user.email],
+            fail_silently= True
+        )
+
+        # Enviamos una notificacion al correo de admin
+        send_mail(
+            subject='📬 Nuevo emprendimiento registrado',
+            message=f"Se ha llenado un nuevo formulario de emprendimimiento:\n\n"
+                    f"Nombre del Emprendimiento: {instance.Nombre_Emprendimiento}\n"
+                    f"Propietario/a: {instance.Propietario}\n"
+                    f"Contacto: {instance.contacto}\n"
+                    f"Ubicación: {instance.ubicacion.nombre}\n",
+            from_email='tc782.pruebas@gmail.com',
+            recipient_list=['tc782.pruebas@gmail.com'],
+            fail_silently=True
+        )
+
+class EmprendimientoPorUsuarioView(ListAPIView):
+    permission_classes = [IsAuthenticated, IsAdminUserGroup]
+    serializer_class = EmprendimientoSerializer
+
+    def get_queryset(self):
+        usuario_id = self.kwargs['pk']
+        try:
+            queryset = Emprendimiento.objects.filter(usuario_id=usuario_id)
+            return queryset
+        except Exception as e:
+            print("Error al traer los formularios: ", str(e))
+            return Emprendimiento.objects.none()
+
 
 
 # ===========================================================================

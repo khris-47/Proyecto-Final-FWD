@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 function Modal_Usuario({
     show,
@@ -21,15 +22,72 @@ function Modal_Usuario({
         setConfirmPassword(e.target.value);
     };
 
+    const validarArchivos = () => {
+
+        // cosnstante para validar correos
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // constante para validar contras fuertes (minusculas, mayusculas, numeros y al menos 8 digitos)
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+        // Validar username
+        if (!formData.username?.trim() || formData.username.length < 3) {
+            Swal.fire('Usuario inválido', 'El nombre de usuario debe tener al menos 3 caracteres.', 'warning');
+            return false;
+        }
+
+        // Validar nombre
+        if (!formData.first_name?.trim() || formData.first_name.length < 3) {
+            Swal.fire('Usuario inválido', 'El nombre debe tener al menos 3 caracteres.', 'warning');
+            return false;
+        }
+
+        // Validar apellido
+        if (!formData.last_name?.trim() || formData.last_name.length < 3) {
+            Swal.fire('Usuario inválido', 'El apellido debe tener al menos 3 caracteres.', 'warning');
+            return false;
+        }
+
+        // Validar email básico
+        if (!emailRegex.test(formData.email)) {
+            Swal.fire('Email inválido', 'Debes ingresar un correo electrónico válido.', 'warning');
+            return false;
+        }
+
+        // Validar contraseña
+        if (!passwordRegex.test(formData.password)) {
+            Swal.fire(
+                'Contraseña insegura',
+                'Debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número.',
+                'warning'
+            );
+            return false;
+        }
+
+        // Validar coincidencia con la confirmación
+        if (formData.password !== confirmPassword) {
+            Swal.fire('Contraseñas no coinciden', 'Las contraseñas deben ser iguales.', 'warning');
+            return false;
+        }
+
+        return true;
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (formData.password !== confirmPassword) {
-            setError('Las contraseñas no coinciden.');
-            return;
+
+        // valdar archivos correspondientes
+        if (!validarArchivos()) return;
+
+        try {
+            setError('');
+            onSubmit();
+            onHide();
+        } catch (error) {
+            console.log('Error al guardar el usuario: ', error)
         }
-        setError('');
-        onSubmit();
-        onHide();
+
+
     };
 
     return (
@@ -69,6 +127,7 @@ function Modal_Usuario({
                                 name="first_name"
                                 value={formData.first_name || ''}
                                 onChange={handleChange}
+                                required
                             />
                         </Col>
                         <Col>
@@ -77,6 +136,7 @@ function Modal_Usuario({
                                 name="last_name"
                                 value={formData.last_name || ''}
                                 onChange={handleChange}
+                                required
                             />
                         </Col>
                     </Row>
@@ -103,7 +163,7 @@ function Modal_Usuario({
                         </Col>
                     </Row>
 
-                    
+
                     <div className="text-center mt-3">
                         <Button type="submit" variant="primary" className="w-100">
                             {isEditing ? 'Actualizar' : 'Crear'}

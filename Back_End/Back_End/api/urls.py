@@ -43,9 +43,11 @@ urlpatterns = [
 
     # -- Rutas para comentarios 
     path('comentariosRegister/', ComentariosCreateView.as_view(), name='comentarios-create'),
-    path('listComentarios/', ComentariosListView.as_view(), name='comentarios-list'),
-    path('comentariosDetails/', ComentariosDetailsView.as_view(), name='comentarios-update-delete'),
     path('comentariosUser/<int:pk>/', ComentariosPorUsuarioView.as_view(), name='comentarios-user'),
+
+    # -- Rutas para Emprendimientos
+    path('crearEmprendimiento/', EmprendimientoCreateView.as_view(), name='emprendimientos-create'),
+    path('emprendimientosUser/<int:pk>/', EmprendimientoPorUsuarioView.as_view(), name='emprendimientos-user'),
 
 
     # =============================================================================

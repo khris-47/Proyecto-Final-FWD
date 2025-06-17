@@ -15,7 +15,7 @@ function ModalComentarios({
         <Modal.Title className="mx-auto">
           <b>Comentarios de {usuarioNombre}</b>
         </Modal.Title>
-        {/* Botón de cierre automático al extremo derecho */}
+        {/* Boton de cierre automático al extremo derecho */}
         <button
           type="button"
           className="btn-close position-absolute end-0 me-2"
@@ -31,10 +31,12 @@ function ModalComentarios({
           <ul className="list-group">
             {comentarios.map((c) => (
               <li key={c.id} className="list-group-item">
+               
                 <p><strong>Comentario:</strong> {c.comentario}</p>
                 <small className="text-muted">
                   Fecha: {new Date(c.fecha_creacion).toLocaleString()}
                 </small>
+             
               </li>
             ))}
           </ul>

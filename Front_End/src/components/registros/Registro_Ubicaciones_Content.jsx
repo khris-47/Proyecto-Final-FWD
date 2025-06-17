@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
@@ -50,43 +49,13 @@ function Registro_Ubicaciones_Content() {
         fetchUbicaciones();
     }, []);
 
-    // encargado de validar tipo y tamanho de imagen
-    const validarArchivos = () => {
-
-        // tamanho maximo permitido (10mb)
-        const MAX_SIZE_MB = 10 * 1024 * 1024;
-
-        if (formData.portada) {
-            if (!formData.portada.type.startsWith('image/')) {
-                Swal.fire({
-                    title: 'Archivo no válido',
-                    text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-                return false;
-            }
-            if (formData.portada.size > MAX_SIZE_MB) {
-                Swal.fire({
-                    title: 'Archivo demasiado grande',
-                    text: 'La portada no debe superar los 10MB',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-                return false;
-            }
-        }
-
-        return true;
-
-    };
+   
 
     // manejo del registro o edicion del objeto
     const handleRegister = async () => {
         try {
 
-            // valdar archivos correspondientes
-            if (!validarArchivos()) return;
+            
 
             //preparamos los datos el formulario a enviar
             const formPayload = new FormData();

@@ -234,8 +234,8 @@ class EntrevistasSerializer(serializers.ModelSerializer):
         fields =  '__all__'
 
     def validate_nombre_Persona(self,value):
-        if len(value) < 5:
-            raise serializers.ValidationError("El nombre es muy corto, minimo 5 caracteres")
+        if len(value) < 3:
+            raise serializers.ValidationError("El nombre es muy corto, minimo 3 caracteres")
         return value
 
     def validate_descripcion(self, value):
@@ -258,6 +258,37 @@ class ComentariosSerializer(serializers.ModelSerializer):
         return value
 
 
+# -- Serializer de Emprendimientos ------------------------
+class EmprendimientoSerializer(serializers.ModelSerializer):
+    usuario = serializers.StringRelatedField(read_only=True)
+
+    # Entrada 
+    foto = serializers.FileField(write_only=True, required=False)
+
+    # Salida
+    foto_url = serializers.CharField(source='foto', read_only=True)
+    ubicacion_nombre = serializers.CharField(source='ubicacion.nombre', read_only=True)
+
+    class Meta: 
+        model = Emprendimiento
+        fields = '__all__'
+
+    def create(self, validated_data):
+        
+        print('Datos entrantes ===================', validated_data)
+
+        foto_file =  validated_data.pop('foto', None)
+
+        if foto_file:
+            result =  cloudinary.uploader.upload(
+                foto_file,
+                resource_type = 'image'
+            )
+
+            validated_data['foto'] = result.get('secure_url')
+
+        return super().create(validated_data)
+    
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------
 # ===========================================================================

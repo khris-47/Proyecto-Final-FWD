@@ -47,64 +47,14 @@ function Registro_Cuentos() {
     fetchCuentos();
   }, []);
 
-  // encargado de validar que se envien los archivos debidos
-  const validarArchivos = () => {
-
-    // tamanho maximo permitido (10mb)
-    const MAX_SIZE_MB = 10 * 1024 * 1024;
-
-    if (formData.portada) {
-      if (!formData.portada.type.startsWith('image/')) {
-        Swal.fire({
-          title: 'Archivo no válido',
-          text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
-        return false;
-      }
-      if (formData.portada.size > MAX_SIZE_MB) {
-        Swal.fire({
-          title: 'Archivo demasiado grande',
-          text: 'La portada no debe superar los 10MB',
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
-        return false;
-      }
-    }
-
-    if (formData.cuento) {
-      if (formData.cuento.type !== 'application/pdf') {
-        Swal.fire({
-          title: 'Archivo no válido',
-          text: 'El cuento debe ser un archivo PDF',
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
-        return false;
-      }
-      if (formData.cuento.size > MAX_SIZE_MB) {
-        Swal.fire({
-          title: 'Archivo demasiado grande',
-          text: 'El archivo del cuento no debe superar los 10MB',
-          icon: 'error',
-          confirmButtonText: 'Aceptar'
-        });
-        return false;
-      }
-    }
-
-    return true;
-  };
+  
 
 
   // maneja el registro o edicion del objeto
   const handleRegister = async () => {
     try {
 
-      // valdar archivos correspondientes
-      if (!validarArchivos()) return;
+      
 
       // preparamos los datos del formulario a enviar
       const formPayload = new FormData();

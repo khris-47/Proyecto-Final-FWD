@@ -18,6 +18,7 @@ function Contacto_content() {
 
   const [showModal, setShowModal] = useState(false);
 
+
   // Manejo del envio del comentario
   const handleEnviarComentario = async () => {
 
@@ -48,57 +49,59 @@ function Contacto_content() {
 
   }
 
-return (
-  <div className='bodyContacto'>
+  return (
+    <div className='bodyContacto'>
 
-    <img alt="" className="background-image" src={fondo} />
+      <img alt="" className="background-image" src={fondo} />
 
-    <div className="capaContacto"></div>
+      <div className="capaContacto"></div>
 
-    <div className='contenido'>
+      <div className='contenido'>
 
-      <header className='headerIndex'>
-        <NavBar />
-      </header>
+        <header className='headerIndex'>
+          <NavBar />
+        </header>
 
-      <main className='mainContacto'>
+        <main className='mainContacto'>
 
-        <div className='sectionC izquierdaC'>
-          <img src={Contacto} alt="" />
-        </div>
-
-        <div className='sectionC derechaC'>
-          <h1>Contáctanos</h1>
-
-          <p>Nos encantaría escuchar de ti!, Si tienes alguna pregunta, comentario, consulta, o
-            si vives en alguna de las zonas costeras y quieres comentarnos sobre tu emprendimiento, no
-            dudes en comunicarte con nosotros. Puedes enviarnos un comentario directamente desde aquí o bien hablarnos por
-            medio de nuestras redes sociales, nuestro equipo estará encantado por conocerte o ayudarte! </p>
-
-          <p><b>Puedes hacer click al boton de la derecha para enviarnos un formulario con lod datos de tu emprendimiento</b></p>
-
-          <input type="text" placeholder='Ingrese su comentario Aqui' onChange={(e) => setComentario(e.target.value)} />
-          <div className='botones'>
-            <button className='btn btn-primary' onClick={handleEnviarComentario}>Enviar Comentario</button>
-            <button className='btn btn-dark bx bxs-file' onClick={() => setShowModal(true)}></button>
-
+          <div className='sectionC izquierdaC'>
+            <img src={Contacto} alt="" />
           </div>
 
-        </div>
-      </main>
+          <div className='sectionC derechaC'>
+            <h1>Contáctanos</h1>
 
-      <footer>
+            <p>Nos encantaría escuchar de ti!, Si tienes alguna pregunta, comentario, consulta, o
+              si vives en alguna de las zonas costeras y quieres comentarnos sobre tu emprendimiento, no
+              dudes en comunicarte con nosotros. Puedes enviarnos un comentario directamente desde aquí o bien hablarnos por
+              medio de nuestras redes sociales, nuestro equipo estará encantado por conocerte o ayudarte! </p>
 
-      </footer>
+            <p><b>Puedes hacer click al boton de la derecha para enviarnos un formulario con lod datos de tu emprendimiento</b></p>
+
+            <input type="text" placeholder='Ingrese su comentario Aqui' onChange={(e) => setComentario(e.target.value)} />
+            <div className='botones'>
+              <button className='btn btn-primary' onClick={handleEnviarComentario}>Enviar Comentario</button>
+              <button className='btn btn-dark bx bxs-file' onClick={() => setShowModal(true)}></button>
+
+            </div>
+
+          </div>
+        </main>
+
+        <footer>
+
+        </footer>
+
+      </div>
+
+      <Modal_Emprendimientos
+        show={showModal}
+        onHide={() => setShowModal(false)}
+      />
+
 
     </div>
-
-    <Modal_Emprendimientos
-      show={showModal} // Muestra u oculta el modal segun el estado 'showModal'        // Indica si el modal está en modo edición (true) o creacion (false)
-    />
-
-  </div>
-);
+  );
 
 
 }
