@@ -36,35 +36,81 @@ function Login_content() {
 
     // Funcion para manejar el incio de sesion
     const handleSubmit = async (e) => {
+
         e.preventDefault(); // previene la acciones por defecto
         setError(''); // limpia errores anteriores
 
+        // Consultamos estado de verificación primer login
+        const verifResponse = await Usuarios_Services.verificarEstadoUsuario(username);
+
+        // verificamos que ya haya hecho su primer incio de sesion
+        if (verifResponse.data.verificado === false) {
+
+            // en caso de que sea su primer inicio de sesion, le pedimos el codigo enviado al correo
+            const { value: codigoIngresado } = await Swal.fire({
+                title: 'Código de verificación',
+                input: 'text',
+                inputLabel: 'Por favor ingresa el código que te enviamos por correo',
+                inputPlaceholder: 'Código de verificación',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Debes ingresar el código!';
+                    }
+                }
+            });
+
+            // verificamos la validez del codigo
+            if (codigoIngresado) {
+                try {
+                    // Llamar servicio que valida el código en backend
+                    await Usuarios_Services.validarCodigoVerificacion({ username, codigo: codigoIngresado });
+
+                    // Si pasa, mostrar mensaje de éxito y continuar login (o recargar)
+                    Swal.fire('¡Verificado!', 'Tu cuenta ha sido activada. Ya puedes iniciar sesión.', 'success');
+
+                    // Limpiamos el estado para que el usuario ingrese todo nuevamente
+                    setPassword('');
+                    setUsername('');
+
+                } catch (error) {
+                    Swal.fire('Error', 'Código incorrecto o expirado.', 'error');
+                    console.log('error en la verificacion del codigo', error);
+
+                }
+            }
+            return; // Cortamos hasta que verifique
+        }
+
+
+        // En caso de que ya este registrado
         try {
-            // 1. Obtener token JWT 
+            // Obtener token JWT 
             const response = await Usuarios_Services.loginUsuario(username, password);
 
             const { access } = response.data; // extraemos el token de acceso
 
-            // 2. Decodificar token para obtener user_id
+            //  Decodificar token para obtener user_id
             const decoded = jwtDecode(access);
             const userId = decoded.user_id;
 
-            // 3. Obtener detalles del usuario autenticado
+            // Obtener detalles del usuario autenticado
             const userResponse = await Usuarios_Services.obtenerUsuarioPorId(userId, access);
 
             // guardamos los datos completos del usuario
             const userData = userResponse.data;
 
-            // 4. Guardar los datos obtenidos en cookies
+            // Guardar los datos obtenidos en cookies
             Cookies.set('user', JSON.stringify(userData), { expires: 1 }); // guardamos el objeto como un string
             Cookies.set('accessToken', access, { expires: 1 }); // token
             Cookies.set('userId', userId, { expires: 1 }); // id de usuario
 
 
-            // 5. Redirigir a la pagina principal
+            // Redirigir a la pagina principal
             navigate('/');
 
         } catch (err) {
+
             // Si las credenciales fallan
             if (err.response && err.response.status === 401) {
 
@@ -124,7 +170,7 @@ function Login_content() {
 
             Swal.fire({
                 title: '¡Éxito!',
-                text: 'Usuario creado correctamente',
+                text: 'Usuario creado correctamente \n Te hemos enviado un código de verificación a tu correo electrónico',
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
             });

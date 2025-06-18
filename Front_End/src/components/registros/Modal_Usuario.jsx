@@ -54,20 +54,26 @@ function Modal_Usuario({
             return false;
         }
 
-        // Validar contraseña
-        if (!passwordRegex.test(formData.password)) {
-            Swal.fire(
-                'Contraseña insegura',
-                'Debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número.',
-                'warning'
-            );
-            return false;
-        }
+        // validar contras solo si se esta creando
+        if (!isEditing) {
 
-        // Validar coincidencia con la confirmación
-        if (formData.password !== confirmPassword) {
-            Swal.fire('Contraseñas no coinciden', 'Las contraseñas deben ser iguales.', 'warning');
-            return false;
+            // Validar contraseña
+            if (!passwordRegex.test(formData.password)) {
+                Swal.fire(
+                    'Contraseña insegura',
+                    'Debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número.',
+                    'warning'
+                );
+                return false;
+            }
+
+            // Validar coincidencia con la confirmación
+            if (formData.password !== confirmPassword) {
+                Swal.fire('Contraseñas no coinciden', 'Las contraseñas deben ser iguales.', 'warning');
+                return false;
+            }
+
+
         }
 
         return true;
@@ -81,8 +87,17 @@ function Modal_Usuario({
 
         try {
             setError('');
+
+            // eliminar contrasena si no se esta editando
+            if (isEditing) {
+                const updatedData = { ...formData };
+                delete updatedData.password;
+                setFormData(updatedData);
+            }
+
             onSubmit();
             onHide();
+            
         } catch (error) {
             console.log('Error al guardar el usuario: ', error)
         }
@@ -141,27 +156,30 @@ function Modal_Usuario({
                         </Col>
                     </Row>
 
-                    <Row className="mb-2">
-                        <Col>
-                            <Form.Label>Password:</Form.Label>
-                            <Form.Control
-                                type="password"
-                                name="password"
-                                value={formData.password || ''}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Col>
-                        <Col>
-                            <Form.Label>Confirmar Password:</Form.Label>
-                            <Form.Control
-                                type="password"
-                                value={confirmPassword}
-                                onChange={handleConfirmChange}
-                                required
-                            />
-                        </Col>
-                    </Row>
+                    {!isEditing && (
+                        <Row className="mb-2">
+                            <Col>
+                                <Form.Label>Password:</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    name="password"
+                                    value={formData.password || ''}
+                                    onChange={handleChange}
+                                    required={!isEditing}
+                                />
+                            </Col>
+                            <Col>
+                                <Form.Label>Confirmar Password:</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={handleConfirmChange}
+                                    required={!isEditing}
+                                />
+                            </Col>
+                        </Row>
+                    )}
+
 
 
                     <div className="text-center mt-3">

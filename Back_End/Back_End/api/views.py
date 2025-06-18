@@ -89,12 +89,33 @@ class UserCreateView(CreateAPIView):
     serializer_class = UserSerializer
 
     def perform_create(self, serializer):
+
+        # Guardamos  el usuario como inactivo para que no pueda iniciar sesion sin verificar
+        user = serializer.save(is_active=False)
+
         # Guarda el usuario
         user = serializer.save()
         
         # Obtiene o crea el grupo
         regular_group, created = Group.objects.get_or_create(name='Regular')
         
+        # genero un codigo al azar que sera enviado al usuario en su primer inicio de sesion, este sera de 6 digitos
+        codigo = random.randint(100000, 999999)
+
+        # creo una instancia del modelo de verificacion
+        VerificacionPrimerLogin.objects.create(user=user, codigo=codigo)
+
+        # Enviamos el correo con el codigo para el primer inicio de sesio
+        send_mail(
+            subject='Bienvenido!',
+            message=f'Hola {user.first_name}\n\n Nos complace saber que quieres formar parte de esta familia.'
+            '\n Para aseguranos que no eres un bot, por favor copia y pega el siguiente código y utilizalo en tu primer inicio de sesión'
+            f'\n Codigo: {codigo}',
+            from_email= 'tc782.pruebas@gmail.com',
+            recipient_list= [user.email],
+            fail_silently= True
+        )
+
         # Asigna el usuario al grupo
         user.groups.add(regular_group)
 
@@ -179,6 +200,98 @@ class ObtenerUsuarioPorUsernameView(APIView):
         except User.DoesNotExist:
             return Response({"error": "Usuario no encontrado."}, status=404)
 
+class EstadoVerificacionView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+
+        username = request.data.get('username')
+
+        if not username:
+            return Response({'error': 'Se requiere el nombre de usuario.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(username=username)
+            verificacion = VerificacionPrimerLogin.objects.get(user=user)
+
+            return Response({
+                'verificado' : verificacion.verificado
+            }, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({'error': 'Usuario no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        except VerificacionPrimerLogin.DoesNotExist:
+            return Response({'error': 'No se encontró estado de verificación para este usuario.'}, status=status.HTTP_404_NOT_FOUND)
+
+class VerificarPrimerLoginView(APIView):
+    permission_classes = []  # Pública para permitir acceso
+
+    def post(self, request):
+        username = request.data.get('username')
+        codigo = request.data.get('codigo')
+
+        if not username or not codigo:
+            return Response({'error': 'Datos incompletos.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(username=username)
+            verificacion = VerificacionPrimerLogin.objects.get(user=user)
+
+            if verificacion.verificado:
+                return Response({'message': 'Este usuario ya fue verificado.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if str(verificacion.codigo) == str(codigo):
+                verificacion.verificado = True
+                verificacion.save()
+                user.is_active = True
+                user.save()
+                return Response({'message': 'Usuario verificado exitosamente.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Código incorrecto.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except User.DoesNotExist:
+            return Response({'error': 'Usuario no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        except VerificacionPrimerLogin.DoesNotExist:
+            return Response({'error': 'No hay verificación pendiente para este usuario.'}, status=status.HTTP_404_NOT_FOUND)
+
+class ValidarPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_id = request.data.get("user_id")
+        password = request.data.get("password")
+
+        try:
+            user = User.objects.get(id=user_id)
+
+            if not user.check_password(password):
+                return Response({"valid": False, "error": "Contraseña incorrecta."}, status=400)
+
+
+            return Response({"valid": True}, status=200)
+
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado."}, status=404)
+
+class CambiarPasswordPerfilView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        old_password = request.data.get("old_password")
+        new_password = request.data.get("new_password")
+
+        if not old_password or not new_password:
+            return Response({"error": "Se requieren la contraseña antigua y la nueva."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+
+        if not user.check_password(old_password):
+            return Response({"error": "Contraseña anterior incorrecta."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"message": "Contraseña actualizada exitosamente."}, status=status.HTTP_200_OK)
 
 # -- Vistas para los comentarios ---------------------------------------------
 class ComentariosCreateView(CreateAPIView):

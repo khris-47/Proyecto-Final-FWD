@@ -68,6 +68,13 @@ class Emprendimiento (models.Model):
     ubicacion = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
+# -- Modelado para el primer Inicio de sesion --------------------
+class VerificacionPrimerLogin(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    codigo = models.IntegerField()
+    creacion = models.DateTimeField(auto_now_add=True)
+    verificado = models.BooleanField(default=False)
+
 
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------

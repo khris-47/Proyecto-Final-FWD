@@ -35,6 +35,10 @@ urlpatterns = [
     path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
     path('cambiar-password-reset/', CambiarPasswordTrasResetView.as_view()),
     path('por-username/<str:username>/', ObtenerUsuarioPorUsernameView.as_view()),
+    path('verificarEstadoUsuario/', EstadoVerificacionView.as_view(), name='estado-verificacion'),
+    path('verificar-codigo/', VerificarPrimerLoginView.as_view(), name='verificar-codigo'),
+    path('validar_password/', ValidarPasswordView.as_view(), name='validar_password'),
+    path('cambiar_password_perfil/', CambiarPasswordPerfilView.as_view(), name='cambiar_password_perfil'),
 
 
     # -- Rutas para comentarios 

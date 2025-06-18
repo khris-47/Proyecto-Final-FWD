@@ -44,7 +44,6 @@ function Modal_Emprendimientos({ show, onHide }) {
     };
 
 
-
     const ValidarArchivos = () => {
 
         // tamano maximo (10mb)

@@ -100,3 +100,37 @@ export const getEmprendimientosPorUsuario = async (userId, token) => {
   });
 };
 
+// Validar el codigo de verificacion
+export const validarCodigoVerificacion = async ({ username, codigo }) => {
+  return axios.post(`${API_URL}/verificar-codigo/`, { username, codigo });
+};
+
+// Obtener el estado de verificacion del usuario
+export const verificarEstadoUsuario = async (username) => {
+  return axios.post(`${API_URL}/verificarEstadoUsuario/`, { username });
+};
+
+// Validar password actual
+export const validarPassword = async (userId, password, token) => {
+  return await axios.post(`${API_URL}/validar_password/`, {
+    user_id: userId,
+    password: password
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
+
+
+// Cambiar contraseña desde perfil
+// Usuarios_Services.jsx
+export const cambiarPassword = async (old_password, new_password, token) => {
+  return axios.post(`${API_URL}/cambiar_password_perfil/`, {
+    old_password,
+    new_password
+  }, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
