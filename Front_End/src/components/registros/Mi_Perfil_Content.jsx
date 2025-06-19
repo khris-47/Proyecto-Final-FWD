@@ -108,15 +108,11 @@ function MiPerfilContent() {
 
     const espera = await comprobarContra()
 
-    console.log(espera)
-
     if(espera) {
         setShowModal(true); // Mostrar modal solo si es válida
     } else {
       return
     }
-
-      
 
   };
 
@@ -169,7 +165,6 @@ function MiPerfilContent() {
     }
   };
 
-
   // Manejo de la eliminacion de datos
   const handleDelete = async () => {
 
@@ -180,7 +175,7 @@ function MiPerfilContent() {
       // ventana de confirmacion
     Swal.fire({
       title: '¿Estás seguro?',
-      text: 'Esta acción eliminará tu cuenta permanentemente. \nEsto hara que todos tus comentarios y formularios enviados se perderan',
+      text: 'Esta acción eliminará tu cuenta permanentemente. Esto hara que todos tus comentarios y formularios enviados se pierdan',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -220,6 +215,7 @@ function MiPerfilContent() {
 
   };
 
+  // Manejo del cambio de contrasena
   const handleCambiarPassword = async () => {
     const { value: formValues } = await Swal.fire({
       title: 'Cambiar Contraseña',

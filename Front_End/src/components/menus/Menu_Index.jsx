@@ -4,6 +4,9 @@ import videoFondo from '../../assets/video/presentacion.mp4'
 import NavBar from '../navegacion/navBar'
 import Footer from '../navegacion/Footer'
 
+
+import Cookies from 'js-cookie';
+
 function Menu_Index() {
     return (
         <div className='bodyIndex'>
@@ -19,7 +22,7 @@ function Menu_Index() {
 
             {/* CONTENIDO SOBRE EL VIDEO */}
             <div className="content">
-                
+
                 <header className='headerIndex'>
                     <NavBar />
                 </header>
@@ -31,7 +34,7 @@ function Menu_Index() {
                 <footer className='footerIndex'>
                     <Footer></Footer>
                 </footer>
-                
+
             </div>
 
 
