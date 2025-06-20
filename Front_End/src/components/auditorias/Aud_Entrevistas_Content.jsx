@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import axios from 'axios';
 import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
+import { obtenerAuditoriaEntrevistas } from '../../services/Auditorias_Services';
+import HTMLSafeText from './HTMLSafeText';
+
+function Aud_Entrevistas_Content() {
 
 
-function Aud_Usuarios_Content() {
     const [auditorias, setAuditorias] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
 
+    // El useEffect lo utilizaremos para cargar el form
     useEffect(() => {
         const fetchAuditorias = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/Auditoria_Usuarios/', {
-                    headers: {
-                        Authorization: `Bearer ${access}`,
-                    },
-                });
+                // llamada a la api
+                const response = await obtenerAuditoriaEntrevistas(access)
 
+                // guardamos los datos que entraron
                 setAuditorias(response.data);
+
             } catch (err) {
                 console.error(err);
                 setError('Error al obtener los datos de auditoría');
@@ -29,30 +31,30 @@ function Aud_Usuarios_Content() {
                 setLoading(false);
             }
         };
-
+        // llamamos al fetch
         fetchAuditorias();
-    });
+    }, []); //
+
 
     return (
-
         <div className='bodyForm'>
-            
+
             <div className="background-container-form">
                 <img className="background-image-form" src={Fondo} alt=".." />
                 <header className="headerAbout">
                     <NavBar />
                 </header>
             </div>
-            
+
             <div className='capa'></div>
 
             <main className='mainForm'>
                 <div className='style-form'>
                     <div className='container'>
-                        
+
                         <div className='row justify-content-center align-items-center g-2'>
                             <div>
-                                <h1>Auditoria de Usuarios</h1>
+                                <h1>Auditoria de Entrevistas</h1>
                             </div>
                         </div>
 
@@ -74,7 +76,7 @@ function Aud_Usuarios_Content() {
                                                     <th>Tipo de Movimiento</th>
                                                     <th>Descripción</th>
                                                     <th>Fecha</th>
-                                                    <th>Usuario</th>
+                                                    <th>Entrevista</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -82,9 +84,13 @@ function Aud_Usuarios_Content() {
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.tipoMovimiento}</td>
-                                                        <td dangerouslySetInnerHTML={{ __html: item.descripcion}} />
+
+                                                        {/* Insertamos HTML, dado que, para una mejor lectura, los triggers se hicieron con <br> y <b> */}
+                                                        {/* Sanitizamos item.descripcion permitiendo solo <br> y <b> */}
+                                                        <td><HTMLSafeText html={item.descripcion} /></td>
+
                                                         <td>{new Date(item.fechaMovimiento).toLocaleString()}</td>
-                                                        <td>{item.user}</td>
+                                                        <td>{item.entrevista}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -106,10 +112,7 @@ function Aud_Usuarios_Content() {
 
 
         </div>
-
-
-
-    );
+    )
 }
 
-export default Aud_Usuarios_Content;
+export default Aud_Entrevistas_Content

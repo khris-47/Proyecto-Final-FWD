@@ -4,22 +4,60 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/navBar.css'
 import logo from '../../assets/img/logos/logo_blanco.png'
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
+
 
 function NavBar() {
 
   // Obtengo los datos de la cokkies
   const navigate = useNavigate();
   const userCookie = Cookies.get('user');
-  const userId = Cookies.get('userId');
 
-  // cuando se cierra la sesion, se limpian las cookies y se redirecciona al index
+
+  const token = Cookies.get('accessToken');
+  let userId = null;
+
+  // dado que el navbar es de lo que primero se ve
+  // el token no va a existir de una sola vez, asi que no podemos darle un valor de una decodificacion al userId si este no existe
+  // para evitar esto usamos esa decodificacion solo si existe un token
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      userId = decoded.user_id;
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+    }
+  }
+
+
+  // constante para cerrar sesion
   const handleLogout = () => {
-    Cookies.remove('user');
-    Cookies.remove('accessToken');
-    Cookies.remove('refreshToken');
-    Cookies.remove('userId');
-    navigate('/');
+    
+    // preguntamos primero
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas cerrar sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      
+      // en caso de cerrar sesion, borramos las cookies y enviamos al index
+      if (result.isConfirmed) {
+        Cookies.remove('user');
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
+        navigate('/');
+      }
+    });
+
+    
   };
+
 
   // recuperamos el objeto que esta dentro de la cookie, si no hay, queda en nulo
   const user = userCookie ? JSON.parse(userCookie) : null;
@@ -35,7 +73,7 @@ function NavBar() {
 
           <li><Link to="/about" className='links'>Quienes Somos</Link></li>
 
-          {userId !== '1' ? (
+          {userId !== 1 ? (
             <li><Link to="/contact" className='links'>Contacto</Link></li>
           ) : (
 
@@ -73,7 +111,7 @@ function NavBar() {
           <li className="logo-container">
 
 
-            {userId !== '1' ? (
+            {userId !== 1 ? (
               <img className='logo' src={logo} alt="Logo" />
             ) : (
               <Link to='/admin'><img className='logo' src={logo} alt="Logo" /></Link>
@@ -117,7 +155,7 @@ function NavBar() {
                       </li>
 
                       {/* li's propios del admin */}
-                      {userId == '1' && (
+                      {userId == 1 && (
                         <>
                           <li>
                             <button onClick={() => navigate('/list_user')}>

@@ -7,7 +7,6 @@ import Logo from '../../assets/img/logos/logo_blanco.png'
 import Modal_Usuario from '../registros/Modal_Usuario'; // Modal de registro de usuario
 
 import Swal from 'sweetalert2';
-import { jwtDecode } from 'jwt-decode'; // npm install jwt-decode
 import Cookies from 'js-cookie'; // npm install js-cookie
 
 import '../../styles/login.css'
@@ -90,20 +89,15 @@ function Login_content() {
 
             const { access } = response.data; // extraemos el token de acceso
 
-            //  Decodificar token para obtener user_id
-            const decoded = jwtDecode(access);
-            const userId = decoded.user_id;
-
             // Obtener detalles del usuario autenticado
-            const userResponse = await Usuarios_Services.obtenerUsuarioPorId(userId, access);
+            const userResponse = await Usuarios_Services.obtenerUsuarioPorId(access);
 
             // guardamos los datos completos del usuario
             const userData = userResponse.data;
-
-            // Guardar los datos obtenidos en cookies
-            Cookies.set('user', JSON.stringify(userData), { expires: 1 }); // guardamos el objeto como un string
-            Cookies.set('accessToken', access, { expires: 1 }); // token
-            Cookies.set('userId', userId, { expires: 1 }); // id de usuario
+        
+            // Guardar los datos obtenidos en cookies                (1 / 24 = a una hora)
+            Cookies.set('user', JSON.stringify(userData), { expires: 1 / 24 }); // guardamos el objeto como un string
+            Cookies.set('accessToken', access, { expires: 1 / 24 }); // guardamos el token
 
 
             // Redirigir a la pagina principal

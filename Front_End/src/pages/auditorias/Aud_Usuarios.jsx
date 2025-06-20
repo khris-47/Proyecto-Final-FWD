@@ -1,5 +1,5 @@
 import React from 'react'
-import Aud_Usuarios_Content from '../../components/registros/Aud_Usuarios_Content'
+import Aud_Usuarios_Content from '../../components/auditorias/Aud_Usuarios_Content'
 
 function Aud_Usuarios() {
   return (

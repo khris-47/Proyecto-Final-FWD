@@ -10,9 +10,9 @@ import Login from '../pages/principales/Login'                        // publica
 import Mi_Perfil from '../pages/registros/Mi_Perfil'                  // usuario logueado
 import M_Admin from '../pages/menus/M_Admin'                         // admin
 import Lista_Usuarios from '../pages/registros/Lista_Usuarios'      // admin
-import Aud_Usuarios from '../pages/registros/Aud_Usuarios'          // admin
-import Aud_Cuentos from '../pages/registros/Aud_Cuentos'           // admin
-import Aud_Entrevistas from '../pages/registros/Aud_Entrevistas'   // dmin
+import Aud_Usuarios from '../pages/auditorias/Aud_Usuarios'          // admin
+import Aud_Cuentos from '../pages/auditorias/Aud_Cuentos'           // admin
+import Aud_Entrevistas from '../pages/auditorias/Aud_Entrevistas'   // dmin
 import Reg_Entrevistas from '../pages/registros/Reg_Entrevistas'  // admin
 import Reg_Cuentos from '../pages/registros/Reg_Cuentos'          // admin
 import Reg_Ubicaciones from '../pages/registros/Reg_Ubicaciones' // admin

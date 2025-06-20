@@ -5,6 +5,7 @@ import Fondo from '../../assets/img/fondos/fondo_principal.JPG';
 import { Link, useNavigate } from 'react-router-dom';
 import Modal_Usuario from '../registros/Modal_Usuario';
 import Swal from 'sweetalert2';
+import { jwtDecode } from 'jwt-decode';
 
 import * as Usuario_Services from '../../services/Usuarios_Services'
 
@@ -15,13 +16,15 @@ function MiPerfilContent() {
   const [showModal, setShowModal] = useState(false); //  modal de edicion
 
   const navigate = useNavigate();                   //   variable para redireccion
-  const userId = Cookies.get('userId');            //    ID del usuario logueado
   const token = Cookies.get('accessToken');       //     token del usuario logueado 
   const userCookie = Cookies.get('user');       // traemos la cookie con los datos del usuario
 
   const [cambiarPassword, setCambiarPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
 
+
+  const decoded = jwtDecode(token); // decodificamos el token
+  const userId = decoded.user_id // obtenemos el id de ese token
 
   const [formData, setFormData] = useState({       //    formulario editable (rellnado con datos del usuario)
     username: '',
@@ -71,7 +74,6 @@ function MiPerfilContent() {
     if (password) {
       try {
 
-        // Validación opcional: puedes verificarla con la API
         const response = await Usuario_Services.validarPassword(userId, password, token);
 
         if (response.data.valid) {
@@ -101,7 +103,7 @@ function MiPerfilContent() {
         return false
       }
     }
-  }
+  };
 
   // abre el modal cuando al hacer click en e boton de  editar
   const handleEdit = async () => {
@@ -130,7 +132,7 @@ function MiPerfilContent() {
       }
 
       // llamamos al aapi para actualizar los datos del usuario
-      await Usuario_Services.actualizarUsuario(userId, datosLimpios, token)
+      await Usuario_Services.actualizarUsuario(datosLimpios, token)
 
       // guardamos los nuevos datos en cookies
       Cookies.set('user', JSON.stringify(datosLimpios), { expires: 1 });
@@ -189,12 +191,11 @@ function MiPerfilContent() {
         try {
 
           // llamamos al servicio para eliminar al usuario
-          await Usuario_Services.eliminarUsuario(userId, token);
+          await Usuario_Services.eliminarUsuario(token);
 
           // Eliminar cookies y redirigir al usuario
           Cookies.remove('user');
           Cookies.remove('accessToken');
-          Cookies.remove('userId');
 
           // mostramos un mensaje de exito
           Swal.fire('Cuenta eliminada', 'Tu perfil ha sido eliminado.', 'success');
@@ -300,7 +301,7 @@ function MiPerfilContent() {
             Cambiar Contraseña
           </button>
 
-          {(userData?.id !== 1 && !userData?.is_superuser) && (
+          {(userId !== 1) && (
             <button className='btn btn-danger mt-3 m-1' onClick={handleDelete}>
               Eliminar Perfil
             </button>

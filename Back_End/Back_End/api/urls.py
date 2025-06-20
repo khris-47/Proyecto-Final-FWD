@@ -31,7 +31,7 @@ urlpatterns = [
     # -- Rutas para Usuarios
     path('userRegister/', UserCreateView.as_view(), name='usuarios-create'),
     path('listUser/', UserListView.as_view(), name='usuarios-list'),
-    path('UserDetails/<int:pk>', UserDetailsView.as_view(), name='usuarios-update-delete'),
+    path('UserDetails/', UserDetailsView.as_view(), name='usuarios-update-delete'),
     path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
     path('cambiar-password-reset/', CambiarPasswordTrasResetView.as_view()),
     path('por-username/<str:username>/', ObtenerUsuarioPorUsernameView.as_view()),

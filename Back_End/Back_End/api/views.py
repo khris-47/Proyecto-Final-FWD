@@ -92,9 +92,6 @@ class UserCreateView(CreateAPIView):
 
         # Guardamos  el usuario como inactivo para que no pueda iniciar sesion sin verificar
         user = serializer.save(is_active=False)
-
-        # Guarda el usuario
-        user = serializer.save()
         
         # Obtiene o crea el grupo
         regular_group, created = Group.objects.get_or_create(name='Regular')
@@ -126,8 +123,11 @@ class UserListView(ListAPIView):
 
 class UserDetailsView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated] # -- solo autenticados
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    # con get_object hace que el usuario solo pueda acceder a su propio objeto, ignorando cualuier pk que pongan
+    def get_object(self):
+        return self.request.user  
 
 class ResetPasswordView(APIView):
     permission_classes = [] # -- permisos para todos
@@ -368,7 +368,7 @@ class EmprendimientoCreateView(CreateAPIView):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=False)
-        print("Errores de validación:", serializer.errors)  # guardar esto, es de suma importancia para ver errores, en caso de que no sean xplicitos
+        print("Errores de validación:", serializer.errors)  # (guardar esto, es de suma importancia para ver errores, en caso de que no sean xplicitos)
 
         return super().create(request, *args, **kwargs)
 
@@ -416,8 +416,6 @@ class EmprendimientoPorUsuarioView(ListAPIView):
         except Exception as e:
             print("Error al traer los formularios: ", str(e))
             return Emprendimiento.objects.none()
-
-
 
 # ===========================================================================
 # -- Vistas de Auditoria ----------------------------------------------------

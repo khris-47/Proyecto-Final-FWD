@@ -15,8 +15,8 @@ export const getUsuarios = async (token) => {
 };
 
 // Obtener detalles del usuario autenticado
-export const obtenerUsuarioPorId = (id, token) => {
-    return axios.get(`${API_URL}/UserDetails/${id}`, {
+export const obtenerUsuarioPorId = (token) => {
+    return axios.get(`${API_URL}/UserDetails/`, {
         headers: { Authorization: `Bearer ${token}` }
     });
 };
@@ -27,15 +27,15 @@ export const registrarUsuario = (data) => {
 };
 
 // Actualizar los datos del usuario
-export const actualizarUsuario = async (userId, formData, token) => {
-    return axios.patch(`${API_URL}/UserDetails/${userId}`, formData, {
+export const actualizarUsuario = async (formData, token) => {
+    return axios.patch(`${API_URL}/UserDetails/`, formData, {
         headers: { Authorization: `Bearer ${token}` }
     });
 };
 
 // Eliminar al usuario
-export const eliminarUsuario = async (userId, token) => {
-    return axios.delete(`${API_URL}/UserDetails/${userId}`, {
+export const eliminarUsuario = async (token) => {
+    return axios.delete(`${API_URL}/UserDetails/`, {
         headers: { Authorization: `Bearer ${token}` }
     });
 };

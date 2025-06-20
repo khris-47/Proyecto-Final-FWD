@@ -1,5 +1,5 @@
 import React from 'react'
-import Aud_Cuentos_Content from '../../components/registros/Aud_Cuentos_Content'
+import Aud_Cuentos_Content from '../../components/auditorias/Aud_Cuentos_Content'
 
 function Aud_Cuentos() {
   return (

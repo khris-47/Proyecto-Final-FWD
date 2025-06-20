@@ -1,5 +1,5 @@
 import React from 'react'
-import Aud_Entrevistas_Content from '../../components/registros/Aud_Entrevistas_Content'
+import Aud_Entrevistas_Content from '../../components/auditorias/Aud_Entrevistas_Content'
 
 function Aud_Entrevistas() {
   return (
