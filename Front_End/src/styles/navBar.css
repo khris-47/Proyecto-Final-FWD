@@ -1,13 +1,13 @@
-
 .bodyNav {
   background-color: transparent;
   font-family: "Roboto Slab", serif;
-  
+
 }
 
 .navbar {
   position: relative;
   height: 80px;
+  z-index: 10;
 }
 
 .navbar-items {
@@ -85,6 +85,7 @@
   display: inline-block;
   text-rendering: optimizeLegibility;
   position: relative;
+
 }
 
 .popup input {
@@ -112,6 +113,7 @@
   right: var(--nav-position-right);
   transition: var(--burger-transition);
   margin-top: 10px;
+
 }
 
 .popup-window legend {
@@ -240,7 +242,7 @@
   min-width: 200px;
 }
 
-.submenu-hover input:checked ~ .submenu-popup {
+.submenu-hover input:checked~.submenu-popup {
   transform: scale(var(--nav-active-scale));
   visibility: visible;
   opacity: 1;
@@ -273,7 +275,7 @@
   color: var(--nav-button-hover-text-color);
 }
 
-.submenu-hover input:checked ~ .submenu-popup {
+.submenu-hover input:checked~.submenu-popup {
   transform: scale(var(--nav-active-scale));
   visibility: visible;
   opacity: 1;
@@ -286,4 +288,127 @@
   gap: 0.5rem;
   color: white;
   font-size: 18px;
+}
+
+/* Esconde el checkbox de manera accesible */
+.nav-toggle {
+  position: absolute;
+  /* lo saca del flujo */
+  opacity: 0;
+  /* invisible */
+  pointer-events: none;
+  /* que no estorbe al click */
+  width: 0;
+  height: 0;
+  /* sin ocupar espacio */
+}
+
+
+.nav-burger {
+  --size: 3rem;
+  /* usa tu diámetro favorito */
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--size);
+  height: var(--size);
+  display: none;
+  /* aparece solo con media-query */
+  cursor: pointer;
+  z-index: 1000;
+  /* por encima de todo */
+}
+
+.nav-burger span {
+  display: block;
+  width: 60%;
+  height: 0.18rem;
+  /* mismas vars que tu popup */
+  margin: 0.42rem auto;
+  background: var(--burger-color, #fff);
+  /* reutiliza tu variable */
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+@media (max-width:768px) {
+
+  /* muestra la hamburguesa */
+  .nav-burger {
+    display: block;
+  }
+
+  /* oculta la lista hasta que el checkbox esté activo */
+  .navbar-items {
+    flex-direction: column;
+    gap: 1.2rem;
+    position: fixed;
+    inset: 80px 0 0;
+    padding: 1.5rem 0;
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-120%);
+    transition: transform 0.35s ease;
+    overflow-y: auto;
+    z-index: 900;
+    align-items: center;
+  }
+
+  .navbar-items li {
+    width: 100%;
+    /* opcional, pero asegura bloque completo */
+    text-align: center;
+    /* texto centrado */
+  }
+
+  /* los enlaces ocupan todo el bloque, útil para tacto */
+  .navbar-items .links {
+    display: inline-block;
+    /* o block, según prefieras */
+    padding: 0.6rem 0;
+    /* aumenta área clicable */
+  }
+
+  /* cuando se marca el checkbox → desliza el menú */
+  .nav-toggle:checked~.navbar-items {
+    transform: translateY(0);
+  }
+
+  /* animación del ícono (X) */
+  .nav-toggle:checked+.nav-burger span:nth-child(1) {
+    transform: translateY(0.6rem) rotate(45deg);
+  }
+
+  .nav-toggle:checked+.nav-burger span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-toggle:checked+.nav-burger span:nth-child(3) {
+    transform: translateY(-0.6rem) rotate(-45deg);
+  }
+
+  /* ajustes menores de tipografía/espaciado opcionales */
+  .links {
+    font-size: 16px;
+  }
+
+  .logo {
+    max-width: 70px;
+  }
+
+  .logo-container {
+    order: -1;
+  }
+
+  /* logo arriba del menú */
+}
+
+@media (max-width:992px) {
+  .navbar-items {
+    gap: 2rem;
+  }
+
+  .links {
+    font-size: 17px;
+  }
 }

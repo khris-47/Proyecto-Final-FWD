@@ -33,7 +33,7 @@ function NavBar() {
 
   // constante para cerrar sesion
   const handleLogout = () => {
-    
+
     // preguntamos primero
     Swal.fire({
       title: '¿Estás seguro?',
@@ -45,7 +45,7 @@ function NavBar() {
       confirmButtonText: 'Sí, cerrar sesión',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
-      
+
       // en caso de cerrar sesion, borramos las cookies y enviamos al index
       if (result.isConfirmed) {
         Cookies.remove('user');
@@ -55,7 +55,7 @@ function NavBar() {
       }
     });
 
-    
+
   };
 
 
@@ -66,6 +66,15 @@ function NavBar() {
     <div className='bodyNav'>
 
       <nav className='navbar'>
+
+        {/* interruptor oculto */}
+        <input type="checkbox" id="nav-toggle" className="nav-toggle" />
+
+        {/* botón hamburguesa: solo aparecerá en móviles */}
+        <label htmlFor="nav-toggle" className="nav-burger" tabIndex="0">
+          <span></span><span></span><span></span>
+        </label>
+
         <ul className='navbar-items'>
 
           {/* izquierda */}
@@ -123,7 +132,7 @@ function NavBar() {
           <li><Link to="/entrevistas" className='links'>Entrevistas</Link></li>
           <li><Link to="/lugares" className='links'>Lugares</Link></li>
           <li>
-            <a href="https://khris-47.github.io/Juegos_Pagina/index.html" className="links" target="_blank" rel="noopener noreferrer">
+            <a href="https://khris-47.github.io/Juegos_TCU/" className="links" target="_blank" rel="noopener noreferrer">
               Juegos Interactivos
             </a>
           </li>

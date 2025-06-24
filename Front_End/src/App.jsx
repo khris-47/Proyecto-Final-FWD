@@ -3,6 +3,10 @@ import Routing from './routes/Routing';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'boxicons';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+
 
 import { useEffect, useRef, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
@@ -22,6 +26,7 @@ function App() {
     // revisa si hay un nuevo token en un intervalo de tiempo
     const interval = setInterval(() => {
       const newToken = Cookies.get('accessToken');
+
 
       // si hay uno y es diferente al actual
       if (newToken && newToken !== currentToken) {
@@ -51,11 +56,13 @@ function App() {
       // si timeLeft es positivo, todavia es valido, si es 0 o negativo, ya expiro
       // esto porque el .exp de los token tienen una fecha defina por el tiempo que le damos al back (y los define en segundos)
 
+      console.log('tiempo: ', timeLeft);
+
       // validamos el tiempo
       if (timeLeft > 0) {
 
-        console.log('tiempo: ',timeLeft);
-        
+        console.log('tiempo: ', timeLeft);
+
 
         timerSet.current = true; // marcamos que el timer esta activo
 

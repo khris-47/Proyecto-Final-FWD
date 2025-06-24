@@ -1,84 +1,80 @@
 import React from 'react'
-
-import { Link } from 'react-router-dom';
+import '../../styles/admin.css'
+import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../navegacion/navBar';
-import fondo from '../../assets/img/fondos/fondo_principal.JPG';
-import admin01 from '../../assets/img/cards/admin01.jpg'
-import admin02 from '../../assets/img/cards/admin02.jpg'
-import admin03 from '../../assets/img/cards/admin03.jpg'
+import fondo from '../../assets/img/fondos/fondo nocturno.png';
+import entrevista from '../../assets/img/cards/entrevistas.png';
+import cuentos from '../../assets/img/cards/cuentos.png';
+import ubicaciones from '../../assets/img/cards/ubicaciones.png';
 
 function Menu_admin() {
+
+    const navigate = useNavigate();
+
     return (
 
         <div className="bodyAdmin">
-
             <img alt="" className="background-image" src={fondo} />
 
-            <div className="capa"></div>
+            <header>
+                <NavBar className="headerIndex" />
+            </header>
 
+            <main className="mainAdmin">
+                <div className="d-flex flex-column justify-content-center align-items-center text-center text-white">
+                    <div style={{ zIndex: 2 }}>
+                        <h1
+                            className="display-4 fw-bold text-cyan-400 mb-3"
+                            style={{ color: "aqua" }}
+                        >
+                            Administracion
+                        </h1>
 
-            <div className='content'>
-
-                <header>
-                    <NavBar className='headerIndex' />
-                </header>
-
-                <main className="mainAdmin">
-
-
-                    <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center text-center text-white">
-
-
-                        <div className="" style={{ zIndex: 2 }}>
-                            <h1 className="display-4 fw-bold text-cyan-400 mb-3" style={{ color: "aqua" }}>
-                                Administracion
-                            </h1>
-
-                            <div className="row row-cols-1 row-cols-md-3 g-4 justify-content-center mt-2">
-
-                                {/* CARD 1 */}
-                                <div className="col">
-                                    <div className="card h-100 bg-dark text-light shadow rounded-4 card-small">
-                                        <img src={admin01} className="card-img-top" style={{ height: "190px" }} alt="..." />
-                                        <div className="card-body">
-                                            <h5 className="card-title">Manejo de Entrevistas</h5>
-
-                                            <Link to="/reg_entrevistas" className="btn btn-primary">¡Entrar!</Link>
-                                        </div>
+                        {/* CONTENEDOR FLEX AJUSTADO */}
+                        <div className="d-flex justify-content-center flex-row-reverse flex-wrap gap-4 mt-2" style={{ zIndex: 2 }}>
+                            {/* CARD 1 */}
+                            <div className="flip-card">
+                                <div className="flip-card-inner">
+                                    <div className="flip-card-front">
+                                        <img src={entrevista} alt="Entrevistas" />
+                                    </div>
+                                    <div className="flip-card-back">
+                                        <p className="title-flip">Administracion de entrevistas</p>
+                                        <button className="btn-flip" onClick={() => navigate("/reg_entrevistas")}>Ir</button>
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* CARD 2 */}
-                                <div className="col">
-                                    <div className="card h-100 bg-dark text-light shadow rounded-4 card-small">
-                                        <img src={admin02} className="card-img-top" style={{ height: "190px" }} alt="..." />
-                                        <div className="card-body">
-                                            <h5 className="card-title">Manejo de Cuentos</h5>
-
-                                            <Link to="/reg_cuentos" className="btn btn-primary">¡Entrar!</Link>
-                                        </div>
+                            {/* CARD 2 */}
+                            <div className="flip-card">
+                                <div className="flip-card-inner">
+                                    <div className="flip-card-front">
+                                        <img src={cuentos} alt="Cuentos" />
+                                    </div>
+                                    <div className="flip-card-back">
+                                        <p className="title-flip">Administracion de Cuentos</p>
+                                        <button className="btn-flip" onClick={() => navigate("/reg_cuentos")}>Ir</button>
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* CARD 3 */}
-                                <div className="col">
-                                    <div className="card h-100 bg-dark text-light shadow rounded-4 card-small">
-                                        <img src={admin03} className="card-img-top" style={{ height: "190px" }} alt="..." />
-                                        <div className="card-body">
-                                            <h5 className="card-title">Manejo de Ubicaciones</h5>
-
-                                            <Link to="/reg_ubicaciones" className="btn btn-primary">¡Entrar!</Link>
-                                        </div>
+                            {/* CARD 3 */}
+                            <div className="flip-card">
+                                <div className="flip-card-inner">
+                                    <div className="flip-card-front">
+                                        <img src={ubicaciones} alt="Entrevistas" />
+                                    </div>
+                                    <div className="flip-card-back">
+                                        <p className="title-flip">Administracion de Ubicaciones</p>
+                                        <button className="btn-flip" onClick={() => navigate("/reg_ubicaciones")}>Ir</button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
+
                     </div>
-                </main>
-
-            </div>
-
+                </div>
+            </main>
         </div>
 
 

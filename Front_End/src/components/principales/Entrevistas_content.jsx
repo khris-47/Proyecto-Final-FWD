@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
-import fondo from '../../assets/img/fondos/fondo_secundario.jpg';
+import fondo from '../../assets/img/fondos/fondo nocturno.png';
 import '../../styles/entrevistas.css';
 import { getPublicEntrevistas } from '../../services/Entrevistas_Services';
 
@@ -14,7 +14,6 @@ const getYouTubeId = (url) => {
 
 function Entrevistas_content() {
     const [entrevistas, setEntrevistas] = useState([]);
-
 
     // Carga las entrevistas al montar el componente
     useEffect(() => {
@@ -37,7 +36,6 @@ function Entrevistas_content() {
         <div className='bodyEntrevistas'>
             {/* Fondo de la pagina */}
             <img alt="" className="background-image-entrevistas" src={fondo} />
-            <div className="capaEntrevistas"></div>
 
             <div className='content-entrevistas'>
                 <header>
@@ -46,7 +44,7 @@ function Entrevistas_content() {
 
                 <main className='mainEntrevistas'>
                     <div className='container' style={{ zIndex: 2 }}>
-                        <h1 className="display-4 fw-bold text-cyan-400 mb-3" style={{ color: "aqua" }}>
+                        <h1 className="display-4 fw-bold text-cyan-400 mb-3" style={{ color: "#60a5fa" }}>
                             Entrevistas
                         </h1>
                         <p className="lead mb-4" style={{ color: "white" }}>
@@ -66,24 +64,34 @@ function Entrevistas_content() {
                                     return (
                                         <div className="col" key={item.id}>
                                             <div className="card h-100 shadow bg-dark text-white">
+
                                                 <div className="ratio ratio-16x9">
                                                     <iframe
-                                                        src={`https://www.youtube.com/embed/${videoId}`}
+                                                       
+                                                       src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
                                                         title={item.nombre_Persona}
+                                                        loading="lazy"
+                                                        referrerPolicy="strict-origin-when-cross-origin"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                         allowFullScreen
+                                                        
+                                                        // Opcional pero puede ayudar en algunos navegadores:
+                                                        crossOrigin="anonymous"
+                                                        sandbox="allow-same-origin allow-scripts allow-presentation allow-popups"
                                                     ></iframe>
                                                 </div>
+
+
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Entrevista a {item.nombre_Persona} || {item.ubicacion_nombre}</h5>
+                                                    <h5 className="card-title" style={{ color: "#0094ff", fontWeight: "bold" }} >Entrevista a {item.nombre_Persona} <span style={{ color: "rgb(255, 255, 255)" }} >||</span> <span style={{color: "#00d4ff"}} > {item.ubicacion_nombre} </span>  </h5>
                                                     <p className="card-text text-md-center">{item.descripcion}</p>
                                                 </div>
+
+
                                             </div>
                                         </div>
                                     );
-
                                 }
-
-
                             })}
                         </div>
                     </div>
@@ -94,6 +102,6 @@ function Entrevistas_content() {
         </div>
 
     );
-}
+};
 
 export default Entrevistas_content;

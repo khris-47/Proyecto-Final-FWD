@@ -76,7 +76,7 @@ function Contacto_content() {
               dudes en comunicarte con nosotros. Puedes enviarnos un comentario directamente desde aquí o bien hablarnos por
               medio de nuestras redes sociales, nuestro equipo estará encantado por conocerte o ayudarte! </p>
 
-            <p><b>Puedes hacer click al boton de la derecha para enviarnos un formulario con lod datos de tu emprendimiento</b></p>
+            <p><b>Puedes hacer click al boton de la derecha para enviarnos un formulario con los datos de tu emprendimiento</b></p>
 
             <input type="text" placeholder='Ingrese su comentario Aqui' onChange={(e) => setComentario(e.target.value)} />
             <div className='botones'>

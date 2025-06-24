@@ -3,6 +3,7 @@
       height: 125vh;
       position: relative;
       z-index: 0;
+      max-width: 100vw;
   }
 
   .background-image-entrevistas {
@@ -12,7 +13,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      overflow: hidden;
       z-index: -4;
   }
 
@@ -20,6 +20,8 @@
       flex-direction: column;
       z-index: 1;
       flex: 1;
+      padding-bottom: 4%;
+      overflow-x: hidden;
       justify-content: space-around;
   }
 

@@ -98,3 +98,67 @@
   .sectionC input{
     border-color: black;
   }
+
+
+
+  @media (max-width: 768px) {
+  .mainContacto {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+    margin: 0;
+    padding: 0 10px;
+  }
+
+  .izquierdaC {
+    width: 100%;
+    height: 200px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .izquierdaC img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .derechaC {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 20px;
+    font-size: 15px;
+  }
+
+  .derechaC h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .derechaC p {
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+
+  .derechaC input {
+    width: 100%;
+    height: 80px;
+    font-size: 14px;
+  }
+
+  .botones {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .derechaC button {
+    width: 100%;
+    margin-right: 0;
+    font-size: 16px;
+    padding: 10px;
+  }
+}

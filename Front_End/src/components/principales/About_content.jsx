@@ -1,7 +1,7 @@
 import React from 'react'
 import Footer from '../navegacion/Footer'
 import NavBar from '../navegacion/navBar'
-import Fondo from '../../assets/img/cards/adivinanza.png'
+import Fondo from '../../assets/img/fondos/fondo_AboutUs.png';
 import '../../styles/About.css'
 import { useNavigate } from 'react-router-dom'
 
@@ -14,15 +14,11 @@ function About_content() {
 
 
             <div className="background-container">
-                
                 <div className="overlay"></div> 
-                <img className="background-image" src={Fondo} alt=".." />
-
+                <img alt="" className="background-image-entrevistas" src={Fondo} />
                 <header className="headerAbout">
                     <NavBar />
                 </header>
-
-
             </div>
 
             

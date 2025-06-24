@@ -114,7 +114,7 @@
         flex-direction: column;
         justify-content: flex-start;
         height: auto;
-        padding-top: 80px; /* espacio para el header */
+        padding-top: 50%; /* espacio para el header */
     }
 
     .section.izquierda {

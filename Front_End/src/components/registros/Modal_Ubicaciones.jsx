@@ -133,6 +133,7 @@ function Modal_Ubicaciones({
                                 value={formData.descripcion || ''}
                                 onChange={handleChange}
                                 required
+                                as="textarea"
                             />
                         </Col>
                     </Row>

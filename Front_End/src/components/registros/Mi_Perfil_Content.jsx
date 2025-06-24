@@ -295,9 +295,9 @@ function MiPerfilContent() {
         </div>
 
         <div>
-          <button className="btn btn-primary mt-3 m-1" onClick={handleEdit}>Editar</button>
+          <button className="btn btn-secondary mt-3 m-1" onClick={handleEdit}>Editar</button>
 
-          <button className="btn btn-warning mt-3 m-1" onClick={handleCambiarPassword}>
+          <button className="btn btn-primary mt-3 m-1" onClick={handleCambiarPassword}>
             Cambiar Contraseña
           </button>
 

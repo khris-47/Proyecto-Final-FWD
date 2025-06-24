@@ -99,8 +99,13 @@ function Modal_Cuento({
         }
 
         // validar el nombre del cuento 
-        if (formData.nombre_Cuento.trim() || formData.nombre_Cuento.length < 5) {
-            Swal.fire('Nombre inválido', 'El nombre debe tener al menos 5 caracteres.', 'warning');
+        const nombreLimpio = (formData.nombre_Cuento || '').trim(); // evita undefined
+        if (nombreLimpio.length < 5) {
+            Swal.fire(
+                'Nombre inválido',
+                'El nombre debe tener al menos 5 caracteres.',
+                'warning'
+            );
             return false;
         }
 
