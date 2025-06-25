@@ -17,6 +17,8 @@ function RutasPrivadas({ children, requiereAdmin = false }) {
     try {
 
         const decoded = jwtDecode(token); // decodificamos el token
+        console.log('decodificacion: ', decoded);
+        
 
         const esAdmin = decoded?.user_id === 1;  // preguntamos si es el admin
 

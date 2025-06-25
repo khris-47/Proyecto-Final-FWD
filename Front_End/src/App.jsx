@@ -5,8 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'boxicons';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-
+import { refreshAccessToken } from './services/Usuarios_Services';
 
 import { useEffect, useRef, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
@@ -18,6 +17,7 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 function App() {
 
   const timerSet = useRef(false); // evita duplicar timers
+  const sesionRefresh = useRef(false);
   const [currentToken, setCurrentToken] = useState(Cookies.get('accessToken')); // traer la cookie y tenerla como useSate
 
   // Este useEfect se hara cada cierto tiempo para chequear si hay o no un token
@@ -38,6 +38,12 @@ function App() {
     return () => clearInterval(interval);
   }, [currentToken]);
 
+  const cerrarSesion = () => {
+    Cookies.remove('accessToken');
+    Cookies.remove('user');
+    Cookies.remove('refreshToken');
+    window.location.href = '/';
+  }
 
   // Este otro useEffect sera el encargado de implementar el timer
   useEffect(() => {
@@ -68,25 +74,60 @@ function App() {
 
         // si ya termino el tiempo...
         setTimeout(() => {
+
+          if (sesionRefresh.current) {
+            Swal.fire({
+              title: 'Sesión finalizada',
+              text: 'Ya no es posible extender la sesión. Por favor, vuelve a iniciar sesión si deseas continuar.',
+              icon: 'info',
+              confirmButtonText: 'Aceptar'
+            }).then(() => {
+              cerrarSesion(); 
+            });
+
+            return;
+          }
+
           Swal.fire({
             title: 'Sesión expirada',
-            text: 'Tu sesión ha expirado. Porfavor, vuele a iniciar sesion si aun deseas realizar cambios',
-            icon: 'info',
-            confirmButtonText: 'Aceptar'
-          }).then(() => {
+            text: '¿Deseas extender tu sesión? Solo tendras 5 minutos mas',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, extender',
+            cancelButtonText: 'No, salir'
+          }).then(async (result) => {
 
-            // borrar cookies
-            Cookies.remove('accessToken');
-            Cookies.remove('user');
-            Cookies.remove('userId');
+            if (result.isConfirmed) {
+              try {
+                const newToken = await refreshAccessToken();
 
-            timerSet.current = false;
+                setCurrentToken(newToken); // actualiza el estado para reiniciar el ciclo
+                timerSet.current = false;
+                sesionRefresh.current = true;
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Sesión extendida',
+                  text: 'Tu sesión ha sido renovada exitosamente.'
+                });
 
-            // Redirigir a la pagina principal
-            window.location.href = '/';
+              } catch (err) {
+                console.error('Error al extender sesión:', err);
+
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'No fue posible renovar tu sesión. Por favor, inicia sesión de nuevo.'
+                }).then(() => {
+                  cerrarSesion();
+                });
+              }
+
+            } else {
+              cerrarSesion();
+            }
 
           });
-        }, timeLeft * 1000); // convertir segundos a milisegundos
+        }, timeLeft * 1000);
       }
     } catch (err) {
       console.error('Error al procesar token en App:', err);

@@ -17,13 +17,13 @@ function Registro_Ubicaciones_Content() {
     const [editId, setEditId] = useState(null);         // guarda el ID del objeto a editar
     const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
 
+    const [busqueda, setBusqueda] = useState('');
 
     const [formData, setFormData] = useState({         //  estado del formulario
         portada: '',
         nombre: '',
         descripcion: ''
     });
-
 
     // se utiliza para obtener los datos de las ubicaiones
     const fetchUbicaciones = async () => {
@@ -48,8 +48,6 @@ function Registro_Ubicaciones_Content() {
     useEffect(() => {
         fetchUbicaciones();
     }, []);
-
-   
 
     // manejo del registro o edicion del objeto
     const handleRegister = async () => {
@@ -133,7 +131,6 @@ function Registro_Ubicaciones_Content() {
         }
     };
 
-
     // encargado de activar el modal para edicion y llenar datos del mismo
     const handleEdit = (ubicacion) => {
 
@@ -186,6 +183,13 @@ function Registro_Ubicaciones_Content() {
         });
     };
 
+    const handleBusquedaChange = (e) => {
+        setBusqueda(e.target.value);
+    };
+
+    const filtradoUbicaciones = ubicaciones.filter((ubicacion) =>
+        ubicacion.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
     return (
         <div className='bodyForm'>
@@ -207,6 +211,20 @@ function Registro_Ubicaciones_Content() {
                         <div className='row justify-content-center align-items-center g-2'>
                             <div className='col'>
                                 <h1>Modulo de Ubicaciones</h1>
+
+                                <div className="mb-3 input-group">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-search"></i> 
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Buscar por nombre"
+                                        value={busqueda}
+                                        onChange={handleBusquedaChange}
+                                    />
+                                </div>
+                                
                             </div>
                         </div>
 
@@ -252,8 +270,8 @@ function Registro_Ubicaciones_Content() {
                                     ) : error ? (
                                         <div className="alert alert-danger">{error}</div>
                                     ) : (
-                                        <table className='table'>
-                                            <thead>
+                                        <table className='table table-striped'>
+                                            <thead className='table-dark'>
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Nombre</th>
@@ -263,7 +281,7 @@ function Registro_Ubicaciones_Content() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {ubicaciones.map((item) => (
+                                                {filtradoUbicaciones.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.nombre}</td>

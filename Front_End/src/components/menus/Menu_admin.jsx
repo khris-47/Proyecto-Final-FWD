@@ -20,7 +20,7 @@ function Menu_admin() {
                 <NavBar className="headerIndex" />
             </header>
 
-            <main className="mainAdmin">
+            <main className="mainAdmin mt-5">
                 <div className="d-flex flex-column justify-content-center align-items-center text-center text-white">
                     <div style={{ zIndex: 2 }}>
                         <h1

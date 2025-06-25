@@ -13,6 +13,8 @@ function Lista_Usuarios_Content() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
+    const [busqueda, setBusqueda] = useState('');
+
 
     const [comentarios, setComentarios] = useState([]);
     const [mostrarComentarios, setMostrarComentarios] = useState(false);
@@ -55,7 +57,7 @@ function Lista_Usuarios_Content() {
 
     // funcion para obtener los formularios de un usuarios
     const handleVerEmprendimientos = async (usuario) => {
-        try{
+        try {
             const response = await Usuarios_services.getEmprendimientosPorUsuario(usuario.id, access);
 
             setEmprendimientos(response.data);
@@ -66,6 +68,18 @@ function Lista_Usuarios_Content() {
             console.log("Error al cargar los emprendimientos", error);
         }
     }
+
+    const handleBusquedaChange = (e) => {
+        setBusqueda(e.target.value);
+    };
+
+    const usuariosFiltrados = usuarios.filter((usuario) =>
+        usuario.username.toLowerCase().includes(busqueda.toLowerCase()) ||
+        usuario.email.toLowerCase().includes(busqueda.toLowerCase()) ||
+        usuario.first_name.toLowerCase().includes(busqueda.toLowerCase()) ||
+        usuario.last_name.toLowerCase().includes(busqueda.toLowerCase())
+    );
+
 
     return (
 
@@ -92,6 +106,20 @@ function Lista_Usuarios_Content() {
                         <div className='row justify-content-center align-items-center g-2'>
                             <div>
                                 <h1>Lista de Usuarios</h1>
+                                <div className="mb-3 input-group">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-search"></i> 
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Buscar por nombre, usuario o email..."
+                                        value={busqueda}
+                                        onChange={handleBusquedaChange}
+                                    />
+                                </div>
+
+
                             </div>
                         </div>
 
@@ -106,8 +134,8 @@ function Lista_Usuarios_Content() {
                                     ) : error ? (
                                         <div className="alert alert-danger">{error}</div>
                                     ) : (
-                                        <table className='table'>
-                                            <thead>
+                                        <table className='table table-striped'>
+                                            <thead className='table-dark'>
                                                 <tr>
                                                     <th scope='col'>Id</th>
                                                     <th scope='col'>Usuario</th>
@@ -119,7 +147,7 @@ function Lista_Usuarios_Content() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {usuarios.map((usuario) => (
+                                                {usuariosFiltrados.map((usuario) => (
                                                     <tr key={usuario.id}>
                                                         <td>{usuario.id}</td>
                                                         <td>{usuario.username}</td>

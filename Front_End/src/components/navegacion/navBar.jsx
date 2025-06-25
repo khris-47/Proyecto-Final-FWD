@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation  } from 'react-router-dom';
 import '../../styles/navBar.css'
 import logo from '../../assets/img/logos/logo_blanco.png'
 import Cookies from 'js-cookie';
@@ -14,6 +14,7 @@ function NavBar() {
   const navigate = useNavigate();
   const userCookie = Cookies.get('user');
 
+  const location = useLocation();
 
   const token = Cookies.get('accessToken');
   let userId = null;
@@ -78,12 +79,14 @@ function NavBar() {
         <ul className='navbar-items'>
 
           {/* izquierda */}
-          <li><Link to="/index" className='links'>Inicio</Link></li>
+          <Link to="/index" className={`links ${location.pathname === '/index' ? 'active' : ''}`}>
+            Inicio
+          </Link>
 
-          <li><Link to="/about" className='links'>Quienes Somos</Link></li>
+          <li><Link to="/about" className={`links ${location.pathname === '/about' ? 'active' : ''}`}>Quienes Somos</Link></li>
 
           {userId !== 1 ? (
-            <li><Link to="/contact" className='links'>Contacto</Link></li>
+            <li><Link to="/contact" className={`links ${location.pathname === '/contact' ? 'active' : ''}`}>Contacto</Link></li>
           ) : (
 
             <li className="submenu-hover popup">
@@ -114,7 +117,7 @@ function NavBar() {
           )}
 
 
-          <li><Link to="/cuentos" className='links'>Cuentos</Link></li>
+          <li><Link to="/cuentos" className={`links ${location.pathname === '/cuentos' ? 'active' : ''}`}>Cuentos</Link></li>
 
           {/* Logo centrado */}
           <li className="logo-container">
@@ -129,8 +132,8 @@ function NavBar() {
           </li>
 
           {/* derecha */}
-          <li><Link to="/entrevistas" className='links'>Entrevistas</Link></li>
-          <li><Link to="/lugares" className='links'>Lugares</Link></li>
+          <li><Link to="/entrevistas" className={`links ${location.pathname === '/entrevistas' ? 'active' : ''}`}>Entrevistas</Link></li>
+          <li><Link to="/lugares" className={`links ${location.pathname === '/lugares' ? 'active' : ''}`}>Lugares</Link></li>
           <li>
             <a href="https://khris-47.github.io/Juegos_TCU/" className="links" target="_blank" rel="noopener noreferrer">
               Juegos Interactivos

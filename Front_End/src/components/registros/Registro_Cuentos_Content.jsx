@@ -17,6 +17,8 @@ function Registro_Cuentos() {
   const [editId, setEditId] = useState(null);         // guarda el ID del objeto a editar
   const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
 
+  const [busqueda, setBusqueda] = useState('');
+
   const [formData, setFormData] = useState({         //  estado del formulario
     portada: '',
     nombre_Cuento: '',
@@ -47,14 +49,9 @@ function Registro_Cuentos() {
     fetchCuentos();
   }, []);
 
-  
-
-
   // maneja el registro o edicion del objeto
   const handleRegister = async () => {
     try {
-
-      
 
       // preparamos los datos del formulario a enviar
       const formPayload = new FormData();
@@ -219,6 +216,15 @@ function Registro_Cuentos() {
     });
   }
 
+  const handleBusquedaChange = (e) => {
+    setBusqueda(e.target.value);
+  };
+
+  const filtradoCuentos = cuentos.filter((cuento) =>
+    cuento.nombre_Cuento.toLowerCase().includes(busqueda.toLowerCase()) ||
+    cuento.ubicacion_nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   return (
     <div className='bodyForm'>
 
@@ -239,6 +245,20 @@ function Registro_Cuentos() {
             <div className='row justify-content-center align-items-center g-2'>
               <div className='col'>
                 <h1>Modulo de Cuentos</h1>
+
+                <div className="mb-3 input-group">
+                  <span className="input-group-text">
+                    <i className="bx bx-search"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Buscar por nombre, ubicacion"
+                    value={busqueda}
+                    onChange={handleBusquedaChange}
+                  />
+                </div>
+
               </div>
             </div>
 
@@ -286,8 +306,8 @@ function Registro_Cuentos() {
                   ) : error ? (
                     <div className="alert alert-danger">{error}</div>
                   ) : (
-                    <table className='table'>
-                      <thead>
+                    <table className='table table-striped'>
+                      <thead className='table-dark'>
                         <tr>
                           <th>ID</th>
                           <th>Portada</th>
@@ -300,7 +320,7 @@ function Registro_Cuentos() {
                         </tr>
                       </thead>
                       <tbody>
-                        {cuentos.map((item) => (
+                        {filtradoCuentos.map((item) => (
                           <tr key={item.id}>
                             <td>{item.id}</td>
 

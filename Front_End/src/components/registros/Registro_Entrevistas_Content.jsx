@@ -17,7 +17,7 @@ function Registro_Entrevistas() {
     const [isEditing, setIsEditing] = useState(false);  // determina si el modal se usara para editar 
     const [editId, setEditId] = useState(null);         // guarda el ID de la entrevisa a editar
     const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
-
+    const [busqueda, setBusqueda] = useState('');
     const [formData, setFormData] = useState({         //  estado del formulario
         nombre_Persona: '',
         entrevista: '',
@@ -193,6 +193,14 @@ function Registro_Entrevistas() {
         });
     }
 
+    const handleBusquedaChange = (e) => {
+        setBusqueda(e.target.value);
+    };
+
+    const filtradoEntrevistas = entrevistas.filter((entrevista) =>
+        entrevista.nombre_Persona.toLowerCase().includes(busqueda.toLowerCase()) ||
+        entrevista.ubicacion_nombre.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
     return (
         <div className='bodyForm'>
@@ -214,6 +222,20 @@ function Registro_Entrevistas() {
                         <div className='row justify-content-center align-items-center g-2'>
                             <div className='col'>
                                 <h1>Modulo de Entrevistas</h1>
+
+                                <div className="mb-3 input-group">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-search"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Buscar por nombre, ubicacion"
+                                        value={busqueda}
+                                        onChange={handleBusquedaChange}
+                                    />
+                                </div>
+
                             </div>
                         </div>
 
@@ -238,8 +260,8 @@ function Registro_Entrevistas() {
                                     ) : error ? (
                                         <div className="alert alert-danger">{error}</div>
                                     ) : (
-                                        <table className='table'>
-                                            <thead>
+                                        <table className='table table-striped mt-2'>
+                                            <thead className='table-dark'>
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Persona(s)</th>
@@ -247,10 +269,11 @@ function Registro_Entrevistas() {
                                                     <th>Fecha de Subida</th>
                                                     <th>Ubicacion</th>
                                                     <th>Estado</th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {entrevistas.map((item) => (
+                                                {filtradoEntrevistas.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.nombre_Persona}</td>

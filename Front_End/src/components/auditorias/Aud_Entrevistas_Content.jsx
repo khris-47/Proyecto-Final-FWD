@@ -14,6 +14,17 @@ function Aud_Entrevistas_Content() {
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
 
+    const [busqueda, setBusqueda] = useState('');
+
+    const handleBusquedaChange = (e) => {
+        setBusqueda(e.target.value);
+    };
+
+    const Aud_Filtrados = auditorias.filter((auditoria) =>
+        auditoria.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
+        auditoria.tipoMovimiento.toLowerCase().includes(busqueda.toLowerCase())
+    );
+
     // El useEffect lo utilizaremos para cargar el form
     useEffect(() => {
         const fetchAuditorias = async () => {
@@ -55,6 +66,18 @@ function Aud_Entrevistas_Content() {
                         <div className='row justify-content-center align-items-center g-2'>
                             <div>
                                 <h1>Auditoria de Entrevistas</h1>
+                                <div className="mb-3 input-group">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-search"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Buscar por Tipo de Movimiento o Descripcion"
+                                        value={busqueda}
+                                        onChange={handleBusquedaChange}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -69,8 +92,8 @@ function Aud_Entrevistas_Content() {
                                     ) : error ? (
                                         <div className="alert alert-danger">{error}</div>
                                     ) : (
-                                        <table className='table'>
-                                            <thead>
+                                        <table className='table table-striped'>
+                                            <thead className='table-dark'>
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Tipo de Movimiento</th>
@@ -80,7 +103,7 @@ function Aud_Entrevistas_Content() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {auditorias.map((item) => (
+                                                {Aud_Filtrados.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.tipoMovimiento}</td>

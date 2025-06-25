@@ -27,10 +27,40 @@
 }
 
 .links {
+  position: relative;
   text-decoration: none;
   color: whitesmoke;
   font-size: 18px;
+  transition: color 0.3s ease;
+}
 
+.links::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #6babff; 
+  transition: width 0.3s ease;
+}
+
+.links:hover {
+  color: #6babff;
+}
+
+.links:hover::after {
+  width: 100%;
+}
+
+.links.active {
+  color: #6babff;
+  font-weight: 600;
+}
+
+.links.active::after {
+  width: 100%;
+  background-color: #6babff;
 }
 
 .popup {
@@ -60,8 +90,8 @@
   --nav-font-family: "Poppins", sans-serif;
   --nav-default-scale: 0.8;
   --nav-active-scale: 1;
-  --nav-position-left: 0;
-  --nav-position-right: unset;
+  --nav-position-right: 0;
+  --nav-position-left: unset;
   /* if you want to change sides just switch one property */
   /* from properties to "unset" and the other to 0 */
   /* title */
@@ -92,9 +122,6 @@
   display: none;
 }
 
-
-
-
 .popup-window {
   right: 0;
   transform: scale(var(--nav-default-scale));
@@ -112,8 +139,6 @@
   left: var(--nav-position-left);
   right: var(--nav-position-right);
   transition: var(--burger-transition);
-  margin-top: 10px;
-
 }
 
 .popup-window legend {

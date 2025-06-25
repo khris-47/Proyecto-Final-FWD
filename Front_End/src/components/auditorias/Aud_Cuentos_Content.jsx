@@ -15,6 +15,8 @@ function Aud_Cuentos_Content() {
     const [error, setError] = useState(null);          //   Estadao para guardar errores
     const access = Cookies.get('accessToken');        //    Obtenemos el token de la cokie
 
+    const [busqueda, setBusqueda] = useState('');
+
     // El useEffect lo utilizzaremos para cargar las auditorias
     useEffect(() => {
 
@@ -41,6 +43,16 @@ function Aud_Cuentos_Content() {
 
     }, []);
 
+
+    const handleBusquedaChange = (e) => {
+        setBusqueda(e.target.value);
+    };
+
+    const Aud_Filtrados = auditorias.filter((auditoria) =>
+        auditoria.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
+        auditoria.tipoMovimiento.toLowerCase().includes(busqueda.toLowerCase())
+    );
+
     return (
         <div className='bodyForm'>
 
@@ -60,6 +72,18 @@ function Aud_Cuentos_Content() {
                         <div className='row justify-content-center align-items-center g-2'>
                             <div>
                                 <h1>Auditoria de Cuentos</h1>
+                                <div className="mb-3 input-group">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-search"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Buscar por Tipo de Movimiento o Descripcion"
+                                        value={busqueda}
+                                        onChange={handleBusquedaChange}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -77,8 +101,8 @@ function Aud_Cuentos_Content() {
                                         <div className="alert alert-danger">{error}</div>
                                     ) : (
                                         // si la carga fue exitosa, mostrar los datos
-                                        <table className='table'>
-                                            <thead>
+                                        <table className='table table-striped'>
+                                            <thead className='table-dark'>
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Tipo de Movimiento</th>
@@ -89,7 +113,7 @@ function Aud_Cuentos_Content() {
                                             </thead>
                                             <tbody>
                                                 {/* Hacemos un mapeo de cada auditoria, y, creamos una fila */}
-                                                {auditorias.map((item) => (
+                                                {Aud_Filtrados.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.tipoMovimiento}</td>

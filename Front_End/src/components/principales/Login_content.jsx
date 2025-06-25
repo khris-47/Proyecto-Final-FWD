@@ -85,25 +85,32 @@ function Login_content() {
         // En caso de que ya este registrado
         try {
             // Obtener token JWT 
-            const response = await Usuarios_Services.loginUsuario(username, password);
-
-            const { access } = response.data; // extraemos el token de acceso
+            const { access, refresh } = await Usuarios_Services.loginUsuario(username, password);
 
             // Obtener detalles del usuario autenticado
             const userResponse = await Usuarios_Services.obtenerUsuarioPorId(access);
 
             // guardamos los datos completos del usuario
             const userData = userResponse.data;
-        
-            // Guardar los datos obtenidos en cookies                (1 / 24 = a una hora)
-            Cookies.set('user', JSON.stringify(userData), { expires: 1 / 24 }); // guardamos el objeto como un string
-            Cookies.set('accessToken', access, { expires: 1 / 24 }); // guardamos el token
 
+            // Guardar los datos obtenidos en cookies (1 / 24 = una hora)
+            Cookies.set('user', JSON.stringify(userData), { expires: 1 / 24 });
+            Cookies.set('accessToken', access, { expires: 1 / 24 });
+            Cookies.set('refreshToken', refresh, { expires: 1 / 24 });
+
+            // Mostrar mensaje de bienvenida
+            await Swal.fire({
+                title: `¡Bienvenido, ${userData.first_name}!`,
+                text: 'Nos alegra tenerte aqui 😊',
+                icon: 'success',
+                confirmButtonText: 'Continuar'
+            });
 
             // Redirigir a la pagina principal
             navigate('/');
 
         } catch (err) {
+            console.error("Error inesperado en login:", err);
 
             // Si las credenciales fallan
             if (err.response && err.response.status === 401) {
@@ -190,7 +197,6 @@ function Login_content() {
 
         }
     };
-
 
     // Manejo del envio de correo para restablecimiento de contra
     const handleForgotPassword = async () => {

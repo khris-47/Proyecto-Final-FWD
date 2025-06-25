@@ -197,3 +197,32 @@
     background-color:#465875;
     color: whitesmoke;
 }
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-panel, .right-panel {
+    width: 100%;
+  }
+
+  .left-panel {
+    box-shadow: none;
+    padding: 1rem;
+  }
+
+  .form-control_login {
+    width: 100%;
+    margin: auto;
+  }
+
+  .left-panel img {
+    width: 40%;
+  }
+
+  .right-panel{
+    background-color: transparent;
+  }
+}
