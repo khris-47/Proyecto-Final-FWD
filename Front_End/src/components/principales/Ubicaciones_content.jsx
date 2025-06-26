@@ -1,23 +1,21 @@
 import { useState, useEffect } from "react";
-import '../../styles/ubicaciones.css'
-import NavBar from '../navegacion/navBar'
+import '../../styles/ubicaciones.css';
+import NavBar from '../navegacion/navBar';
 import { getUbicaciones } from "../../services/Ubicaciones_services";
 
 function Ubicaciones_content() {
-
   const [ubicaciones, setUbicaciones] = useState([]);
   const [indiceActual, setIndiceActual] = useState(0);
-  const [animacionFondo, setAnimacionFondo] = useState("fondo-entrando");
-  const [animacionImagen, setAnimacionImagen] = useState("entrando");
+  const [animacionFondo, setAnimacionFondo] = useState("");
+  const [ setAnimacionImagen] = useState("entrando");
   const [datosCargados, setDatosCargados] = useState(false);
 
-  useEffect(() => {
+//animacionImagen,
 
+  useEffect(() => {
     const cargarUbicaciones = async () => {
       try {
         const response = await getUbicaciones();
-
-        // Ajustamos la estructura de los datos para asegurar que la propiedad 'portada' esté correcta
         const ubicacionesFormateadas = response.data.map(item => ({
           ...item,
           portada: item.portada_url
@@ -26,69 +24,51 @@ function Ubicaciones_content() {
         setUbicaciones(ubicacionesFormateadas);
         setDatosCargados(true);
 
-        // Asegurar que la primera ubicación se muestre correctamente al cargar los datos
         if (ubicacionesFormateadas.length > 0) {
           setIndiceActual(0);
-          setAnimacionFondo("fondo-entrando");
+          setTimeout(() => setAnimacionFondo("expandida"), 50);
           setAnimacionImagen("entrando");
         }
-
       } catch (error) {
         console.error('Error al cargar las ubicaciones:', error);
       }
-    }
+    };
 
     cargarUbicaciones();
-
   }, []);
 
-
-
   const siguienteUbicacion = () => {
-    setAnimacionFondo("fondo-saliendo");
-    setAnimacionImagen("saliendo");
+    setAnimacionFondo("");
 
     setTimeout(() => {
       const nuevoIndice = (indiceActual + 1) % ubicaciones.length;
-
       setIndiceActual(nuevoIndice);
 
-      // Si volvemos al índice 0, reiniciamos las animaciones de manera manual
-      if (nuevoIndice === 0) {
-        setTimeout(() => {
-          setAnimacionFondo("fondo-entrando");
-          setAnimacionImagen("entrando");
-        }, 100); // Le damos un pequeño delay para asegurar que las animaciones se reinicien correctamente
-      } else {
-        setAnimacionFondo("fondo-entrando");
-        setAnimacionImagen("entrando");
-      }
-    }, 700);
+      setTimeout(() => {
+        setAnimacionFondo("expandida");
+      }, 30);
+    }, 50);
   };
-
 
   if (!datosCargados) return <p>Cargando ubicaciones...</p>;
 
   return (
-
     <div className="bodyUbicaciones">
+      <div className="capa-lugares" />
 
-      <div className="capa-lugares"></div>
-
-      <header className='headerIndex'>
+      <header className="headerIndex">
         <NavBar />
       </header>
 
-
       <div className="carrusel">
-
         {ubicaciones.length > 0 && (
-          <div className={`fondo-animado ${animacionFondo}`} style={{ backgroundImage: `url(${ubicaciones[indiceActual]?.portada})` }}></div>
+          <div
+            className={`fondo-animado ${animacionFondo}`}
+            style={{ backgroundImage: `url(${ubicaciones[indiceActual]?.portada})` }}
+          />
         )}
 
         <main className="mainLugares">
-
-          {/* Sección del texto alineado a la izquierda */}
           <div className="seccion izquierda-lugares">
             <div className="texto-ubicacion">
               <h1>{ubicaciones[indiceActual].nombre}</h1>
@@ -96,22 +76,22 @@ function Ubicaciones_content() {
             </div>
           </div>
 
-          {/* Botón e imagen del siguiente elemento */}
           <div className="seccion derecha-lugares">
             <div className="contenedor-imagen-boton">
-              <img className={`siguiente-imagen ${animacionImagen}`} src={ubicaciones[(indiceActual + 1) % ubicaciones.length].portada} alt="Siguiente ubicación" />
-              <button className="next-btn" onClick={siguienteUbicacion}>Siguiente</button>
+              {/* <img
+                className={`siguiente-imagen ${animacionImagen}`}
+                src={ubicaciones[(indiceActual + 1) % ubicaciones.length].portada}
+                alt="Siguiente ubicación"
+              /> */}
+              <button className="next-btn" onClick={siguienteUbicacion}>
+                Siguiente
+              </button>
             </div>
           </div>
-
         </main>
-
-
       </div>
     </div>
-
-  )
-
+  );
 }
 
-export default Ubicaciones_content
+export default Ubicaciones_content;

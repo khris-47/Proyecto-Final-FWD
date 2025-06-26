@@ -2,7 +2,9 @@
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0,0,0,0) 40%);
+     background:
+    linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 50%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 40%);
 }
 
 .carrusel {
@@ -20,6 +22,7 @@
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    
 }
 
 .mainLugares {
@@ -28,6 +31,7 @@
     justify-content: space-between;
     height: 100vh;
     z-index: 1;
+    
 }
 
 .texto-ubicacion {
@@ -40,17 +44,31 @@
 
 .fondo-animado {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    opacity: 0;
     background-size: cover;
     background-position: center;
-    object-fit: cover;
-    z-index: -3;
-    transition: transform 0.7s ease-in-out;
+    background-repeat: no-repeat;
+    border-radius: 20px;
+    transition: all 0.6s ease-in-out;
+    z-index: -1;
+    
 }
+
+.fondo-animado.expandida {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    transform: none;
+    opacity: 1;
+    border-radius: 0;
+}
+
 
 .capa-lugares {
     background-color: rgba(0, 0, 0, 0.4);
@@ -116,8 +134,8 @@
 
 /* Animación cuando cambia la imagen */
 .siguiente-imagen {
-    width: 180px;
-    height: auto;
+    width: 200px;
+    height: 220px;
     margin-bottom: 20px;
     border-radius: 12px;
     box-shadow: 0px 4px 15px rgba(0, 148, 255, 0.4);
@@ -125,7 +143,10 @@
     position: static;
     opacity: 1;
     transition: opacity 0.5s ease, transform 0.5s ease;
+    background-size: cover;
+    display: inline-block;
 }
+
 
 .siguiente-imagen:hover {
     transform: scale(1.05);
