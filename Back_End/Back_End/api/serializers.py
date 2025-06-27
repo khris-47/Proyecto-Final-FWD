@@ -289,6 +289,25 @@ class EmprendimientoSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
     
+
+# -- Serializer de Rating de cuentos --------------------
+class RatingsCuentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = RatingCuentos
+        fields = '__all__'
+        read_only_fields = ('user',)
+
+    # Sobrescribimos create para hacer “upsert”
+    def create(self, validated_data):
+        request_user = self.context['request'].user
+
+        rating, _ = RatingCuentos.objects.update_or_create(
+            user=request_user,
+            cuento=validated_data['cuento'],
+            defaults={'valor': validated_data['valor']}
+        )
+        return rating
+
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------
 # ===========================================================================

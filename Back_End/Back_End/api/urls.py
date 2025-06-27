@@ -49,6 +49,10 @@ urlpatterns = [
     path('crearEmprendimiento/', EmprendimientoCreateView.as_view(), name='emprendimientos-create'),
     path('emprendimientosUser/<int:pk>/', EmprendimientoPorUsuarioView.as_view(), name='emprendimientos-user'),
 
+    # -- Rutas para el Rating de cuentos
+    path('rating-cuento/', RatingCreateView.as_view(), name='rating-cuentos-create'),   # POST (upsert)
+    path('rating-cuento/<int:id>/', RatingCuentoEditView.as_view(), name='rating-cuentos-edit'),  # GET, PATCH, PUT
+    path('rating-cuentos/', RatingCuentosListView.as_view(), name='rating-cuentos-list'),
 
     # =============================================================================
     # -- Rutas de Auditorias -------------------------------------------------------

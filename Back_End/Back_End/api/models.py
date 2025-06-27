@@ -75,6 +75,25 @@ class VerificacionPrimerLogin(models.Model):
     creacion = models.DateTimeField(auto_now_add=True)
     verificado = models.BooleanField(default=False)
 
+# -- Modelado de Rating de Cuentos --------------------------------
+class RatingCuentos(models.Model):
+    user   = models.ForeignKey(User,    on_delete=models.CASCADE)
+    cuento = models.ForeignKey(Cuentos, on_delete=models.CASCADE)
+    valor  = models.IntegerField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    # con este class meta la idea es que solo hay una misma combinacion de usuario - cuento
+    # es decir el usuario podra dar un voto por cuento (obvio, editable)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'cuento'],
+                name='unique_rating_per_user_cuento'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user} - {self.cuento} - {self.valor}"
 
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------

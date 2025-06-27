@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, CreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, CreateAPIView, RetrieveUpdateAPIView
 from .models import *
 from .serializers import *
 from django.contrib.auth.models import Group, User
@@ -416,6 +416,30 @@ class EmprendimientoPorUsuarioView(ListAPIView):
         except Exception as e:
             print("Error al traer los formularios: ", str(e))
             return Emprendimiento.objects.none()
+
+# -- Vstas para el Rating de Cuentos ---------------------------------------
+class RatingCreateView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class   = RatingsCuentoSerializer
+    queryset           = RatingCuentos.objects.all()
+
+    # Ligamos al user autenticado
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class RatingCuentosListView (ListAPIView):
+    permission_classes = [] # -- Publico
+    queryset = RatingCuentos.objects.all()
+    serializer_class = RatingsCuentoSerializer
+
+class RatingCuentoEditView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class   = RatingsCuentoSerializer
+    lookup_field       = "id"
+
+    def get_queryset(self):
+        # Solo los ratings del usuario por seguridad
+        return RatingCuentos.objects.filter(user=self.request.user)
 
 # ===========================================================================
 # -- Vistas de Auditoria ----------------------------------------------------

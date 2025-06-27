@@ -12,6 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 
+
 import 'sweetalert2/dist/sweetalert2.min.css'
 
 function App() {
@@ -62,13 +63,9 @@ function App() {
       // si timeLeft es positivo, todavia es valido, si es 0 o negativo, ya expiro
       // esto porque el .exp de los token tienen una fecha defina por el tiempo que le damos al back (y los define en segundos)
 
-      console.log('tiempo: ', timeLeft);
 
       // validamos el tiempo
       if (timeLeft > 0) {
-
-        console.log('tiempo: ', timeLeft);
-
 
         timerSet.current = true; // marcamos que el timer esta activo
 
