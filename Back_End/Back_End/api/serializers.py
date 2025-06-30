@@ -295,24 +295,24 @@ class RatingsCuentoSerializer(serializers.ModelSerializer):
     class Meta:
         model  = RatingCuentos
         fields = '__all__'
-        read_only_fields = ('user',)
+        read_only_fields = ('user',) # el campo usuario no sera tomado desde l front, sino desde el token
 
-    # Sobrescribimos create para hacer “upsert”
     def create(self, validated_data):
+        # obtenemos el usuario autenticado
         request_user = self.context['request'].user
 
+        # Buscamos en la base el usuario y cuento especificado
+        # si existe, lo actualiza, sino, lo crea
         rating, _ = RatingCuentos.objects.update_or_create(
             user=request_user,
             cuento=validated_data['cuento'],
             defaults={'valor': validated_data['valor']}
         )
-        return rating
+        return rating # devolvemos la instancia
 
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------
 # ===========================================================================
-
-
 
 
 # -- Serializer para la Auditoria de Entrevistas ---------

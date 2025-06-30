@@ -13,44 +13,60 @@ import withReactContent from 'sweetalert2-react-content';
 
 function Cuentos_Content() {
 
-
-    const MySwal = withReactContent(Swal);
+    const MySwal = withReactContent(Swal); // dado que se utilizaran estrellas (rating) en el swal, se usa esta libreria
     const [cuentos, setCuentos] = useState([]);
     const [avgRatings, setAvgRatings] = useState({});
 
+    // funcion para traer datos del cuento y su rating
+    const cargarDatos = async () => {
+        try {
+            // traer los cuentos 
+            const cuentosRes = await getPublicCuentos();
+            setCuentos(cuentosRes.data);
+
+            // traer los ratings
+            const ratings = await getRatingsCuentos();
+            setAvgRatings(calcularPromedios(ratings));
+
+        } catch (err) {
+            console.error('Error al cargar datos:', err);
+        }
+    };
+
     // carga lso cuentos al montar el componente
     useEffect(() => {
-        const cargarDatos = async () => {
-            try {
-                // 1) cuentos públicos
-                const cuentosRes = await getPublicCuentos();
-                setCuentos(cuentosRes.data);
-
-                // 2) todos los ratings
-                const ratingsRes = await getRatingsCuentos();
-                const promedios = calcularPromedios(ratingsRes);
-                setAvgRatings(promedios);
-            } catch (err) {
-                console.error('Error al cargar datos:', err);
-            }
-        };
         cargarDatos();
     }, []);
 
 
     // Agrupa y promedia por cuento
     const calcularPromedios = (ratings) => {
-        const acc = {}; // { id: { suma, total } }
+
+        // aqui se almacebara la suma total y la cantidad de votos por cada cuento
+        const acumulador = {}; // { id: { suma, total } }
+
+        // recorremos cada rating recibido
         ratings.forEach(({ cuento, valor }) => {
-            acc[cuento] = acc[cuento]
-                ? { suma: acc[cuento].suma + valor, total: acc[cuento].total + 1 }
-                : { suma: valor, total: 1 };
+            // Para cada cuento, verificamos si ya existe una entrada en el acumulador
+            if (acumulador[cuento]) {
+                // Si ya existe, actualizamos sumando el nuevo valor y aumentando el contador
+                acumulador[cuento].suma += valor;
+                acumulador[cuento].total += 1;
+            } else {
+                // Si no existe, creamos una nueva entrada inicializando suma y total
+                acumulador[cuento] = { suma: valor, total: 1 };
+            }
         });
-        const proms = {};
-        Object.keys(acc).forEach((id) => {
-            proms[id] = acc[id].suma / acc[id].total;
+
+        // creamos un nuevo objeto para almacenar los promedios
+        const promedios = {};
+        // recorremos cada cuento en el acumulador para calcular su promedio
+        Object.keys(acumulador).forEach((id) => {
+            // el promedio es la suma total de los valores dividida por la cantidad de votos
+            promedios[id] = acumulador[id].suma / acumulador[id].total;
         });
-        return proms; // e.g. { 12: 4.2, 15: 3.6 }
+        // devolvemos el objeto con los promedios or cuento
+        return promedios;
     };
 
     // Configuración del carrusel
@@ -79,12 +95,27 @@ function Cuentos_Content() {
         ]
     };
 
+    // funcion para manejar los votos
     const handleVote = async (cuentoId) => {
+
+        // obtener el token 
         const token = Cookies.get('accessToken');
-        if (!token) { /* ...modal login... */ return; }
 
-        let selected = 5; // valor por defecto
+        // si no hay token significa que el usuario no esta logueado
+        if (!token) {
+            await Swal.fire({
+                title: 'Necesitas iniciar sesión',
+                text: 'Inicia sesión para poder votar un cuento.',
+                icon: 'info',
+                confirmButtonText: 'Entendido'
+            });
+            return;
+        }
 
+
+        let selected = 5; // valor por defecto para la calificacion
+
+        // modal personalizado
         const { isConfirmed } = await MySwal.fire({
             title: 'Califica este cuento',
             html: (
@@ -101,13 +132,19 @@ function Cuentos_Content() {
             focusConfirm: false
         });
 
+        // si el usuario cancela, salir sin hacer nada
         if (!isConfirmed) return;
 
         try {
+            // enviar la calificacion a la apo
             await createOrUpdateRating(cuentoId, selected, token);
+            
             await Swal.fire('¡Gracias!', 'Tu voto se registró correctamente.', 'success');
+            
+            // refrescar los ratings para actualizar el promedio mostrado en pantalla
             const ratingsArray = await getRatingsCuentos();
             setAvgRatings(calcularPromedios(ratingsArray));
+
         } catch (err) {
             Swal.fire('Ups…', 'No pudimos registrar tu voto.', 'error');
             console.error(err);
@@ -142,7 +179,7 @@ function Cuentos_Content() {
                                     <div key={item.id}>
                                         <div className="card card-cuento shadow text-white position-relative">
 
-                                            {/* ⭐⭐⭐⭐⭐   Promedio de votos */}
+                                            {/* Promedio de votos */}
                                             <div className="avg-rating-wrapper">
                                                 <Rating
                                                     readonly            // solo mostrar

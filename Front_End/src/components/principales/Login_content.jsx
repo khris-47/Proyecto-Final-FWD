@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../navegacion/AuthContext';
 import * as Usuarios_Services from '../../services/Usuarios_Services'
 import Fondo from '../../assets/img/fondos/fondo_login.jpg'
 import Logo from '../../assets/img/logos/logo_blanco.png'
@@ -19,6 +19,15 @@ function Login_content() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
+    const {
+        isLoginBlocked,
+        incrementLoginAttempts,
+        resetLoginAttempts,
+        isForgotBlocked,
+        resetForgotAttempts,
+        incrementForgotAttempts
+    } = useAuth();
 
     // Constante para manejar la navegacion de paginas
     const navigate = useNavigate();
@@ -39,47 +48,68 @@ function Login_content() {
         e.preventDefault(); // previene la acciones por defecto
         setError(''); // limpia errores anteriores
 
-        // Consultamos estado de verificación primer login
-        const verifResponse = await Usuarios_Services.verificarEstadoUsuario(username);
+        // en caso de que ya haya superado el limite de intentos
+        if (isLoginBlocked) {
+            Swal.fire('Demasiados intentos', 'Has superado el número máximo de intentos. Intenta más tarde.', 'error');
+            return;
+        }
 
-        // verificamos que ya haya hecho su primer incio de sesion
-        if (verifResponse.data.verificado === false) {
+        // verificamos el estado del usuario
+        try {
+            // Consultamos estado de verificación primer login
+            const verifResponse = await Usuarios_Services.verificarEstadoUsuario(username);
 
-            // en caso de que sea su primer inicio de sesion, le pedimos el codigo enviado al correo
-            const { value: codigoIngresado } = await Swal.fire({
-                title: 'Código de verificación',
-                input: 'text',
-                inputLabel: 'Por favor ingresa el código que te enviamos por correo',
-                inputPlaceholder: 'Código de verificación',
-                showCancelButton: true,
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'Debes ingresar el código!';
+            // verificamos que ya haya hecho su primer incio de sesion
+            if (verifResponse.data.verificado === false) {
+
+                // en caso de que sea su primer inicio de sesion, le pedimos el codigo enviado al correo
+                const { value: codigoIngresado } = await Swal.fire({
+                    title: 'Código de verificación',
+                    input: 'text',
+                    inputLabel: 'Por favor ingresa el código que te enviamos por correo',
+                    inputPlaceholder: 'Código de verificación',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Debes ingresar el código!';
+                        }
+                    }
+                });
+
+                // verificamos la validez del codigo
+                if (codigoIngresado) {
+                    try {
+                        // Llamar servicio que valida el código en backend
+                        await Usuarios_Services.validarCodigoVerificacion({ username, codigo: codigoIngresado });
+
+                        // Si pasa, mostrar mensaje de éxito y continuar login (o recargar)
+                        Swal.fire('¡Verificado!', 'Tu cuenta ha sido activada. Ya puedes iniciar sesión.', 'success');
+
+                        // Limpiamos el estado para que el usuario ingrese todo nuevamente
+                        setPassword('');
+                        setUsername('');
+
+                    } catch (error) {
+                        Swal.fire('Error', 'Código incorrecto o expirado.', 'error');
+                        console.log('error en la verificacion del codigo', error);
                     }
                 }
-            });
-
-            // verificamos la validez del codigo
-            if (codigoIngresado) {
-                try {
-                    // Llamar servicio que valida el código en backend
-                    await Usuarios_Services.validarCodigoVerificacion({ username, codigo: codigoIngresado });
-
-                    // Si pasa, mostrar mensaje de éxito y continuar login (o recargar)
-                    Swal.fire('¡Verificado!', 'Tu cuenta ha sido activada. Ya puedes iniciar sesión.', 'success');
-
-                    // Limpiamos el estado para que el usuario ingrese todo nuevamente
-                    setPassword('');
-                    setUsername('');
-
-                } catch (error) {
-                    Swal.fire('Error', 'Código incorrecto o expirado.', 'error');
-                    console.log('error en la verificacion del codigo', error);
-
-                }
+                return; // Cortamos hasta que verifique
             }
-            return; // Cortamos hasta que verifique
+        } catch (err) {
+            // si no existe
+            if (err.response && err.response.status === 404) {
+                Swal.fire({
+                    title: '¡Datos Erróneos!',
+                    text: 'Usuario no registrado',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+                incrementLoginAttempts();
+                return;
+            }
         }
+
 
 
         // En caso de que ya este registrado
@@ -98,6 +128,9 @@ function Login_content() {
             Cookies.set('accessToken', access, { expires: 1 / 24 });
             Cookies.set('refreshToken', refresh, { expires: 1 / 24 });
 
+            // reiniciar los intentos
+            resetLoginAttempts();
+
             // Mostrar mensaje de bienvenida
             await Swal.fire({
                 title: `¡Bienvenido, ${userData.first_name}!`,
@@ -110,7 +143,6 @@ function Login_content() {
             navigate('/');
 
         } catch (err) {
-            console.error("Error inesperado en login:", err);
 
             // Si las credenciales fallan
             if (err.response && err.response.status === 401) {
@@ -143,6 +175,10 @@ function Login_content() {
                             icon: 'error',
                             confirmButtonText: 'Intentar de nuevo'
                         });
+
+                        // aumentamos los intentos
+                        incrementLoginAttempts();
+                        return;
                     }
 
                 } catch {
@@ -200,6 +236,12 @@ function Login_content() {
 
     // Manejo del envio de correo para restablecimiento de contra
     const handleForgotPassword = async () => {
+
+        if (isForgotBlocked) {
+            Swal.fire('Demasiados intentos', 'Has superado el número máximo de intentos. Intenta más tarde.', 'error');
+            return;
+        }
+
         const { value: formValues } = await Swal.fire({
             title: 'Recuperar Contraseña',
             html:
@@ -230,12 +272,17 @@ function Login_content() {
                     'success'
                 );
 
+                // reiniciamos los intentos
+                resetForgotAttempts();
+
             } catch (error) {
                 Swal.fire(
                     'Error',
                     error.response?.data?.error || 'No se pudo restablecer la contraseña.',
                     'error'
                 );
+                // aumentamos el contador de intentos
+                incrementForgotAttempts();
             }
         }
     }

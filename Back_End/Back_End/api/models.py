@@ -86,6 +86,8 @@ class RatingCuentos(models.Model):
     # es decir el usuario podra dar un voto por cuento (obvio, editable)
     class Meta:
         constraints = [
+            # el uniqueConstraint es una regla que obliga a que la combinacion de los campos listadossea unica
+            # en este caso, la restrincion entre usuario y cuento es para que un usuario pueda tener un solo voto por cuento
             models.UniqueConstraint(
                 fields=['user', 'cuento'],
                 name='unique_rating_per_user_cuento'

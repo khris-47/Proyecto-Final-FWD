@@ -420,8 +420,8 @@ class EmprendimientoPorUsuarioView(ListAPIView):
 # -- Vstas para el Rating de Cuentos ---------------------------------------
 class RatingCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class   = RatingsCuentoSerializer
-    queryset           = RatingCuentos.objects.all()
+    serializer_class = RatingsCuentoSerializer
+    queryset = RatingCuentos.objects.all()
 
     # Ligamos al user autenticado
     def perform_create(self, serializer):
@@ -432,14 +432,6 @@ class RatingCuentosListView (ListAPIView):
     queryset = RatingCuentos.objects.all()
     serializer_class = RatingsCuentoSerializer
 
-class RatingCuentoEditView(RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class   = RatingsCuentoSerializer
-    lookup_field       = "id"
-
-    def get_queryset(self):
-        # Solo los ratings del usuario por seguridad
-        return RatingCuentos.objects.filter(user=self.request.user)
 
 # ===========================================================================
 # -- Vistas de Auditoria ----------------------------------------------------
