@@ -317,18 +317,21 @@ class RatingsCuentoSerializer(serializers.ModelSerializer):
 
 # -- Serializer para la Auditoria de Entrevistas ---------
 class AudEntrevistasSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Auditoria_Entrevistas
         fields = '__all__'
 
 # -- Serializer para la Auditoria de Cuentos -------------
 class AudCuentosSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Auditoria_Cuentos
         fields = '__all__'
 
 # -- Serializer para la Auditoria de Usuarios ------------
 class AudUserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Auditoria_User
         fields =  '__all__'

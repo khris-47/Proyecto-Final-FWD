@@ -32,8 +32,13 @@ function Aud_Entrevistas_Content() {
                 // llamada a la api
                 const response = await obtenerAuditoriaEntrevistas(access)
 
+                // los ordenamos de forma descendente
+                const ordenadas = response.data.sort(
+                    (a, b) => new Date(b.fechaMovimiento) - new Date(a.fechaMovimiento)
+                );
+
                 // guardamos los datos que entraron
-                setAuditorias(response.data);
+                setAuditorias(ordenadas);
 
             } catch (err) {
                 console.error(err);

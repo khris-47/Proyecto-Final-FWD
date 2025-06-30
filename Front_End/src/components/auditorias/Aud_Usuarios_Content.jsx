@@ -21,8 +21,14 @@ function Aud_Usuarios_Content() {
                 // llamada a la api
                 const response = await obtenerAuditoriaUsuarios(access)
 
-                // llenamos con los datos obtenidos
-                setAuditorias(response.data);
+                // los ordenamos de forma descendente
+                const ordenadas = response.data.sort(
+                    (a, b) => new Date(b.fechaMovimiento) - new Date(a.fechaMovimiento)
+                );
+
+                // guardamos los datos que entraron
+                setAuditorias(ordenadas);
+                
             } catch (err) {
                 console.error(err);
                 setError('Error al obtener los datos de auditoría');
