@@ -432,7 +432,166 @@ class RatingCuentosListView (ListAPIView):
     queryset = RatingCuentos.objects.all()
     serializer_class = RatingsCuentoSerializer
 
+# ===========================================================================
+# -- Bloqueos ---------------------------------------------------------------
+# ===========================================================================
 
+# -- Bloqueo de login -------------------------------------------------------
+class RegistrarLoginFallido(APIView):
+
+    
+    def get(self, request):
+        # obtenemos el visitorId enviado del front
+        visitor_id = request.query_params.get('visitorId')
+
+        # si no hay, enviar error
+        if not visitor_id:
+            return Response({'error': 'visitorId es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # buscamos si ya existe un registro de bloqueo para ese visitante
+        bloqueo = LoginBlock.objects.filter(visitor_id=visitor_id).first()
+
+        # verificar si el registro existe y esta bloqueado
+        if bloqueo and bloqueo.is_blocked():
+            # calculamos cuando falata para que termine el bloqueo
+            tiempo_restante = (bloqueo.blocked_until - timezone.now()).seconds
+            # respondemos que el dispositivo sigue bloqueado y el tiempo restante
+            return Response({
+                'status': 'bloqueado',
+                'tiempo_restante_segundos': tiempo_restante
+            }, status=status.HTTP_200_OK)
+
+        # si no hay bloqueo activo, respondemos indicando que esta libre
+        return Response({'status': 'libre'}, status=status.HTTP_200_OK)
+
+
+    def post(self, request):
+        # obtenemos el id del dispositivo enviado por el front
+        visitor_id = request.data.get('visitorId')
+
+        # si no fue enviado ningun id, enviar error
+        if not visitor_id:
+            return Response({'error': 'visitorId es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Buscamos o  creamos un registro para el dispositivo (id)
+        bloqueo, _ = LoginBlock.objects.get_or_create(visitor_id=visitor_id)
+
+        # verificamos si el dispositivo ya esta bloqueado
+        # devuelve True si el tiempo de bloqueo aun no ha expirado
+        if bloqueo.is_blocked():
+            # calcula cuanto falta para que termine el bloqueo
+            tiempo_restante = (bloqueo.blocked_until - timezone.now()).seconds
+            # enviamos la respuesta de bloqueo
+            return Response({
+                'status': 'bloqueado',
+                'tiempo_restante_segundos': tiempo_restante
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # si no esta bloqueado registramos el intento fallido (esto aumenta el failed_attempts)
+        bloqueo.register_failure()
+
+        return Response({
+            'status': 'registrado',
+            'intentos': bloqueo.failed_attempts,
+            'bloqueado': bloqueo.is_blocked()
+        }, status=status.HTTP_200_OK)
+
+    
+    def put(self, request):
+        # obtenemos el id del visitante, enviado del front
+        visitor_id = request.data.get('visitorId')
+
+        # si no se envio, enviar error
+        if not visitor_id:
+            return Response({'error': 'visitorId es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # buscamos si existe un registro de ese id
+        bloqueo = LoginBlock.objects.filter(visitor_id=visitor_id).first()
+
+        # si existe...
+        if bloqueo:
+            # ejecutamos el metodo reset() del modelo, para que los intentos vuelvan a 0
+            bloqueo.reset()
+
+        # respondemos con una confirmacion
+        return Response({'status': 'reset_ok'}, status=status.HTTP_200_OK)
+
+class RegistrarRecuperacionFallida(APIView):
+    
+    def get(self, request):
+        # obtenemos el visitorId enviado del front
+        visitor_id = request.query_params.get('visitorId')
+
+        # si no hay, enviar error
+        if not visitor_id:
+            return Response({'error': 'visitorId es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # buscamos si ya existe un registro de bloqueo para ese visitante
+        bloqueo = RecoveryBlock.objects.filter(visitor_id=visitor_id).first()
+
+        # verificar si el registro existe y esta bloqueado
+        if bloqueo and bloqueo.is_blocked():
+            # calculamos cuando falata para que termine el bloqueo
+            tiempo_restante = (bloqueo.blocked_until - timezone.now()).seconds
+            # respondemos que el dispositivo sigue bloqueado y el tiempo restante
+            return Response({
+                'status': 'bloqueado',
+                'tiempo_restante_segundos': tiempo_restante
+            }, status=status.HTTP_200_OK)
+
+        # si no hay bloqueo activo, respondemos indicando que esta libre
+        return Response({'status': 'libre'}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # obtenemos el id del dispositivo enviado por el front
+        visitor_id = request.data.get('visitorId')
+
+        # si no fue enviado ningun id, enviar error
+        if not visitor_id:
+            return Response({'error': 'visitorId es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Buscamos o  creamos un registro para el dispositivo (id)
+        bloqueo, _ = RecoveryBlock.objects.get_or_create(visitor_id=visitor_id)
+
+        # verificamos si el dispositivo ya esta bloqueado
+        # devuelve True si el tiempo de bloqueo aun no ha expirado
+        if bloqueo.is_blocked():
+            # calcula cuanto falta para que termine el bloqueo
+            tiempo_restante = (bloqueo.blocked_until - timezone.now()).seconds
+            # enviamos la respuesta de bloqueo
+            return Response({
+                'status': 'bloqueado',
+                'tiempo_restante_segundos': tiempo_restante
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # si no esta bloqueado registramos el intento fallido (esto aumenta el failed_attempts)
+        bloqueo.register_failure()
+
+        return Response({
+            'status': 'registrado',
+            'intentos': bloqueo.failed_attempts,
+            'bloqueado': bloqueo.is_blocked()
+        }, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        # obtenemos el id del visitante, enviado del front
+        visitor_id = request.data.get('visitorId')
+
+        # si no se envio, enviar error
+        if not visitor_id:
+            return Response({'error': 'visitorId es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # buscamos si existe un registro de ese id
+        bloqueo = RecoveryBlock.objects.filter(visitor_id=visitor_id).first()
+
+        # si existe...
+        if bloqueo:
+            # ejecutamos el metodo reset() del modelo, para que los intentos vuelvan a 0
+            bloqueo.reset()
+
+        # respondemos con una confirmacion
+        return Response({'status': 'reset_ok'}, status=status.HTTP_200_OK)
+    
 # ===========================================================================
 # -- Vistas de Auditoria ----------------------------------------------------
 # ===========================================================================

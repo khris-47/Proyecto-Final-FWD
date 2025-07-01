@@ -54,6 +54,14 @@ urlpatterns = [
     path('rating-cuentos/', RatingCuentosListView.as_view(), name='rating-cuentos-list'),
 
     # =============================================================================
+    # -- Rutas de Bloqueos --------------------------------------------------------
+    # ==============================================================================
+
+    # -- Ruta para el bloqueo del login
+    path('bloqueo_login/', RegistrarLoginFallido.as_view(), name='bloqueo-login'),
+    path('bloqueo_recovery/', RegistrarRecuperacionFallida.as_view(), name='bloqueo-recuperacion'),
+
+    # =============================================================================
     # -- Rutas de Auditorias -------------------------------------------------------
     # ==============================================================================
 

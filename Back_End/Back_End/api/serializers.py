@@ -311,6 +311,23 @@ class RatingsCuentoSerializer(serializers.ModelSerializer):
         return rating # devolvemos la instancia
 
 # ===========================================================================
+# -- Bloqueos -------------------------------------------------------------
+# ===========================================================================
+
+# -- Serializer para el bloqueo del login
+class LoginBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoginBlock
+        fields = ['visitor_id', 'failed_attempts', 'blocked_until']
+        read_only_fields = ['failed_attempts', 'blocked_until']
+
+class RecoveryBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecoveryBlock
+        fields = ['visitor_id', 'failed_attempts', 'blocked_until']
+        read_only_fields = ['failed_attempts', 'blocked_until']
+
+# ===========================================================================
 # -- Auditorias -------------------------------------------------------------
 # ===========================================================================
 

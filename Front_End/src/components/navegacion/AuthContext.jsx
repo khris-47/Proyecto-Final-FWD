@@ -1,6 +1,5 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { refreshAccessToken } from '../../services/Usuarios_Services';
-import { useContext } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
@@ -14,50 +13,6 @@ export const AuthProvider = ({ children }) => {
     const timerSet = useRef(false); // evita duplicar timers
     const sesionRefresh = useRef(false);
     const [currentToken, setCurrentToken] = useState(Cookies.get('accessToken')); // traer la cookie y tenerla como useSate
-
-    // manejo de intentos en el login
-    const [loginAttempts, setLoginAttempts] = useState(0);
-    const [forgotAttempts, setForgotAttempts] = useState(0);
-    const MAX_LOGIN_ATTEMPTS = 5;
-    const MAX_FORGOT_ATTEMPTS = 3;
-
-    // incrementa los intentos por el inicio de sesion, el bloqueo dura 5 minutos
-    const incrementLoginAttempts = () => {
-        setLoginAttempts(prev => {
-            const updated = prev + 1;
-
-            if (updated >= MAX_LOGIN_ATTEMPTS) {
-                // Espera 5 minutos para desbloquear (5 * 60 * 1000)
-                setTimeout(() => {
-                    setLoginAttempts(0);
-                }, 5 * 60 * 1000);
-            }
-
-            return updated;
-        });
-    };
-
-    const resetLoginAttempts = () => setLoginAttempts(0);
-
-    const incrementForgotAttempts = () => {
-        
-        setForgotAttempts(prev => {
-            const updated = prev + 1;
-
-            if(updated >= MAX_FORGOT_ATTEMPTS){
-                setTimeout(() => {
-                    setForgotAttempts(0);
-                }, 5 * 60 * 1000);
-            }
-            return updated;
-        });
-    };
-
-    const resetForgotAttempts = () => setForgotAttempts(0);
-
-    const isLoginBlocked = loginAttempts >= MAX_LOGIN_ATTEMPTS;
-    const isForgotBlocked = forgotAttempts >= MAX_FORGOT_ATTEMPTS;
-
 
     // Este useEfect se hara cada cierto tiempo para chequear si hay o no un token
     useEffect(() => {
@@ -172,13 +127,7 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             currentToken,
-            cerrarSesion,
-            isLoginBlocked,
-            incrementLoginAttempts,
-            resetLoginAttempts,
-            isForgotBlocked,
-            incrementForgotAttempts,
-            resetForgotAttempts
+            cerrarSesion
         }}>
             {children}
         </AuthContext.Provider>

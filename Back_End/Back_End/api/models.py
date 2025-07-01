@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 
 # Para los usuarios y grupos (roles) se usan los modelos genericos de Django
@@ -97,6 +99,65 @@ class RatingCuentos(models.Model):
     def __str__(self):
         return f"{self.user} - {self.cuento} - {self.valor}"
 
+class LoginBlock(models.Model):
+    visitor_id = models.CharField(max_length=255, unique=True)
+    failed_attempts = models.IntegerField(default=0)
+    blocked_until = models.DateTimeField(null=True, blank=True)
+
+    # verifica si esta bloqueado
+    def is_blocked(self):
+        # Devuelve True si el dispositivo está bloqueado actualmente.
+        return self.blocked_until and self.blocked_until > timezone.now()
+        # si esta bloqueado y si el bloque supero el tiempo actual
+
+    # registra cada intento fallido
+    def register_failure(self):
+        
+        # Incrementa los intentos fallidos
+        self.failed_attempts += 1
+        
+        if self.failed_attempts >= 5:
+            #  aplica bloqueo si se supera el limite.
+            self.blocked_until = timezone.now() + timedelta(minutes=5)
+            # tomamos la hora actual del servidor y le sumamos 5 mnutos
+
+        self.save()
+
+    # Resetea los intentos y elimina el bloqueo.
+    def reset(self):
+        self.failed_attempts = 0
+        self.blocked_until = None
+        self.save()
+
+class RecoveryBlock(models.Model):
+    visitor_id = models.CharField(max_length=255, unique=True)
+    failed_attempts = models.IntegerField(default=0)
+    blocked_until = models.DateTimeField(null=True, blank=True)
+
+    # verifica si esta bloqueado
+    def is_blocked(self):
+        # Devuelve True si el dispositivo está bloqueado actualmente.
+        return self.blocked_until and self.blocked_until > timezone.now()
+        # si esta bloqueado y si el bloque supero el tiempo actual
+
+    # registra cada intento fallido
+    def register_failure(self):
+        
+        # Incrementa los intentos fallidos
+        self.failed_attempts += 1
+        
+        if self.failed_attempts >= 5:
+            #  aplica bloqueo si se supera el limite.
+            self.blocked_until = timezone.now() + timedelta(minutes=5)
+            # tomamos la hora actual del servidor y le sumamos 5 mnutos
+
+        self.save()
+
+    # Resetea los intentos y elimina el bloqueo.
+    def reset(self):
+        self.failed_attempts = 0
+        self.blocked_until = None
+        self.save()
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------
 # ===========================================================================

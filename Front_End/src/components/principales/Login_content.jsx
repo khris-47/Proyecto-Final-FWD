@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../navegacion/AuthContext';
 import * as Usuarios_Services from '../../services/Usuarios_Services'
 import Fondo from '../../assets/img/fondos/fondo_login.jpg'
 import Logo from '../../assets/img/logos/logo_blanco.png'
 import Modal_Usuario from '../registros/Modal_Usuario'; // Modal de registro de usuario
-
+import { AuthContext } from '../navegacion/AuthContext';
 import Swal from 'sweetalert2';
+import { getVisitorId } from '../../utils/fingerprint';
 import Cookies from 'js-cookie'; // npm install js-cookie
 
 import '../../styles/login.css'
@@ -15,19 +15,11 @@ import '../../styles/login.css'
 
 function Login_content() {
 
+
     // Estados para controlar el login
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
-    const {
-        isLoginBlocked,
-        incrementLoginAttempts,
-        resetLoginAttempts,
-        isForgotBlocked,
-        resetForgotAttempts,
-        incrementForgotAttempts
-    } = useAuth();
 
     // Constante para manejar la navegacion de paginas
     const navigate = useNavigate();
@@ -42,17 +34,29 @@ function Login_content() {
         password: ''
     });
 
+
     // Funcion para manejar el incio de sesion
     const handleSubmit = async (e) => {
 
         e.preventDefault(); // previene la acciones por defecto
         setError(''); // limpia errores anteriores
 
-        // en caso de que ya haya superado el limite de intentos
-        if (isLoginBlocked) {
-            Swal.fire('Demasiados intentos', 'Has superado el número máximo de intentos. Intenta más tarde.', 'error');
+        // Verificamos si el dispositivo ya esta bloqueado
+        const visitorId = await getVisitorId();
+
+        const bloqueo = await Usuarios_Services.verificarBloqueoLogin(visitorId);
+
+        console.log('Verificación de bloqueo:', bloqueo.status);
+
+        if (bloqueo.status === 'bloqueado') {
+            Swal.fire(
+                'Dispositivo bloqueado',
+                `Intentá de nuevo en ${bloqueo.tiempo_restante_segundos} segundos`,
+                'error'
+            );
             return;
         }
+
 
         // verificamos el estado del usuario
         try {
@@ -97,15 +101,22 @@ function Login_content() {
                 return; // Cortamos hasta que verifique
             }
         } catch (err) {
+
             // si no existe
-            if (err.response && err.response.status === 404) {
-                Swal.fire({
-                    title: '¡Datos Erróneos!',
-                    text: 'Usuario no registrado',
-                    icon: 'error',
-                    confirmButtonText: 'Intentar de nuevo'
-                });
-                incrementLoginAttempts();
+            const resultado = await Usuarios_Services.registrarLoginFallido(visitorId);
+
+            if (resultado.status === 'bloqueado') {
+                Swal.fire('Demasiados intentos fallidos', `Tu dispositivo ha sido bloqueado por 5 minutos`, 'warning');
+            } else {
+                if (err.response && err.response.status === 404) {
+                    Swal.fire({
+                        title: '¡Datos Erróneos!',
+                        text: 'Usuario no registrado',
+                        icon: 'error',
+                        confirmButtonText: 'Intentar de nuevo'
+                    });
+                }
+
                 return;
             }
         }
@@ -128,9 +139,6 @@ function Login_content() {
             Cookies.set('accessToken', access, { expires: 1 / 24 });
             Cookies.set('refreshToken', refresh, { expires: 1 / 24 });
 
-            // reiniciar los intentos
-            resetLoginAttempts();
-
             // Mostrar mensaje de bienvenida
             await Swal.fire({
                 title: `¡Bienvenido, ${userData.first_name}!`,
@@ -138,6 +146,9 @@ function Login_content() {
                 icon: 'success',
                 confirmButtonText: 'Continuar'
             });
+
+            // reiniciar bloqueo
+            await Usuarios_Services.resetearBloqueoLogin(visitorId);
 
             // Redirigir a la pagina principal
             navigate('/');
@@ -169,26 +180,37 @@ function Login_content() {
 
                     } else {
                         // Si esta activo, entonces son credenciales incorrectas
-                        Swal.fire({
-                            title: '¡Datos Erróneos!',
-                            text: 'Credenciales incorrectas',
-                            icon: 'error',
-                            confirmButtonText: 'Intentar de nuevo'
-                        });
+                        const resultado = await Usuarios_Services.registrarLoginFallido(visitorId);
 
-                        // aumentamos los intentos
-                        incrementLoginAttempts();
+                        if (resultado.status === 'bloqueado') {
+                            Swal.fire('Demasiados intentos fallidos', `Tu dispositivo ha sido bloqueado por 5 minutos`, 'warning');
+                        } else {
+                            Swal.fire({
+                                title: '¡Datos Erróneos!',
+                                text: 'Credenciales incorrectas',
+                                icon: 'error',
+                                confirmButtonText: 'Intentar de nuevo'
+                            });
+                        }
+
                         return;
                     }
 
                 } catch {
                     // Si el usuario no existe o hubo otro error
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Credenciales incorrectas o usuario no encontrado.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
+                    const resultado = await Usuarios_Services.registrarLoginFallido(visitorId);
+
+                    if (resultado.status === 'bloqueado') {
+                        Swal.fire('Demasiados intentos fallidos', `Tu dispositivo ha sido bloqueado por 5 minutos`, 'warning');
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Credenciales incorrectas o usuario no encontrado.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+
                 }
 
             } else {
@@ -237,10 +259,22 @@ function Login_content() {
     // Manejo del envio de correo para restablecimiento de contra
     const handleForgotPassword = async () => {
 
-        if (isForgotBlocked) {
-            Swal.fire('Demasiados intentos', 'Has superado el número máximo de intentos. Intenta más tarde.', 'error');
+        // verificacion del bloqueo
+        const visitorId = await getVisitorId();
+
+        const bloqueo = await Usuarios_Services.verificarBloqueoRecuperacion(visitorId);
+
+        console.log('Verificación de bloqueo:', bloqueo.status);
+
+        if (bloqueo.status === 'bloqueado') {
+            Swal.fire(
+                'Dispositivo bloqueado',
+                `Intentá de nuevo en ${bloqueo.tiempo_restante_segundos} segundos`,
+                'error'
+            );
             return;
         }
+
 
         const { value: formValues } = await Swal.fire({
             title: 'Recuperar Contraseña',
@@ -266,23 +300,29 @@ function Login_content() {
             try {
                 await Usuarios_Services.resetPassword(formValues.username, formValues.email)
 
+                await Usuarios_Services.registrarRecuperacionFallida(visitorId)
+
                 Swal.fire(
                     '¡Correo enviado!',
                     'Se ha enviado una nueva contraseña a tu correo.',
                     'success'
                 );
 
-                // reiniciamos los intentos
-                resetForgotAttempts();
-
             } catch (error) {
-                Swal.fire(
-                    'Error',
-                    error.response?.data?.error || 'No se pudo restablecer la contraseña.',
-                    'error'
-                );
-                // aumentamos el contador de intentos
-                incrementForgotAttempts();
+
+                const resultado = await Usuarios_Services.registrarRecuperacionFallida(visitorId);
+
+                if (resultado.status === 'bloqueado') {
+                    Swal.fire('Demasiados intentos fallidos', `Tu dispositivo ha sido bloqueado por 5 minutos`, 'warning');
+                } else {
+                    Swal.fire(
+                        'Error',
+                        error.response?.data?.error || 'No se pudo restablecer la contraseña.',
+                        'error'
+                    );
+                }
+
+
             }
         }
     }

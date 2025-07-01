@@ -254,4 +254,74 @@ export const refreshAccessToken = async () => {
 };
 
 
+// registrar bloqueo del login
+export const registrarLoginFallido = async (visitorId) => {
+  try {
+    const response = await axios.post(`${API_URL}/bloqueo_login/`, { visitorId });
+    return response;
+  } catch (err) {
+    console.log('error en el bloqueo del login: ', err)
+    throw err
+  }
+};
+
+// verificar el bloqueo del login
+export const verificarBloqueoLogin = async (visitorId) => {
+  try {
+    const response = await axios.get(`${API_URL}/bloqueo_login/`, {
+      params: { visitorId }
+    });
+    return response.data;
+  } catch (err) {
+    console.error('Error al verificar el bloqueo del login:', err);
+    throw err;
+  }
+};
+
+// services/BloqueoService.js
+export const resetearBloqueoLogin = async (visitorId) => {
+  try {
+    return axios.put(`${API_URL}/bloqueo_login/`, { visitorId });
+  } catch (err) {
+    console.log('error al resetear el bloqueo: ', err)
+    throw err
+  }
+};
+
+
+// registrar fallo en la recuperacion de contra
+export const registrarRecuperacionFallida = async (visitorId) => {
+  try {
+    const response = await axios.post(`${API_URL}/bloqueo_recovery/`, { visitorId });
+    return response;
+  } catch (err) {
+    console.log('error en el bloqueo del login: ', err)
+    throw err
+  }
+};
+
+// verificar el bloqueo de la recuperacion de contra
+export const verificarBloqueoRecuperacion = async (visitorId) => {
+  try {
+    const response = await axios.get(`${API_URL}/bloqueo_recovery/`, {
+      params: { visitorId }
+    });
+    return response.data;
+  } catch (err) {
+    console.error('Error al verificar el bloqueo del login:', err);
+    throw err;
+  }
+};
+
+// reiniciar intentos en recuperacion de contra
+export const resetearBloqueoRecuperacion = async (visitorId) => {
+  try {
+    return axios.put(`${API_URL}/bloqueo_recovery/`, { visitorId });
+  } catch (err) {
+    console.log('error al resetear el bloqueo: ', err)
+    throw err
+  }
+};
+
+
 
