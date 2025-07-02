@@ -7,10 +7,10 @@ function Ubicaciones_content() {
   const [ubicaciones, setUbicaciones] = useState([]);
   const [indiceActual, setIndiceActual] = useState(0);
   const [animacionFondo, setAnimacionFondo] = useState("");
-  const [ setAnimacionImagen] = useState("entrando");
+  const [setAnimacionImagen] = useState("entrando");
   const [datosCargados, setDatosCargados] = useState(false);
 
-//animacionImagen,
+  //animacionImagen,
 
   useEffect(() => {
     const cargarUbicaciones = async () => {
@@ -71,8 +71,10 @@ function Ubicaciones_content() {
         <main className="mainLugares">
           <div className="seccion izquierda-lugares">
             <div className="texto-ubicacion">
-              <h1>{ubicaciones[indiceActual].nombre}</h1>
-              <p>{ubicaciones[indiceActual].descripcion}</p>
+              
+              <h1 className={`texto-animado titulo ${indiceActual % 2 === 0 ? 't1' : 't2'}`}>{ubicaciones[indiceActual].nombre}</h1>
+              <p className={`texto-animado descripcion ${indiceActual % 2 === 0 ? 't1' : 't2'}`}>{ubicaciones[indiceActual].descripcion}</p>
+
             </div>
           </div>
 
