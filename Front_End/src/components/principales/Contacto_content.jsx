@@ -16,6 +16,8 @@ function Contacto_content() {
   const [comentario, setComentario] = useState('');
   const token = Cookies.get('accessToken');
 
+  const [enviando, setEnviando] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
 
 
@@ -36,11 +38,14 @@ function Contacto_content() {
 
     try {
 
+      setEnviando(true);
+
       await Usuarios_Services.enviarComentario({ comentario }, token);
 
       Swal.fire('¡Gracias!', 'Tu comentario ha sido enviado correctamente.', 'success');
       setComentario('');
 
+      setEnviando(false);
 
     } catch (error) {
       console.error('Error al enviar comentario:', error);
@@ -78,9 +83,16 @@ function Contacto_content() {
 
             <p><b>Puedes hacer click al boton de la derecha para enviarnos un formulario con los datos de tu emprendimiento</b></p>
 
-            <input type="text" placeholder='Ingrese su comentario Aqui' onChange={(e) => setComentario(e.target.value)} />
+            <input type="text" placeholder='Ingrese su comentario Aqui' onChange={(e) => setComentario(e.target.value)} value={comentario} />
             <div className='botones'>
-              <button className='btn btn-primary' onClick={handleEnviarComentario}>Enviar Comentario</button>
+              <button
+                className='btn btn-primary'
+                onClick={handleEnviarComentario}
+                disabled={enviando}
+              >
+                {enviando ? 'Enviando...' : 'Enviar Comentario'}
+              </button>
+
               <button className='btn btn-dark bx bxs-file' onClick={() => setShowModal(true)}></button>
 
             </div>

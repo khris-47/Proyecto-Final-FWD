@@ -67,23 +67,17 @@ function Entrevistas_content() {
 
                                                 <div className="ratio ratio-16x9">
                                                     <iframe
-                                                       
-                                                       src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+                                                        src={`https://www.youtube.com/embed/${videoId}?rel=0`}
                                                         title={item.nombre_Persona}
-                                                        loading="lazy"
-                                                        referrerPolicy="strict-origin-when-cross-origin"
                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                         allowFullScreen
-                                                        
-                                                        // Opcional pero puede ayudar en algunos navegadores:
-                                                        crossOrigin="anonymous"
-                                                        sandbox="allow-same-origin allow-scripts allow-presentation allow-popups"
                                                     ></iframe>
+
                                                 </div>
 
 
                                                 <div className="card-body">
-                                                    <h5 className="card-title" style={{ color: "#0094ff", fontWeight: "bold" }} >Entrevista a {item.nombre_Persona} <span style={{ color: "rgb(255, 255, 255)" }} >||</span> <span style={{color: "#00d4ff"}} > {item.ubicacion_nombre} </span>  </h5>
+                                                    <h5 className="card-title" style={{ color: "#0094ff", fontWeight: "bold" }} >Entrevista a {item.nombre_Persona} <span style={{ color: "rgb(255, 255, 255)" }} >||</span> <span style={{ color: "#00d4ff" }} > {item.ubicacion_nombre} </span>  </h5>
                                                     <p className="card-text text-md-center">{item.descripcion}</p>
                                                 </div>
 

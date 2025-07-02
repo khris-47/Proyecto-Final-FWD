@@ -36,6 +36,7 @@ function Modal_Mostrar_Emprendimiento(
 
                 <p><strong>Nombre Emprendimientos:</strong> {e.Nombre_Emprendimiento}</p>
                 <p><strong>Propietrario(a):</strong> {e.Propietario}</p>
+                <p><strong>Descripcion:</strong> {e.Descripcion}</p>
                 
                 <p>
                   <strong>Contacto:</strong>  {" "}

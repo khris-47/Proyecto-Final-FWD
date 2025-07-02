@@ -16,6 +16,9 @@ function Modal_Emprendimientos({ show, onHide }) {
         ubicacion: ''
     });
 
+    const [enviando, setEnviando] = useState(false);
+
+
     const [ubicaciones, setUbicaciones] = useState([]);
     const [error, setError] = useState(null);
     const [mensaje, setMensaje] = useState('');
@@ -124,6 +127,8 @@ function Modal_Emprendimientos({ show, onHide }) {
             // validar inputs
             if (!ValidarArchivos()) return;
 
+            setEnviando(true);
+
             // preparar los datos del formulario
             const formDataToSend = new FormData();
             for (const key in formData) {
@@ -145,6 +150,8 @@ function Modal_Emprendimientos({ show, onHide }) {
             });
 
             onHide();
+
+            setEnviando(false);
 
             Swal.fire('¡Gracias!', 'Tu formulario fue enviado con éxito.', 'success');
 
@@ -235,8 +242,13 @@ function Modal_Emprendimientos({ show, onHide }) {
                         </Col>
                     </Row>
                     <div className="text-center mt-3">
-                        <Button type="submit" variant="primary" className="w-100">
-                            Enviar
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            className="w-100"
+                            disabled={enviando}
+                        >
+                            {enviando ? 'Enviando...' : 'Enviar'}
                         </Button>
                     </div>
                 </Form>

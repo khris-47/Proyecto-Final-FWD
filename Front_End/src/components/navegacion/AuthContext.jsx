@@ -56,6 +56,8 @@ export const AuthProvider = ({ children }) => {
             // si timeLeft es positivo, todavia es valido, si es 0 o negativo, ya expiro
             // esto porque el .exp de los token tienen una fecha defina por el tiempo que le damos al back (y los define en segundos)
 
+            console.log('Tiempo restante: ', timeLeft);
+            
 
             // validamos el tiempo
             if (timeLeft > 0) {
