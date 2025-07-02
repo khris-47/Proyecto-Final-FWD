@@ -15,6 +15,7 @@ function Lista_Usuarios_Content() {
     const access = Cookies.get('accessToken');
     const [busqueda, setBusqueda] = useState('');
 
+    const [ordenAscendente, setOrdenAscendente] = useState(true);
 
     const [comentarios, setComentarios] = useState([]);
     const [mostrarComentarios, setMostrarComentarios] = useState(false);
@@ -73,12 +74,36 @@ function Lista_Usuarios_Content() {
         setBusqueda(e.target.value);
     };
 
-    const usuariosFiltrados = usuarios.filter((usuario) =>
-        usuario.username.toLowerCase().includes(busqueda.toLowerCase()) ||
-        usuario.email.toLowerCase().includes(busqueda.toLowerCase()) ||
-        usuario.first_name.toLowerCase().includes(busqueda.toLowerCase()) ||
-        usuario.last_name.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    // se crea una copia superficila del array, para no modificar directamente el estado original
+    const usuariosFiltrados = [...usuarios]
+    // filtramos por los datos que queremos   
+    .filter((usuario) =>
+            usuario.username.toLowerCase().includes(busqueda.toLowerCase()) ||
+            usuario.email.toLowerCase().includes(busqueda.toLowerCase()) ||
+            usuario.first_name.toLowerCase().includes(busqueda.toLowerCase()) ||
+            usuario.last_name.toLowerCase().includes(busqueda.toLowerCase())
+        )
+        // aplicamos el orden por el id segun el estado booleano
+        .sort((a, b) => (ordenAscendente ? a.id - b.id : b.id - a.id));
+
+        // Si ordenAscendente es true → se evalúa a.id - b.id
+        // Si es false → se evalúa b.id - a.id
+
+    // funcion encargada de ordenar la lista
+    const toggleOrden = () => {
+        // se invierte el valor actual (de true a falso y viceversa)
+        const nuevaOrden = !ordenAscendente;
+        // se actualiza el orden con el nuevo valor
+        setOrdenAscendente(nuevaOrden);
+
+        // se crea una copia del array de usuarios usando [], asi evitamos duplicaciones 
+        const usuariosOrdenados = [...usuarios].sort((a, b) => {
+            return nuevaOrden ? a.id - b.id : b.id - a.id;
+        });
+
+        // actualizamos el estado
+        setUsuarios(usuariosOrdenados);
+    };
 
 
     return (
@@ -108,7 +133,7 @@ function Lista_Usuarios_Content() {
                                 <h1>Lista de Usuarios</h1>
                                 <div className="mb-3 input-group">
                                     <span className="input-group-text">
-                                        <i className="bx bx-search"></i> 
+                                        <i className="bx bx-search"></i>
                                     </span>
                                     <input
                                         type="text"
@@ -137,7 +162,11 @@ function Lista_Usuarios_Content() {
                                         <table className='table table-striped'>
                                             <thead className='table-dark'>
                                                 <tr>
-                                                    <th scope='col'>Id</th>
+                                                    <th scope='col' onClick={toggleOrden} style={{ cursor: 'pointer' }}>
+                                                        Id{' '}
+                                                        <i className={`bx ${ordenAscendente ? 'bx-sort-up' : 'bx-sort-down'}`}></i>
+                                                    </th>
+
                                                     <th scope='col'>Usuario</th>
                                                     <th scope='col'>Email</th>
                                                     <th scope='col'>Nombre</th>

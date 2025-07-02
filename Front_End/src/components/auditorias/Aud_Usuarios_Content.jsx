@@ -12,12 +12,13 @@ function Aud_Usuarios_Content() {
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
     const [busqueda, setBusqueda] = useState('');
+    const [ordenAscendente, setOrdenAscendente] = useState(true);
 
     // carga del form
     useEffect(() => {
         const fetchAuditorias = async () => {
             try {
-               
+
                 // llamada a la api
                 const response = await obtenerAuditoriaUsuarios(access)
 
@@ -28,7 +29,7 @@ function Aud_Usuarios_Content() {
 
                 // guardamos los datos que entraron
                 setAuditorias(ordenadas);
-                
+
             } catch (err) {
                 console.error(err);
                 setError('Error al obtener los datos de auditoría');
@@ -39,40 +40,61 @@ function Aud_Usuarios_Content() {
 
         // llamada al fetch
         fetchAuditorias();
-    });
+    },[]);
 
     const handleBusquedaChange = (e) => {
         setBusqueda(e.target.value);
     };
 
-    const Aud_usuariosFiltrados = auditorias.filter((auditoria) => 
+    // se crea una copia superficila del array, para no modificar directamente el estado original
+    const Aud_usuariosFiltrados = [...auditorias].filter((auditoria) =>
         auditoria.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
         auditoria.tipoMovimiento.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    )
+        // aplicamos el orden por el id segun el estado booleano
+        .sort((a, b) => (ordenAscendente ? a.id - b.id : b.id - a.id));
+        // Si ordenAscendente es true → se evalúa a.id - b.id
+        // Si es false → se evalúa b.id - a.id;;;
+
+    // funcion encargada de ordenar la lista
+    const toggleOrden = () => {
+        // se invierte el valor actual (de true a falso y viceversa)
+        const nuevaOrden = !ordenAscendente;
+        // se actualiza el orden con el nuevo valor
+        setOrdenAscendente(nuevaOrden);
+
+        // se crea una copia del array de usuarios usando [], asi evitamos duplicaciones 
+        const listaOrdenada = [...auditorias].sort((a, b) => {
+            return nuevaOrden ? a.id - b.id : b.id - a.id;
+        });
+
+        // actualizamos el estado
+        setAuditorias(listaOrdenada);
+    };
 
     return (
 
         <div className='bodyForm'>
-            
+
             <div className="background-container-form">
                 <img className="background-image-form" src={Fondo} alt=".." />
                 <header className="headerAbout">
                     <NavBar />
                 </header>
             </div>
-            
+
             <div className='capa'></div>
 
             <main className='mainForm'>
                 <div className='style-form'>
                     <div className='container'>
-                        
+
                         <div className='row justify-content-center align-items-center g-2'>
                             <div>
                                 <h1>Auditoria de Usuarios</h1>
                                 <div className="mb-3 input-group">
                                     <span className="input-group-text">
-                                        <i className="bx bx-search"></i> 
+                                        <i className="bx bx-search"></i>
                                     </span>
                                     <input
                                         type="text"
@@ -99,7 +121,10 @@ function Aud_Usuarios_Content() {
                                         <table className='table table-striped'>
                                             <thead className='table-dark'>
                                                 <tr>
-                                                    <th>ID</th>
+                                                    <th scope='col' onClick={toggleOrden} style={{ cursor: 'pointer' }}>
+                                                        Id{' '}
+                                                        <i className={`bx ${ordenAscendente ? 'bx-sort-up' : 'bx-sort-down'}`}></i>
+                                                    </th>
                                                     <th>Tipo de Movimiento</th>
                                                     <th>Descripción</th>
                                                     <th>Fecha</th>
@@ -111,11 +136,11 @@ function Aud_Usuarios_Content() {
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.tipoMovimiento}</td>
-                                                        
+
                                                         {/* Insertamos HTML, dado que, para una mejor lectura, los triggers se hicieron con <br> y <b> */}
                                                         {/* Sanitizamos item.descripcion permitiendo solo <br> y <b> */}
-                                                       <td><HTMLSafeText html={item.descripcion} /></td>
-                                                        
+                                                        <td><HTMLSafeText html={item.descripcion} /></td>
+
                                                         <td>{new Date(item.fechaMovimiento).toLocaleString()}</td>
                                                         <td>{item.user}</td>
                                                     </tr>

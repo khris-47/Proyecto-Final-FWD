@@ -19,6 +19,8 @@ function Registro_Cuentos() {
 
   const [busqueda, setBusqueda] = useState('');
 
+  const [ordenAscendente, setOrdenAscendente] = useState(true);
+
   const [formData, setFormData] = useState({         //  estado del formulario
     portada: '',
     nombre_Cuento: '',
@@ -220,10 +222,34 @@ function Registro_Cuentos() {
     setBusqueda(e.target.value);
   };
 
-  const filtradoCuentos = cuentos.filter((cuento) =>
-    cuento.nombre_Cuento.toLowerCase().includes(busqueda.toLowerCase()) ||
-    cuento.ubicacion_nombre.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  // se crea una copia superficila del array, para no modificar directamente el estado original
+  const filtradoCuentos = [...cuentos]
+    // filtramos por los datos que queremos 
+    .filter((cuento) =>
+      cuento.nombre_Cuento.toLowerCase().includes(busqueda.toLowerCase()) ||
+      cuento.ubicacion_nombre.toLowerCase().includes(busqueda.toLowerCase())
+    )
+    // aplicamos el orden por el id segun el estado booleano
+    .sort((a, b) => (ordenAscendente ? a.id - b.id : b.id - a.id));
+
+  // Si ordenAscendente es true → se evalúa a.id - b.id
+  // Si es false → se evalúa b.id - a.id;;
+
+  // funcion encargada de ordenar la lista
+  const toggleOrden = () => {
+    // se invierte el valor actual (de true a falso y viceversa)
+    const nuevaOrden = !ordenAscendente;
+    // se actualiza el orden con el nuevo valor
+    setOrdenAscendente(nuevaOrden);
+
+    // se crea una copia del array de usuarios usando [], asi evitamos duplicaciones 
+    const listaOrdenada = [...cuentos].sort((a, b) => {
+      return nuevaOrden ? a.id - b.id : b.id - a.id;
+    });
+
+    // actualizamos el estado
+    setCuentos(listaOrdenada);
+  };
 
   return (
     <div className='bodyForm'>
@@ -309,7 +335,10 @@ function Registro_Cuentos() {
                     <table className='table table-striped'>
                       <thead className='table-dark'>
                         <tr>
-                          <th>ID</th>
+                          <th scope='col' onClick={toggleOrden} style={{ cursor: 'pointer' }}>
+                            Id{' '}
+                            <i className={`bx ${ordenAscendente ? 'bx-sort-up' : 'bx-sort-down'}`}></i>
+                          </th>
                           <th>Portada</th>
                           <th>Cuento</th>
                           <th>Nombre Cuento</th>

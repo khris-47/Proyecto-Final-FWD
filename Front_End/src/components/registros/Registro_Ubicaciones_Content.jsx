@@ -17,6 +17,8 @@ function Registro_Ubicaciones_Content() {
     const [editId, setEditId] = useState(null);         // guarda el ID del objeto a editar
     const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
 
+    const [ordenAscendente, setOrdenAscendente] = useState(true);
+
     const [busqueda, setBusqueda] = useState('');
 
     const [formData, setFormData] = useState({         //  estado del formulario
@@ -53,12 +55,10 @@ function Registro_Ubicaciones_Content() {
     const handleRegister = async () => {
         try {
 
-            
-
             //preparamos los datos el formulario a enviar
             const formPayload = new FormData();
 
-            
+
             formPayload.append('nombre', formData.nombre);
             formPayload.append('descripcion', formData.descripcion)
 
@@ -187,9 +187,34 @@ function Registro_Ubicaciones_Content() {
         setBusqueda(e.target.value);
     };
 
-    const filtradoUbicaciones = ubicaciones.filter((ubicacion) =>
-        ubicacion.nombre.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    // se crea una copia superficila del array, para no modificar directamente el estado original
+    const filtradoUbicaciones = [...ubicaciones]
+        // filtramos por los datos que queremos  
+        .filter((ubicacion) =>
+            ubicacion.nombre.toLowerCase().includes(busqueda.toLowerCase())
+        )
+        // aplicamos el orden por el id segun el estado booleano
+        .sort((a, b) => (ordenAscendente ? a.id - b.id : b.id - a.id));
+
+    // Si ordenAscendente es true → se evalúa a.id - b.id
+    // Si es false → se evalúa b.id - a.id;
+
+
+    // funcion encargada de ordenar la lista
+    const toggleOrden = () => {
+        // se invierte el valor actual (de true a falso y viceversa)
+        const nuevaOrden = !ordenAscendente;
+        // se actualiza el orden con el nuevo valor
+        setOrdenAscendente(nuevaOrden);
+
+        // se crea una copia del array de usuarios usando [], asi evitamos duplicaciones 
+        const listaOrdenada = [...ubicaciones].sort((a, b) => {
+            return nuevaOrden ? a.id - b.id : b.id - a.id;
+        });
+
+        // actualizamos el estado
+        setUbicaciones(listaOrdenada);
+    };
 
     return (
         <div className='bodyForm'>
@@ -214,7 +239,7 @@ function Registro_Ubicaciones_Content() {
 
                                 <div className="mb-3 input-group">
                                     <span className="input-group-text">
-                                        <i className="bx bx-search"></i> 
+                                        <i className="bx bx-search"></i>
                                     </span>
                                     <input
                                         type="text"
@@ -224,7 +249,7 @@ function Registro_Ubicaciones_Content() {
                                         onChange={handleBusquedaChange}
                                     />
                                 </div>
-                                
+
                             </div>
                         </div>
 
@@ -273,7 +298,11 @@ function Registro_Ubicaciones_Content() {
                                         <table className='table table-striped'>
                                             <thead className='table-dark'>
                                                 <tr>
-                                                    <th>ID</th>
+                                                    <th scope='col' onClick={toggleOrden} style={{ cursor: 'pointer' }}>
+                                                        {' '}
+                                                        <i className={`bx ${ordenAscendente ? 'bx-sort-up' : 'bx-sort-down'}`}></i>
+                                                    </th>
+
                                                     <th>Nombre</th>
                                                     <th>Descripción</th>
                                                     <th>Portada</th>

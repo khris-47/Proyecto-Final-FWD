@@ -125,9 +125,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dxwanm9n2',
-    'API_KEY': '156424214735841',
-    'API_SECRET': 'aSeXB_khgGC8bORnp9PyNsXxacA',
+    'CLOUD_NAME': 'dzbn463ba',
+    'API_KEY': '637489421355589',
+    'API_SECRET': 'fftjm7WKfgkpvLkmtFCXh0ZV2Lo',
 }
 
 cloudinary.config(

@@ -14,16 +14,39 @@ function Aud_Entrevistas_Content() {
     const [error, setError] = useState(null);
     const access = Cookies.get('accessToken');
 
+    const [ordenAscendente, setOrdenAscendente] = useState(true);
+
     const [busqueda, setBusqueda] = useState('');
 
     const handleBusquedaChange = (e) => {
         setBusqueda(e.target.value);
     };
 
-    const Aud_Filtrados = auditorias.filter((auditoria) =>
+    // se crea una copia superficila del array, para no modificar directamente el estado original
+    const Aud_Filtrados = [...auditorias].filter((auditoria) =>
         auditoria.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
         auditoria.tipoMovimiento.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    )
+        // aplicamos el orden por el id segun el estado booleano
+        .sort((a, b) => (ordenAscendente ? a.id - b.id : b.id - a.id));
+        // Si ordenAscendente es true → se evalúa a.id - b.id
+        // Si es false → se evalúa b.id - a.id;;;
+
+    // funcion encargada de ordenar la lista
+    const toggleOrden = () => {
+        // se invierte el valor actual (de true a falso y viceversa)
+        const nuevaOrden = !ordenAscendente;
+        // se actualiza el orden con el nuevo valor
+        setOrdenAscendente(nuevaOrden);
+
+        // se crea una copia del array de usuarios usando [], asi evitamos duplicaciones 
+        const listaOrdenada = [...auditorias].sort((a, b) => {
+            return nuevaOrden ? a.id - b.id : b.id - a.id;
+        });
+
+        // actualizamos el estado
+        setAuditorias(listaOrdenada);
+    };
 
     // El useEffect lo utilizaremos para cargar el form
     useEffect(() => {
@@ -50,6 +73,8 @@ function Aud_Entrevistas_Content() {
         // llamamos al fetch
         fetchAuditorias();
     }, []); //
+
+
 
 
     return (
@@ -100,7 +125,10 @@ function Aud_Entrevistas_Content() {
                                         <table className='table table-striped'>
                                             <thead className='table-dark'>
                                                 <tr>
-                                                    <th>ID</th>
+                                                    <th scope='col' onClick={toggleOrden} style={{ cursor: 'pointer' }}>
+                                                        {' '}
+                                                        <i className={`bx ${ordenAscendente ? 'bx-sort-up' : 'bx-sort-down'}`}></i>
+                                                    </th>
                                                     <th>Tipo de Movimiento</th>
                                                     <th>Descripción</th>
                                                     <th>Fecha</th>

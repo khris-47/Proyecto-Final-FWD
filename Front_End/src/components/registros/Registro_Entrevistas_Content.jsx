@@ -25,6 +25,8 @@ function Registro_Entrevistas() {
         ubicacion: ''
     });
 
+    const [ordenAscendente, setOrdenAscendente] = useState(true);
+
 
     // obtenemos todas las entrevistas desde el services
     const fetchEntrevistas = async () => {
@@ -197,10 +199,35 @@ function Registro_Entrevistas() {
         setBusqueda(e.target.value);
     };
 
-    const filtradoEntrevistas = entrevistas.filter((entrevista) =>
-        entrevista.nombre_Persona.toLowerCase().includes(busqueda.toLowerCase()) ||
-        entrevista.ubicacion_nombre.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    // se crea una copia superficila del array, para no modificar directamente el estado original
+    const filtradoEntrevistas = [...entrevistas]
+        // filtramos por los datos que queremos  
+        .filter((entrevista) =>
+            entrevista.nombre_Persona.toLowerCase().includes(busqueda.toLowerCase()) ||
+            entrevista.ubicacion_nombre.toLowerCase().includes(busqueda.toLowerCase())
+        )
+        // aplicamos el orden por el id segun el estado booleano
+        .sort((a, b) => (ordenAscendente ? a.id - b.id : b.id - a.id));
+
+    // Si ordenAscendente es true → se evalúa a.id - b.id
+    // Si es false → se evalúa b.id - a.id;;
+
+    // funcion encargada de ordenar la lista
+    const toggleOrden = () => {
+        // se invierte el valor actual (de true a falso y viceversa)
+        const nuevaOrden = !ordenAscendente;
+        // se actualiza el orden con el nuevo valor
+        setOrdenAscendente(nuevaOrden);
+
+        // se crea una copia del array de usuarios usando [], asi evitamos duplicaciones 
+        const listaOrdenada = [...entrevistas].sort((a, b) => {
+            return nuevaOrden ? a.id - b.id : b.id - a.id;
+        });
+
+        // actualizamos el estado
+        setEntrevistas(listaOrdenada);
+    };
+
 
     return (
         <div className='bodyForm'>
@@ -263,7 +290,10 @@ function Registro_Entrevistas() {
                                         <table className='table table-striped mt-2'>
                                             <thead className='table-dark'>
                                                 <tr>
-                                                    <th>ID</th>
+                                                    <th scope='col' onClick={toggleOrden} style={{ cursor: 'pointer' }}>
+                                                        {' '}
+                                                        <i className={`bx ${ordenAscendente ? 'bx-sort-up' : 'bx-sort-down'}`}></i>
+                                                    </th>
                                                     <th>Persona(s)</th>
                                                     <th>Descripción</th>
                                                     <th>Fecha de Subida</th>
