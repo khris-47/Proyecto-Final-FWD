@@ -242,3 +242,55 @@
     transform: scale(0.95);
     box-shadow: 0px 2px 6px rgba(0, 148, 255, 0.6);
 }
+
+@media (max-width: 768px) {
+  .mainLugares {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 100px 20px 140px; /* espacio arriba y abajo para respirar + botón */
+    text-align: center;
+    overflow: visible;
+  }
+
+  .seccion {
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .texto-ubicacion {
+    width: 90%;
+    padding: 0;
+    text-align: center;
+    z-index: 2;
+  }
+
+   .contenedor-imagen-boton {
+    display: contents; /* libera cualquier restricción de ancho/alineación */
+
+  }
+
+  .next-btn {
+    position: fixed !important;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    margin: 0 auto;
+  }
+  .derecha-lugares {
+    width: 100%;
+    display: block;
+    position: relative;
+  }
+
+}
+
+
+
+

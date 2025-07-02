@@ -10,8 +10,6 @@ function Ubicaciones_content() {
   const [setAnimacionImagen] = useState("entrando");
   const [datosCargados, setDatosCargados] = useState(false);
 
-  //animacionImagen,
-
   useEffect(() => {
     const cargarUbicaciones = async () => {
       try {
