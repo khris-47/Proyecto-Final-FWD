@@ -32,26 +32,38 @@ function Modal_Mostrar_Emprendimiento(
         ) : (
           <ul className="list-group">
             {emprendimientos.map((e) => (
-              <li key={e.id} className="list-group-item ">
+              <li key={e.id} className="list-group-item" style={{ position: 'relative', paddingRight: '200px' }}>
+                <div>
+                  <p><strong>Nombre Emprendimientos:</strong> {e.Nombre_Emprendimiento}</p>
+                  <p><strong>Propietrario(a):</strong> {e.Propietario}</p>
+                  <p><strong>Descripción:</strong> {e.Descripcion}</p>
+                  <p>
+                    <strong>Contacto:</strong>{" "}
+                    <span style={{ textDecoration: "underline", color: '#0d6efd' }}>
+                      +506 {e.contacto}
+                    </span>
+                  </p>
+                  <p><strong>Ubicación:</strong> {e.ubicacion_nombre}</p>
+                  <small className="text-muted">
+                    Fecha: {new Date(e.fecha_creacion).toLocaleString()}
+                  </small>
+                </div>
 
-                <p><strong>Nombre Emprendimientos:</strong> {e.Nombre_Emprendimiento}</p>
-                <p><strong>Propietrario(a):</strong> {e.Propietario}</p>
-                <p><strong>Descripcion:</strong> {e.Descripcion}</p>
-                
-                <p>
-                  <strong>Contacto:</strong>  {" "}
-                  <span style={{ textDecoration: "underline", color: '#0d6efd' }}>
-                    +506  {e.contacto}
-                  </span>
-                </p>
-
-                <p><strong>Ubicacion:</strong> {e.ubicacion_nombre}</p>
-                <img className='position-absolute end-0 top-0 m-2' src={e.foto_url} alt="foto" style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '5px' }} />
-                <small className="text-muted">
-                  Fecha: {new Date(e.fecha_creacion).toLocaleString()}
-                </small>
-
+                <img
+                  src={e.foto_url}
+                  alt="foto"
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    width: '180px',
+                    height: '180px',
+                    objectFit: 'cover',
+                    borderRadius: '5px'
+                  }}
+                />
               </li>
+
             ))}
           </ul>
         )}
