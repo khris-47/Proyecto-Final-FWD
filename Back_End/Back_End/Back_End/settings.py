@@ -1,7 +1,7 @@
 
 from pathlib import Path
 from datetime import timedelta
-import cloudinary
+# import cloudinary
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,10 +22,27 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'corsheaders',
-    'cloudinary',
-    'cloudinary_storage',
+    'storages',
+
+    # 'cloudinary',
+    # 'cloudinary_storage',
 
 ]
+
+# Credenciales para AWS
+AWS_ACCESS_KEY_ID = 'AKIAR6VIF7QEU5CF2EWE'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'tc-almacenamiento'
+AWS_S3_REGION_NAME = 'us-east-2'
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+
+# Opciones de archivos publicos
+AWS_DEFAULT_ACL = 'public-read'     # se usara para obtener las url publicas
+AWS_QUERYSTRING_AUTH = False        # evitamos firmas temporales
+
+# Backend de archivos estaticos/media
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
 
 REST_FRAMEWORK ={
     'DEFAULT_AUTHENTICATION_CLASSES':(
@@ -124,20 +141,20 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dzbn463ba',
-    'API_KEY': '637489421355589',
-    'API_SECRET': 'fftjm7WKfgkpvLkmtFCXh0ZV2Lo',
-}
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': 'dzbn463ba',
+#     'API_KEY': '637489421355589',
+#     'API_SECRET': 'fftjm7WKfgkpvLkmtFCXh0ZV2Lo',
+# }
 
-cloudinary.config(
-    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
-    api_key=CLOUDINARY_STORAGE['API_KEY'],
-    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
-    secure=True
-)
+# cloudinary.config(
+#     cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+#     api_key=CLOUDINARY_STORAGE['API_KEY'],
+#     api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+#     secure=True
+# )
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Configuración de envío de correo con Gmail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

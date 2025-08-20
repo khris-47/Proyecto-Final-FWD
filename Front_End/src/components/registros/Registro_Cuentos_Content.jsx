@@ -311,9 +311,8 @@ function Registro_Cuentos() {
                   </div>
                   <div className="tooltip">
 
-                    <p>Debido al plan de uso, no es posible subir archivos mayores a 10MB. En el caso de imágenes, se recomienda utilizar el formato WebP para una mejor optimización.</p>
+                    <p>Sube imágenes con proporción similar a portadas de libro o fondo de teléfono, para que se vean bien en las cards. Evita usar fondos de escritorio completos o con un largo mayor al alto.</p>
 
-                    <p>https://convertio.co/es/download/9cdbb519f54e24d475ec0b1e24fbd1c4eb6db7/</p>
                   </div>
                 </div>
 

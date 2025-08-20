@@ -49,8 +49,6 @@ function Modal_Emprendimientos({ show, onHide }) {
 
     const ValidarArchivos = () => {
 
-        // tamano maximo (10mb)
-        const MAX_SIZE_MB = 10 * 1024 * 1024;
 
         // validaciones para las fotos
         if (formData.foto) {
@@ -66,16 +64,6 @@ function Modal_Emprendimientos({ show, onHide }) {
                 return false;
             }
 
-            // verificar el tamanho de la foto
-            if (formData.foto.size > MAX_SIZE_MB) {
-                Swal.fire({
-                    title: 'Archivo demasiado grande',
-                    text: 'La foto no debe superar los 10MB',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-                return false;
-            }
         }
 
         // recordemos que el .trim() es para limpiar espacios en blanco al inicio y final

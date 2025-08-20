@@ -256,30 +256,11 @@ function Registro_Ubicaciones_Content() {
                         <div className="row justify-content-center align-items-center">
                             <div className='d-flex align-items-center'>
 
-                                <button type='button' className='btn btn-primary bx bxs-message-square-add' onClick={() => setShowModal(true)}>
+                                <button type='button' className='btn btn-primary bx bxs-message-square-add mb-1' onClick={() => setShowModal(true)}>
                                     Agregar
                                 </button>
 
-                                {/* From Uiverse.io by Cksunandh  */}
-                                <div className="tooltip-container">
-                                    <div className="icon">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            width="30"
-                                            height="30"
-                                        >
-                                            <path
-                                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.518 0-10-4.482-10-10s4.482-10 10-10 10 4.482 10 10-4.482 10-10 10zm-1-16h2v6h-2zm0 8h2v2h-2z"
-                                            ></path>
-                                        </svg>
-                                    </div>
-                                    <div className="tooltip">
-                                        <p>Debido al plan de uso, no es posible subir archivos mayores a 10MB. En el caso de imágenes, se recomienda utilizar el formato WebP para una mejor optimización.</p>
-
-                                        <p>https://convertio.co/es/download/9cdbb519f54e24d475ec0b1e24fbd1c4eb6db7/</p>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 
