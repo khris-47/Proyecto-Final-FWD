@@ -1,7 +1,6 @@
 
 from pathlib import Path
 from datetime import timedelta
-# import cloudinary
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,9 +22,6 @@ INSTALLED_APPS = [
     'api',
     'corsheaders',
     'storages',
-
-    # 'cloudinary',
-    # 'cloudinary_storage',
 
 ]
 
@@ -127,12 +123,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Límite de tamaño de carga: 20 MB (en bytes)
-# tal parece que cloudinary no permite mas alla de 10 mb al ser plan gratuito, pero, dejo esto aqui por algun futuro uso
-DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20 MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20 MB
-
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -141,20 +131,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'dzbn463ba',
-#     'API_KEY': '637489421355589',
-#     'API_SECRET': 'fftjm7WKfgkpvLkmtFCXh0ZV2Lo',
-# }
-
-# cloudinary.config(
-#     cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
-#     api_key=CLOUDINARY_STORAGE['API_KEY'],
-#     api_secret=CLOUDINARY_STORAGE['API_SECRET'],
-#     secure=True
-# )
-
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Configuración de envío de correo con Gmail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
