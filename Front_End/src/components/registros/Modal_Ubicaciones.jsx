@@ -41,6 +41,7 @@ function Modal_Ubicaciones({
         if (formData.portada) {
             if (!formData.portada.type.startsWith('image/')) {
                 toast.error('La portada debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
+<<<<<<< Updated upstream
                 return false;
             }
             if (formData.portada.size > MAX_SIZE_MB) {
@@ -50,6 +51,8 @@ function Modal_Ubicaciones({
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
+=======
+>>>>>>> Stashed changes
                 return false;
             }
         }

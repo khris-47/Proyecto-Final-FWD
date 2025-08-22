@@ -59,6 +59,7 @@ function Modal_Cuento({
         if (formData.portada) {
             if (!formData.portada.type.startsWith('image/')) {
                 toast.error('La portada debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
+<<<<<<< Updated upstream
                 return false;
             }
             if (formData.portada.size > MAX_SIZE_MB) {
@@ -68,6 +69,8 @@ function Modal_Cuento({
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
+=======
+>>>>>>> Stashed changes
                 return false;
             }
         }
@@ -76,6 +79,7 @@ function Modal_Cuento({
         if (formData.cuento) {
             if (formData.cuento.type !== 'application/pdf') {
                 toast.error('El cuento debe ser un archivo PDF', { autoClose: 3000 });
+<<<<<<< Updated upstream
                 return false;
             }
             if (formData.cuento.size > MAX_SIZE_MB) {
@@ -85,6 +89,8 @@ function Modal_Cuento({
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
+=======
+>>>>>>> Stashed changes
                 return false;
             }
         }

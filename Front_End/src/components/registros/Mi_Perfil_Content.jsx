@@ -77,6 +77,17 @@ function MiPerfilContent() {
         const response = await Usuario_Services.validarPassword(userId, password, token);
 
         if (response.data.valid) {
+<<<<<<< Updated upstream
+=======
+          return true;
+        } else {
+          toast.error('La contraseña ingresada no es válida.', { autoClose: 4000 });
+          return false;
+        }
+      } catch (error) {
+        console.error("Error al validar contraseña:", error);
+        toast.error('No se pudo verificar la contraseña.', { autoClose: 4000 });
+>>>>>>> Stashed changes
 
           return true
 
@@ -167,6 +178,7 @@ function MiPerfilContent() {
 
     } catch (error) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
       console.error('Error al actualizar perfil:', error);
       Swal.fire({
@@ -176,6 +188,10 @@ function MiPerfilContent() {
         confirmButtonText: 'Intentar de nuevo'
       });
 
+=======
+      console.error("Error al actualizar perfil:", error);
+      toast.error('Hubo un problema al actualizar el usuario', { autoClose: 4000 });
+>>>>>>> Stashed changes
 =======
       console.error("Error al actualizar perfil:", error);
       toast.error('Hubo un problema al actualizar el usuario', { autoClose: 4000 });
@@ -228,6 +244,9 @@ function MiPerfilContent() {
 =======
             console.error("Error al eliminar", error);
             toast.error('No se pudo eliminar el perfil', { autoClose: 8000 });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           }
         }
@@ -289,6 +308,9 @@ function MiPerfilContent() {
         toast.success("Contraseña cambiada correctamente"); //Aquí están toastify
       } catch (error) {
         toast.error(error.response?.data?.error || 'No se pudo cambiar la contraseña.', { autoClose: 4000 });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       }
     }

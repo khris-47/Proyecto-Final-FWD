@@ -59,6 +59,7 @@ function Modal_Emprendimientos({ show, onHide }) {
             // verificar el tipo de archivo
             if (!formData.foto.type.startsWith('image/')) {
                 toast.error('La foto debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
+<<<<<<< Updated upstream
                 return false;
             }
 
@@ -70,6 +71,8 @@ function Modal_Emprendimientos({ show, onHide }) {
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
                 });
+=======
+>>>>>>> Stashed changes
                 return false;
             }
         }
