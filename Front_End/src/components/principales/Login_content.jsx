@@ -202,7 +202,8 @@ function Login_content() {
           } else {
             toast.error('Credenciales incorrectas o usuario no encontrado.', { autoClose: 5000 });
         }
-      } else {
+      } 
+      }else {
         setError("Error del servidor.");
       }
     }
@@ -292,6 +293,7 @@ function Login_content() {
         } else {
           toast.error(error.response?.data?.error || 'No se pudo restablecer la contraseña.', { autoClose: 5000 });
       }
+    }
     }
   };
 
@@ -456,6 +458,6 @@ function Login_content() {
       />
     </div>
   );
-}
+};
 
-export default Login_content;
+export default Login_content
