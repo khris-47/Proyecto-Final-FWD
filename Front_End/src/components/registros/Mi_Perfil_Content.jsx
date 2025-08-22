@@ -81,6 +81,7 @@ function MiPerfilContent() {
           return true
 
         } else {
+<<<<<<< Updated upstream
 
           Swal.fire({
             title: 'Contraseña incorrecta',
@@ -89,9 +90,14 @@ function MiPerfilContent() {
           });
           return false
 
+=======
+          toast.error('La contraseña ingresada no es válida.', { autoClose: 4000 });
+          return false;
+>>>>>>> Stashed changes
         }
 
       } catch (error) {
+<<<<<<< Updated upstream
 
         console.error('Error al validar contraseña:', error);
         Swal.fire({
@@ -99,6 +105,10 @@ function MiPerfilContent() {
           text: 'No se pudo verificar la contraseña.',
           icon: 'error'
         });
+=======
+        console.error("Error al validar contraseña:", error);
+        toast.error('No se pudo verificar la contraseña.', { autoClose: 4000 });
+>>>>>>> Stashed changes
 
         return false
       }
@@ -112,6 +122,7 @@ function MiPerfilContent() {
 
     if (espera) {
       setShowModal(true); // Mostrar modal solo si es válida
+      toast.info('Editando perfil', { autoClose: 2000 });
     } else {
       return
     }
@@ -155,6 +166,7 @@ function MiPerfilContent() {
       setConfirmPassword('');
 
     } catch (error) {
+<<<<<<< Updated upstream
 
       console.error('Error al actualizar perfil:', error);
       Swal.fire({
@@ -164,6 +176,10 @@ function MiPerfilContent() {
         confirmButtonText: 'Intentar de nuevo'
       });
 
+=======
+      console.error("Error al actualizar perfil:", error);
+      toast.error('Hubo un problema al actualizar el usuario', { autoClose: 4000 });
+>>>>>>> Stashed changes
     }
   };
 
@@ -204,10 +220,15 @@ function MiPerfilContent() {
             navigate('/');
 
           } catch (error) {
+<<<<<<< Updated upstream
 
             console.error('Error al eliminar perfil:', error);
             Swal.fire('Error', 'No se pudo eliminar el perfil.', 'error');
 
+=======
+            console.error("Error al eliminar", error);
+            toast.error('No se pudo eliminar el perfil', { autoClose: 8000 });
+>>>>>>> Stashed changes
           }
         }
       });
@@ -254,10 +275,21 @@ function MiPerfilContent() {
 
     if (formValues) {
       try {
+<<<<<<< Updated upstream
         await Usuario_Services.cambiarPassword(formValues.actual, formValues.nueva, token);
         Swal.fire('¡Éxito!', 'Tu contraseña ha sido actualizada.', 'success');
       } catch (error) {
         Swal.fire('Error', error.response?.data?.error || 'No se pudo cambiar la contraseña.', 'error');
+=======
+        await Usuario_Services.cambiarPassword(
+          formValues.actual,
+          formValues.nueva,
+          token
+        );
+        toast.success("Contraseña cambiada correctamente"); //Aquí están toastify
+      } catch (error) {
+        toast.error(error.response?.data?.error || 'No se pudo cambiar la contraseña.', { autoClose: 4000 });
+>>>>>>> Stashed changes
       }
     }
   };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import * as Ubicaciones_services from '../../services/Ubicaciones_services';
 import * as Usuarios_services from '../../services/Usuarios_Services';
@@ -57,12 +58,7 @@ function Modal_Emprendimientos({ show, onHide }) {
 
             // verificar el tipo de archivo
             if (!formData.foto.type.startsWith('image/')) {
-                Swal.fire({
-                    title: 'Archivo no válido',
-                    text: 'La foto debe ser una imagen (JPG, PNG, WebP, etc.)',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.error('La foto debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
                 return false;
             }
 
@@ -82,26 +78,26 @@ function Modal_Emprendimientos({ show, onHide }) {
 
         // Validar nombre del emprendimiento
         if (!formData.Nombre_Emprendimiento.trim() || formData.Nombre_Emprendimiento.length < 3) {
-            Swal.fire('Nombre inválido', 'El nombre debe tener al menos 3 caracteres.', 'warning');
+            toast.warning('El nombre debe tener al menos 3 caracteres.', { autoClose: 3000 });
             return false;
         }
 
         // Validar nombre del propietario
         if (!formData.Propietario.trim() || formData.Propietario.length < 3) {
-            Swal.fire('Propietario inválido', 'Debes ingresar el nombre del propietario.', 'warning');
+            toast.warning('Debes ingresar el nombre del propietario.', { autoClose: 3000 });
             return false;
         }
 
         // Validar teléfono (ej. 8 digitos, solo numeros positivos, formato tipico en CR)
         const regexTelefono = /^[0-9]{8}$/;
         if (!regexTelefono.test(formData.contacto)) {
-            Swal.fire('Teléfono inválido', 'Debe tener exactamente 8 dígitos numéricos.', 'warning');
+            toast.warning('Debe tener exactamente 8 dígitos numéricos.', { autoClose: 3000 });
             return false;
         }
 
         // Validar descripción
         if (!formData.Descripcion.trim() || formData.Descripcion.length < 10) {
-            Swal.fire('Descripción muy corta', 'La descripción debe tener al menos 10 caracteres.', 'warning');
+            toast.warning('La descripción debe tener al menos 10 caracteres.', { autoClose: 3000 });
             return false;
         }
 
@@ -120,7 +116,7 @@ function Modal_Emprendimientos({ show, onHide }) {
 
             //verificar que haya iniciado sesion
             if (!access) {
-                Swal.fire('Acceso Denegado', 'Debes iniciar sesión para enviar el formulario.', 'warning');
+                Stoast.info('Debes iniciar sesión para enviar el formulario.', { autoClose: 3000 });
                 return;
             }
 
@@ -153,7 +149,7 @@ function Modal_Emprendimientos({ show, onHide }) {
 
             setEnviando(false);
 
-            Swal.fire('¡Gracias!', 'Tu formulario fue enviado con éxito.', 'success');
+            toast.success('¡Tu formulario fue enviado con éxito!', { autoClose: 3000 });
 
         } catch (err) {
             console.error('Error:', err);

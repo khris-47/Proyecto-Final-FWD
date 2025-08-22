@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 function Modal_Usuario({
     show,
@@ -32,25 +33,25 @@ function Modal_Usuario({
 
         // Validar username
         if (!formData.username?.trim() || formData.username.length < 3) {
-            Swal.fire('Usuario inválido', 'El nombre de usuario debe tener al menos 3 caracteres.', 'warning');
+            toast.warning('El nombre de usuario debe tener al menos 3 caracteres.', { autoClose: 3000 });
             return false;
         }
 
         // Validar nombre
         if (!formData.first_name?.trim() || formData.first_name.length < 3) {
-            Swal.fire('Usuario inválido', 'El nombre debe tener al menos 3 caracteres.', 'warning');
+            toast.warning('El nombre debe tener al menos 3 caracteres.', { autoClose: 3000 });
             return false;
         }
 
         // Validar apellido
         if (!formData.last_name?.trim() || formData.last_name.length < 3) {
-            Swal.fire('Usuario inválido', 'El apellido debe tener al menos 3 caracteres.', 'warning');
+            toast.warning('El apellido debe tener al menos 3 caracteres.', { autoClose: 3000 });
             return false;
         }
 
         // Validar email básico
         if (!emailRegex.test(formData.email)) {
-            Swal.fire('Email inválido', 'Debes ingresar un correo electrónico válido.', 'warning');
+            toast.warning('Debes ingresar un correo electrónico válido.', { autoClose: 3000 });
             return false;
         }
 
@@ -59,17 +60,13 @@ function Modal_Usuario({
 
             // Validar contraseña
             if (!passwordRegex.test(formData.password)) {
-                Swal.fire(
-                    'Contraseña insegura',
-                    'Debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número.',
-                    'warning'
-                );
+                toast.warning('Debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número.', { autoClose: 3000 });
                 return false;
             }
 
             // Validar coincidencia con la confirmación
             if (formData.password !== confirmPassword) {
-                Swal.fire('Contraseñas no coinciden', 'Las contraseñas deben ser iguales.', 'warning');
+                toast.warning('Las contraseñas deben ser iguales.', { autoClose: 3000 });
                 return false;
             }
 
