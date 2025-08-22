@@ -6,6 +6,7 @@ import Contacto from '../../assets/img/cards/contacto.jpg'
 import '../../styles/contacto.css'
 
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import * as Usuarios_Services from '../../services/Usuarios_Services';
 import Modal_Emprendimientos from '../registros/Modal_Emprendimientos';
@@ -26,13 +27,12 @@ function Contacto_content() {
 
     //verificar que haya iniciado sesion
     if (!token) {
-      Swal.fire('Acceso Denegado', 'Debes iniciar sesión para enviar un comentario.', 'warning');
-      return;
+      toast.info('Debes iniciar sesión para enviar un comentario.', { autoClose: 3000 });
     }
 
     // varificar la longitud del comentario
     if (comentario.trim().length < 5) {
-      Swal.fire('Comentario inválido', 'El comentario debe tener al menos 5 caracteres.', 'error');
+      toast.error('El comentario debe tener al menos 5 caracteres.', { autoClose: 3000 });
       return;
     }
 
@@ -42,14 +42,14 @@ function Contacto_content() {
 
       await Usuarios_Services.enviarComentario({ comentario }, token);
 
-      Swal.fire('¡Gracias!', 'Tu comentario ha sido enviado correctamente.', 'success');
+      toast.success('¡Tu comentario ha sido enviado correctamente!', { autoClose: 3000 });
       setComentario('');
 
       setEnviando(false);
 
     } catch (error) {
       console.error('Error al enviar comentario:', error);
-      Swal.fire('Error', 'Ocurrió un error al enviar tu comentario.', 'error');
+      toast.error('Ocurrió un error al enviar tu comentario.', { autoClose: 3000 });
     }
 
   }

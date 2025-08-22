@@ -6,6 +6,7 @@ import logo from '../../assets/img/logos/logo_blanco.png'
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 
 function NavBar() {
@@ -53,6 +54,7 @@ function NavBar() {
         Cookies.remove('user');
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
+        toast.success('Sesión cerrada correctamente.', { autoClose: 2000 });
         navigate('/');
       }
     });
