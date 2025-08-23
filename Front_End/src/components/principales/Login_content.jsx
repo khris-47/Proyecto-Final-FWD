@@ -145,9 +145,12 @@ function Login_content() {
           title: `¡Bienvenido, ${userData.first_name}!`,
           text: "Nos alegra tenerte aqui 😊",
           icon: "success",
-          confirmButtonText: "Continuar",
+          showConfirmButton : false,
+          timer: 2000,
         });
       }
+
+      
 
       // reiniciar bloqueo
       await Usuarios_Services.resetearBloqueoLogin(visitorId);

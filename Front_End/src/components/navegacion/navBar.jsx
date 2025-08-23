@@ -27,7 +27,6 @@ function NavBar() {
     try {
       const decoded = jwtDecode(token);
       userId = Number(decoded.user_id);
-      console.log(userId)
     } catch (error) {
       console.error("Error al decodificar el token:", error);
     }

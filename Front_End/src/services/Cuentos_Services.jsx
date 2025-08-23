@@ -26,7 +26,8 @@ export const getCuentos = async () => {
 export const crearCuentos = async (data) => {
     return await axios.post(`${API_BASE}/cuentos/`, data, {
         headers: {
-            Authorization: `Bearer ${access}`
+            Authorization: `Bearer ${access}`,
+            'Content-Type': 'multipart/form-data',
         },
     });
 };

@@ -73,6 +73,11 @@ function Registro_Cuentos() {
         formPayload.append("cuento", formData.cuento);
       }
 
+console.log("Datos enviados al crear cuento:");
+for (let [key, value] of formPayload.entries()) {
+  console.log(`${key}:`, value);
+}
+      
       // pregunta si se esta editando
       if (isEditing && editId) {
 
