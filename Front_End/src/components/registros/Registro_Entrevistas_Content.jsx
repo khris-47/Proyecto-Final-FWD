@@ -3,6 +3,7 @@ import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import * as Entrevistas_Services from '../../services/Entrevistas_Services';
 
 import Modal_Entrevista from '../registros/Modal_Entevista'
@@ -64,12 +65,7 @@ function Registro_Entrevistas() {
                 // enviamos los datos para la edicion
                 await Entrevistas_Services.editarEntrevista(editId, dataToSend);
 
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: 'Entrevista actualizada correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.success('Entrevista actualizada correctamente', { autoClose: 4000 });
 
 
             } else {
@@ -77,12 +73,7 @@ function Registro_Entrevistas() {
                 // caso contrario, enviamos los datos a creacion
                 await Entrevistas_Services.crearEntrevista(dataToSend);
 
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: 'Entrevista registrada correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.success('Entrevista registrada correctamente', { autoClose: 4000 });
 
                 // ocultamos el modal
                 setShowModal(false);
@@ -102,12 +93,7 @@ function Registro_Entrevistas() {
         } catch (err) {
             console.error('Error al registrar entrevista:', err);
 
-            Swal.fire({
-                title: '¡Error!',
-                text: 'Hubo un problema al registrar la entrevista',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-            });
+            toast.error('Hubo un problema al registrar la entrevista', { autoClose: 4000 });
 
         }
     };
@@ -148,14 +134,14 @@ function Registro_Entrevistas() {
 
                     // cambia el esatdo de la entrevista a 2 (inactivo)
                     await Entrevistas_Services.cambiarEstadoEntrevista(id, 2);
-                    Swal.fire('Entrevista desactivada', 'La entrevista ha sido desactivada correctamente.', 'success');
+                    toast.success('La entrevista ha sido desactivada correctamente.', { autoClose: 4000 });
 
                     // Recargar la lista de entrevistas
                     fetchEntrevistas();
 
                 } catch (error) {
                     console.error('Error al desactivar la entrevista:', error);
-                    Swal.fire('Error', 'No se pudo desactivar la entrevista.', 'error');
+                    toast.error('No se pudo desactivar la entrevista.', { autoClose: 4000 });
                 }
             }
         });
@@ -182,14 +168,14 @@ function Registro_Entrevistas() {
                     // ambia el estado de vuelta a 1 (activo)
                     await Entrevistas_Services.cambiarEstadoEntrevista(id, 1);
 
-                    Swal.fire('Entrevista activada', 'La entrevista ha sido activada correctamente.', 'success');
+                    toast.success('La entrevista ha sido activada correctamente.', { autoClose: 4000 });
 
                     // Recargar la lista de entrevistas
                     fetchEntrevistas();
 
                 } catch (error) {
                     console.error('Error al activar la entrevista:', error);
-                    Swal.fire('Error', 'No se pudo activar la entrevista.', 'error');
+                    toast.error('No se pudo activar la entrevista.', { autoClose: 4000 });
                 }
             }
         });

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { getUbicaciones } from '../../services/Ubicaciones_services';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 function Modal_Cuento({
     show,           // controla si el modal se muestra o no
@@ -54,39 +55,25 @@ function Modal_Cuento({
         // validaciones para las portadas
         if (formData.portada) {
             if (!formData.portada.type.startsWith('image/')) {
-                Swal.fire({
-                    title: 'Archivo no válido',
-                    text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.error('La portada debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
+
                 return false;
             }
-            
         }
 
         // validaciones para los cuentos
         if (formData.cuento) {
             if (formData.cuento.type !== 'application/pdf') {
-                Swal.fire({
-                    title: 'Archivo no válido',
-                    text: 'El cuento debe ser un archivo PDF',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.error('El cuento debe ser un archivo PDF', { autoClose: 3000 });
+
                 return false;
             }
-            
         }
 
         // validar el nombre del cuento 
         const nombreLimpio = (formData.nombre_Cuento || '').trim(); // evita undefined
         if (nombreLimpio.length < 5) {
-            Swal.fire(
-                'Nombre inválido',
-                'El nombre debe tener al menos 5 caracteres.',
-                'warning'
-            );
+            toast.warning('El nombre debe tener al menos 5 caracteres.', { autoClose: 3000 });
             return false;
         }
 

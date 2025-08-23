@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getUbicaciones } from '../../services/Ubicaciones_services';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 
 // al modal, directamente de defiinimos sus componentes
@@ -55,19 +56,19 @@ function Modal_Entevista({
 
         // Validar nombre de persona
         if (!formData.nombre_Persona?.trim() || formData.nombre_Persona.length < 3) {
-            Swal.fire('Nombre inválido', 'El nombre debe tener al menos 3 caracteres.', 'warning');
+            toast.warning('El nombre debe tener al menos 3 caracteres.', { autoClose: 3000 });
             return false;
         }
 
         // validar el link de youtube
         if (!formData.entrevista?.trim() || !urlRegex.test(formData.entrevista)) {
-            Swal.fire('Link inválido', 'Debes ingresar una URL válida para la entrevista.', 'warning');
+            toast.warning('Debes ingresar una URL válida para la entrevista.', { autoClose: 3000 });
             return false;
         }
 
         // Validar la descripción
         if (!formData.descripcion?.trim() || formData.descripcion.length < 20) {
-            Swal.fire('Descripción muy corta', 'Debe contener al menos 20 caracteres.', 'warning');
+            toast.warning('Debe contener al menos 20 caracteres.', { autoClose: 3000 });
             return false;
         }
 

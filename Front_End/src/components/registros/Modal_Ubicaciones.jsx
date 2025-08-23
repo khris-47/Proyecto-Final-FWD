@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 function Modal_Ubicaciones({
     show,           // controla si el modal se muestra o no
@@ -34,28 +35,22 @@ function Modal_Ubicaciones({
     // encargado de validar tipo y tamanho de imagen
     const validarArchivos = () => {
 
-
         if (formData.portada) {
             if (!formData.portada.type.startsWith('image/')) {
-                Swal.fire({
-                    title: 'Archivo no válido',
-                    text: 'La portada debe ser una imagen (JPG, PNG, WebP, etc.)',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.error('La portada debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
                 return false;
             }
         }
 
         // Validar nombre del lugar
         if (!formData.nombre.trim() || formData.nombre.length < 5) {
-            Swal.fire('Nombre inválido', 'El nombre debe tener al menos 5 caracteres.', 'warning');
+            toast.error('La portada no debe superar los 10MB', { autoClose: 3000 });
             return false;
         }
 
         // Validar la descripcion
         if (!formData.descripcion?.trim() || formData.descripcion.length < 20) {
-            Swal.fire('Descripción muy corta', 'Debe contener al menos 20 caracteres.', 'warning');
+            toast.warning('Debe contener al menos 20 caracteres.', { autoClose: 3000 });
             return false;
         }
 
