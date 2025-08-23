@@ -59,20 +59,6 @@ function Modal_Emprendimientos({ show, onHide }) {
             // verificar el tipo de archivo
             if (!formData.foto.type.startsWith('image/')) {
                 toast.error('La foto debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
-<<<<<<< Updated upstream
-                return false;
-            }
-
-            // verificar el tamanho de la foto
-            if (formData.foto.size > MAX_SIZE_MB) {
-                Swal.fire({
-                    title: 'Archivo demasiado grande',
-                    text: 'La foto no debe superar los 10MB',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-=======
->>>>>>> Stashed changes
                 return false;
             }
         }
@@ -119,7 +105,7 @@ function Modal_Emprendimientos({ show, onHide }) {
 
             //verificar que haya iniciado sesion
             if (!access) {
-                Stoast.info('Debes iniciar sesión para enviar el formulario.', { autoClose: 3000 });
+                toast.info('Debes iniciar sesión para enviar el formulario.', { autoClose: 3000 });
                 return;
             }
 

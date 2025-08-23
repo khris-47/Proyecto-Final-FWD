@@ -52,25 +52,11 @@ function Modal_Cuento({
     // validaciones para los inputs
     const validarArchivos = () => {
 
-        // tamanho maximo permitido (10mb)
-        const MAX_SIZE_MB = 10 * 1024 * 1024;
-
         // validaciones para las portadas
         if (formData.portada) {
             if (!formData.portada.type.startsWith('image/')) {
                 toast.error('La portada debe ser una imagen (JPG, PNG, WebP, etc.)', { autoClose: 3000 });
-<<<<<<< Updated upstream
-                return false;
-            }
-            if (formData.portada.size > MAX_SIZE_MB) {
-                Swal.fire({
-                    title: 'Archivo demasiado grande',
-                    text: 'La portada no debe superar los 10MB',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-=======
->>>>>>> Stashed changes
+
                 return false;
             }
         }
@@ -79,18 +65,7 @@ function Modal_Cuento({
         if (formData.cuento) {
             if (formData.cuento.type !== 'application/pdf') {
                 toast.error('El cuento debe ser un archivo PDF', { autoClose: 3000 });
-<<<<<<< Updated upstream
-                return false;
-            }
-            if (formData.cuento.size > MAX_SIZE_MB) {
-                Swal.fire({
-                    title: 'Archivo demasiado grande',
-                    text: 'El archivo del cuento no debe superar los 10MB',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-=======
->>>>>>> Stashed changes
+
                 return false;
             }
         }
