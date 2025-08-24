@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
-import fondo from '../../assets/img/fondos/fondo nocturno.png';
+import fondo from '../../assets/img/fondos/fondo_manglar.png';
 import '../../styles/cuentos.css';
 import { getPublicCuentos } from '../../services/Cuentos_Services';
 import { getRatingsCuentos, createOrUpdateRating } from '../../services/Rating_Services';
@@ -10,66 +10,51 @@ import Slider from "react-slick"; // carrusel
 import { Rating } from 'react-simple-star-rating';
 import withReactContent from 'sweetalert2-react-content';
 
-
 function Cuentos_Content() {
-
-    const MySwal = withReactContent(Swal); // dado que se utilizaran estrellas (rating) en el swal, se usa esta libreria
+    const MySwal = withReactContent(Swal); 
     const [cuentos, setCuentos] = useState([]);
     const [avgRatings, setAvgRatings] = useState({});
+    const [overlayColor, setOverlayColor] = useState('black');
 
-    // funcion para traer datos del cuento y su rating
+    const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
+
     const cargarDatos = async () => {
         try {
-            // traer los cuentos 
             const cuentosRes = await getPublicCuentos();
             setCuentos(cuentosRes.data);
 
-            // traer los ratings
             const ratings = await getRatingsCuentos();
             setAvgRatings(calcularPromedios(ratings));
-
         } catch (err) {
             console.error('Error al cargar datos:', err);
         }
     };
 
-    // carga lso cuentos al montar el componente
     useEffect(() => {
         cargarDatos();
     }, []);
 
-
-    // Agrupa y promedia por cuento
     const calcularPromedios = (ratings) => {
-
-        // aqui se almacebara la suma total y la cantidad de votos por cada cuento
-        const acumulador = {}; // { id: { suma, total } }
-
-        // recorremos cada rating recibido
+        const acumulador = {};
         ratings.forEach(({ cuento, valor }) => {
-            // Para cada cuento, verificamos si ya existe una entrada en el acumulador
             if (acumulador[cuento]) {
-                // Si ya existe, actualizamos sumando el nuevo valor y aumentando el contador
                 acumulador[cuento].suma += valor;
                 acumulador[cuento].total += 1;
             } else {
-                // Si no existe, creamos una nueva entrada inicializando suma y total
                 acumulador[cuento] = { suma: valor, total: 1 };
             }
         });
 
-        // creamos un nuevo objeto para almacenar los promedios
         const promedios = {};
-        // recorremos cada cuento en el acumulador para calcular su promedio
         Object.keys(acumulador).forEach((id) => {
-            // el promedio es la suma total de los valores dividida por la cantidad de votos
             promedios[id] = acumulador[id].suma / acumulador[id].total;
         });
-        // devolvemos el objeto con los promedios or cuento
+
         return promedios;
     };
 
-    // Configuración del carrusel
     const settings = {
         dots: true,
         infinite: true,
@@ -80,28 +65,13 @@ function Cuentos_Content() {
         autoplaySpeed: 4000,
         pauseOnHover: true,
         responsive: [
-            {
-                breakpoint: 992,
-                settings: {
-                    slidesToShow: 2,
-                }
-            },
-            {
-                breakpoint: 576,
-                settings: {
-                    slidesToShow: 1,
-                }
-            }
+            { breakpoint: 992, settings: { slidesToShow: 2 } },
+            { breakpoint: 576, settings: { slidesToShow: 1 } }
         ]
     };
 
-    // funcion para manejar los votos
     const handleVote = async (cuentoId) => {
-
-        // obtener el token 
         const token = Cookies.get('accessToken');
-
-        // si no hay token significa que el usuario no esta logueado
         if (!token) {
             await Swal.fire({
                 title: 'Necesitas iniciar sesión',
@@ -112,10 +82,7 @@ function Cuentos_Content() {
             return;
         }
 
-
-        let selected = 5; // valor por defecto para la calificacion
-
-        // modal personalizado
+        let selected = 5; 
         const { isConfirmed } = await MySwal.fire({
             title: 'Califica este cuento',
             html: (
@@ -132,33 +99,39 @@ function Cuentos_Content() {
             focusConfirm: false
         });
 
-        // si el usuario cancela, salir sin hacer nada
         if (!isConfirmed) return;
 
         try {
-            // enviar la calificacion a la apo
             await createOrUpdateRating(cuentoId, selected, token);
-            
             await Swal.fire('¡Gracias!', 'Tu voto se registró correctamente.', 'success');
-            
-            // refrescar los ratings para actualizar el promedio mostrado en pantalla
+
             const ratingsArray = await getRatingsCuentos();
             setAvgRatings(calcularPromedios(ratingsArray));
-
         } catch (err) {
             Swal.fire('Ups…', 'No pudimos registrar tu voto.', 'error');
             console.error(err);
         }
     };
 
-
     return (
         <div className='bodyCuentos'>
+            <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
             <img alt="" className="background-image-entrevistas" src={fondo} />
 
             <div className='content-cuentos'>
                 <header>
-                    <NavBar className='headerIndex' />
+                    <NavBar
+                        className='headerIndex'
+                        onToggleOverlayColor={toggleOverlayColor}
+                        overlayColor={overlayColor}
+                    />
                 </header>
 
                 <main className='mainCuentos'>
@@ -172,18 +145,15 @@ function Cuentos_Content() {
                             y los convertimos a un formato de cuento para que no se pierdan con el tiempo.
                         </p>
 
-                        {/* Carrusel de cuentos */}
                         <div className="slider-container">
                             <Slider {...settings}>
                                 {cuentos.filter(c => c.estado === 1).map((item) => (
                                     <div key={item.id}>
                                         <div className="card card-cuento shadow text-white position-relative">
-
-                                            {/* Promedio de votos */}
                                             <div className="avg-rating-wrapper">
                                                 <Rating
-                                                    readonly            // solo mostrar
-                                                    allowFraction        // medias estrellas (3.5, 4.2…)
+                                                    readonly
+                                                    allowFraction
                                                     initialValue={avgRatings[item.id] || 0}
                                                     SVGstyle={{ display: 'inline-block' }}
                                                     size={20}
@@ -193,7 +163,6 @@ function Cuentos_Content() {
                                                 </span>
                                             </div>
 
-                                            {/* Imagen + overlay */}
                                             <div className="position-relative">
                                                 <img
                                                     src={item.portada_url}
@@ -214,14 +183,12 @@ function Cuentos_Content() {
                                                         Ver
                                                     </a>
 
-                                                    {/* botón votar */}
                                                     <button
                                                         className="btn btn-outline-warning btn-sm mt-2"
                                                         onClick={() => handleVote(item.id)}
                                                     >
                                                         Votar
                                                     </button>
-
                                                 </div>
                                             </div>
                                         </div>

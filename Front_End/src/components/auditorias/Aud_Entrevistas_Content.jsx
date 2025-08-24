@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import '../../styles/forms.css';
-import Fondo from '../../assets/img/fondos/fondo_login.jpg';
+import Fondo from '../../assets/img/fondos/fondo_manglar.png';
 import NavBar from '../navegacion/navBar';
 import { obtenerAuditoriaEntrevistas } from '../../services/Auditorias_Services';
 import HTMLSafeText from './HTMLSafeText';
@@ -18,8 +18,9 @@ function Aud_Entrevistas_Content() {
 
     const [busqueda, setBusqueda] = useState('');
 
-    const handleBusquedaChange = (e) => {
-        setBusqueda(e.target.value);
+    const [overlayColor, setOverlayColor] = useState('black');
+    const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
     };
 
     // se crea una copia superficila del array, para no modificar directamente el estado original
@@ -77,18 +78,29 @@ function Aud_Entrevistas_Content() {
 
 
 
+    // Define la función para manejar el cambio en el input de búsqueda
+    const handleBusquedaChange = (e) => {
+        setBusqueda(e.target.value);
+    };
+
     return (
         <div className='bodyForm'>
-
+            {/* Capa de color sobre la imagen de fondo */}
+            <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.3)'
+                }}
+            />
             <div className="background-container-form">
                 <img className="background-image-form" src={Fondo} alt=".." />
                 <header className="headerAbout">
-                    <NavBar />
+                    <NavBar onToggleOverlayColor={toggleOverlayColor} overlayColor={overlayColor} />
                 </header>
             </div>
-
             <div className='capa'></div>
-
             <main className='mainForm'>
                 <div className='style-form'>
                     <div className='container'>
@@ -171,4 +183,4 @@ function Aud_Entrevistas_Content() {
     )
 }
 
-export default Aud_Entrevistas_Content
+export default Aud_Entrevistas_Content;

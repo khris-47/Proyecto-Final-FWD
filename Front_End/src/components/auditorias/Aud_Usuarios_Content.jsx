@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import '../../styles/forms.css';
-import Fondo from '../../assets/img/fondos/fondo_login.jpg';
+import Fondo from '../../assets/img/fondos/fondo_manglar.png';
 import NavBar from '../navegacion/navBar';
 import { obtenerAuditoriaUsuarios } from '../../services/Auditorias_Services';
 import HTMLSafeText from './HTMLSafeText';
@@ -13,6 +13,10 @@ function Aud_Usuarios_Content() {
     const access = Cookies.get('accessToken');
     const [busqueda, setBusqueda] = useState('');
     const [ordenAscendente, setOrdenAscendente] = useState(true);
+    const [overlayColor, setOverlayColor] = useState('black');
+    const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
 
     // carga del form
     useEffect(() => {
@@ -73,15 +77,29 @@ function Aud_Usuarios_Content() {
     };
 
     return (
-
         <div className='bodyForm'>
-
-            <div className="background-container-form">
+            <div
+                className="overlay-bg"
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    zIndex: 1,
+                    pointerEvents: 'none',
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.3)',
+                    transition: 'background 0.3s'
+                }}
+            />
+            <div className="background-container-form" style={{ position: 'fixed', zIndex: 0, width: '100vw', height: '100vh', top: 0, left: 0 }}>
                 <img className="background-image-form" src={Fondo} alt=".." />
-                <header className="headerAbout">
-                    <NavBar />
-                </header>
             </div>
+            <header className="headerAbout" style={{ position: 'relative', zIndex: 2 }}>
+                <NavBar onToggleOverlayColor={toggleOverlayColor} overlayColor={overlayColor} />
+            </header>
 
             <div className='capa'></div>
 

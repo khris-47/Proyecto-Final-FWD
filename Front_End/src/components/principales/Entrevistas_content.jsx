@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
-import fondo from '../../assets/img/fondos/fondo nocturno.png';
+import fondo from '../../assets/img/fondos/fondo_manglar.png';
 import '../../styles/entrevistas.css';
 import { getPublicEntrevistas } from '../../services/Entrevistas_Services';
 
@@ -14,6 +14,7 @@ const getYouTubeId = (url) => {
 
 function Entrevistas_content() {
     const [entrevistas, setEntrevistas] = useState([]);
+    const [overlayColor, setOverlayColor] = useState('black');
 
     // Carga las entrevistas al montar el componente
     useEffect(() => {
@@ -29,17 +30,40 @@ function Entrevistas_content() {
         cargarEntrevistas();
     }, []);
 
+    useEffect(() => {
+        document.body.classList.toggle('modo-blanco', overlayColor === 'white');
+        document.body.classList.toggle('modo-negro', overlayColor === 'black');
+        return () => {
+            document.body.classList.remove('modo-blanco');
+            document.body.classList.remove('modo-negro');
+        };
+    }, [overlayColor]);
 
+    const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
 
     return (
 
         <div className='bodyEntrevistas'>
+            <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
             {/* Fondo de la pagina */}
             <img alt="" className="background-image-entrevistas" src={fondo} />
 
             <div className='content-entrevistas'>
                 <header>
-                    <NavBar className='headerIndex' />
+                    <NavBar
+                        className='headerIndex'
+                        onToggleOverlayColor={toggleOverlayColor}
+                        overlayColor={overlayColor}
+                    />
                 </header>
 
                 <main className='mainEntrevistas'>

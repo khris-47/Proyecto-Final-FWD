@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate, useLocation  } from 'react-router-dom';
 import '../../styles/navBar.css'
@@ -6,9 +5,10 @@ import logo from '../../assets/img/logos/logo_blanco.png'
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 
-function NavBar() {
+function NavBar({ onToggleOverlayColor, overlayColor }) {
 
   // Obtengo los datos de la cokkies
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ function NavBar() {
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      userId = decoded.user_id;
+      userId = Number(decoded.user_id);
     } catch (error) {
       console.error("Error al decodificar el token:", error);
     }
@@ -52,6 +52,7 @@ function NavBar() {
         Cookies.remove('user');
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
+        toast.success('Sesión cerrada correctamente.', { autoClose: 2000 });
         navigate('/');
       }
     });
@@ -65,8 +66,10 @@ function NavBar() {
 
   return (
     <div className='bodyNav'>
-
-      <nav className='navbar'>
+      
+      <nav
+        className='navbar'
+      >
 
         {/* interruptor oculto */}
         <input type="checkbox" id="nav-toggle" className="nav-toggle" />
@@ -77,22 +80,48 @@ function NavBar() {
         </label>
 
         <ul className='navbar-items'>
-
           {/* izquierda */}
-          <Link to="/index" className={`links ${location.pathname === '/index' ? 'active' : ''}`}>
+          <Link
+            to="/index"
+            className={`links ${location.pathname === '/index' ? 'active' : ''}`}
+            
+          >
             Inicio
           </Link>
 
-          <li><Link to="/about" className={`links ${location.pathname === '/about' ? 'active' : ''}`}>Quienes Somos</Link></li>
+          <li>
+            <Link
+              to="/about"
+              className={`links ${location.pathname === '/about' ? 'active' : ''}`}
+             
+            >
+              Quienes Somos
+            </Link>
+          </li>
 
           {userId !== 1 ? (
-            <li><Link to="/contact" className={`links ${location.pathname === '/contact' ? 'active' : ''}`}>Contacto</Link></li>
+            <li>
+              <Link
+                to="/contact"
+                className={`links ${location.pathname === '/contact' ? 'active' : ''}`}
+                
+              >
+                Contacto
+              </Link>
+            </li>
           ) : (
-
             <li className="submenu-hover popup">
               <input type="checkbox" id="submenu-toggle" />
 
-              <label htmlFor="submenu-toggle" className="submenu-toggle-label " tabIndex="0">
+              <label
+                htmlFor="submenu-toggle"
+                className="submenu-toggle-label"
+                tabIndex="0"
+                style={{
+                  color: overlayColor === 'white' ? '#222' : 'white',
+               
+                }}
+              >
                 <span className='links'>Auditorías</span>
               </label>
 
@@ -111,13 +140,16 @@ function NavBar() {
                 </ul>
               </nav>
             </li>
-
-
-
           )}
 
-
-          <li><Link to="/cuentos" className={`links ${location.pathname === '/cuentos' ? 'active' : ''}`}>Cuentos</Link></li>
+          <li>
+            <Link
+              to="/cuentos"
+              className={`links ${location.pathname === '/cuentos' ? 'active' : ''}`}
+            >
+              Cuentos
+            </Link>
+          </li>
 
           {/* Logo centrado */}
           <li className="logo-container">
@@ -140,6 +172,23 @@ function NavBar() {
             </a>
           </li>
 
+          {/* Botón para cambiar color de fondo, solo si se pasa la función */}
+          {onToggleOverlayColor && (
+            <li>
+              <button
+                className="btn"
+                style={{
+                  background: overlayColor === 'black' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.3)',
+                  color: overlayColor === 'black' ? 'white' : 'black',
+                  border: '1px solid #0094ff',
+                  marginRight: '10px'
+                }}
+                onClick={onToggleOverlayColor}
+              >
+                {overlayColor === 'black' ? <i class='bx bx-sun'></i> : <i class='bx bx-moon'></i>}
+              </button>
+            </li>
+          )}
 
           <div className="perfil-btn">
             <label className="popup">

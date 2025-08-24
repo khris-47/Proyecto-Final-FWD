@@ -1,23 +1,44 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import '../../styles/admin.css'
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../navegacion/navBar';
-import fondo from '../../assets/img/fondos/fondo nocturno.png';
+import fondo from '../../assets/img/fondos/fondo_manglar.png';
 import entrevista from '../../assets/img/cards/entrevistas.png';
 import cuentos from '../../assets/img/cards/cuentos.png';
 import ubicaciones from '../../assets/img/cards/ubicaciones.png';
 
 function Menu_admin() {
-
     const navigate = useNavigate();
+    const [overlayColor, setOverlayColor] = useState('black');
+    const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
+
+    useEffect(() => {
+        document.body.classList.toggle('modo-blanco', overlayColor === 'white');
+        document.body.classList.toggle('modo-negro', overlayColor === 'black');
+        return () => {
+            document.body.classList.remove('modo-blanco');
+            document.body.classList.remove('modo-negro');
+        };
+    }, [overlayColor]);
 
     return (
 
         <div className="bodyAdmin">
+            {/* Capa de color sobre la imagen de fondo */}
+            <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
             <img alt="" className="background-image" src={fondo} />
 
             <header>
-                <NavBar className="headerIndex" />
+                <NavBar className="headerIndex" onToggleOverlayColor={toggleOverlayColor} overlayColor={overlayColor} />
             </header>
 
             <main className="mainAdmin mt-5">
