@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 export const AuthContext = createContext();
 
@@ -76,7 +77,7 @@ export const AuthProvider = ({ children }) => {
                         }).then(() => {
                             cerrarSesion();
                         });
-
+                        toast.info('Tu sesión ha finalizado. Por favor, inicia sesión nuevamente.', { autoClose: 2500 });
                         return;
                     }
 
@@ -101,7 +102,8 @@ export const AuthProvider = ({ children }) => {
                                     title: 'Sesión extendida',
                                     text: 'Tu sesión ha sido renovada exitosamente.'
                                 });
-
+                                     
+                                toast.success('Tu sesión ha sido renovada exitosamente.', { autoClose: 2500 });
                             } catch (err) {
                                 console.error('Error al extender sesión:', err);
 
@@ -112,6 +114,7 @@ export const AuthProvider = ({ children }) => {
                                 }).then(() => {
                                     cerrarSesion();
                                 });
+                                toast.error('No fue posible renovar tu sesión. Por favor, inicia sesión de nuevo.', { autoClose: 2500 });
                             }
 
                         } else {

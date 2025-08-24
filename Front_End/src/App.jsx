@@ -9,6 +9,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import { getVisitorId } from './utils/fingerprint';
 
 import { AuthProvider } from './components/navegacion/AuthContext';
+import { ToastContainer } from 'react-toastify';
+
 
 function App() {
   const visitorIdRef = useRef(null);
@@ -29,6 +31,7 @@ function App() {
   return (
     <AuthProvider>
       <Routing ></Routing>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </AuthProvider>
   )
 }

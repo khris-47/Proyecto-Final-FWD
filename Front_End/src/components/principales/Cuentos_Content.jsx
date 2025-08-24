@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import fondo from '../../assets/img/fondos/fondo_manglar.png';
 import '../../styles/cuentos.css';
 import { getPublicCuentos } from '../../services/Cuentos_Services';
@@ -73,12 +74,7 @@ function Cuentos_Content() {
     const handleVote = async (cuentoId) => {
         const token = Cookies.get('accessToken');
         if (!token) {
-            await Swal.fire({
-                title: 'Necesitas iniciar sesión',
-                text: 'Inicia sesión para poder votar un cuento.',
-                icon: 'info',
-                confirmButtonText: 'Entendido'
-            });
+            toast.info('Necesitas iniciar sesión para poder votar un cuento.', { autoClose: 2000 });
             return;
         }
 
@@ -103,12 +99,14 @@ function Cuentos_Content() {
 
         try {
             await createOrUpdateRating(cuentoId, selected, token);
-            await Swal.fire('¡Gracias!', 'Tu voto se registró correctamente.', 'success');
 
+            toast.success('¡Voto registrado correctamente!', { autoClose: 3000 });
+            
+            // refrescar los ratings para actualizar el promedio mostrado en pantalla
             const ratingsArray = await getRatingsCuentos();
             setAvgRatings(calcularPromedios(ratingsArray));
         } catch (err) {
-            Swal.fire('Ups…', 'No pudimos registrar tu voto.', 'error');
+            toast.error('Ups… No pudimos registrar tu voto.', { autoClose: 3000 });
             console.error(err);
         }
     };

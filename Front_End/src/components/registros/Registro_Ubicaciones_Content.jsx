@@ -4,6 +4,7 @@ import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
 import * as Ubicaciones_services from '../../services/Ubicaciones_services'
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 import Modal_Ubicaciones from './Modal_Ubicaciones';
 
@@ -77,12 +78,7 @@ function Registro_Ubicaciones_Content() {
                 // enviamos los datos para la edicion
                 await Ubicaciones_services.editarUbicacion(editId, formPayload);
 
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: 'Ubicacion actualizada correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.success('Ubicación actualizada correctamente', { autoClose: 4000 });
 
             } else {
 
@@ -96,12 +92,7 @@ function Registro_Ubicaciones_Content() {
                 // en caso de un create
                 await Ubicaciones_services.crearUbicacion(formPayload);
 
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: 'Ubicacion registrada correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
+                toast.success('Ubicación registrada correctamente', { autoClose: 4000 });
 
                 // ocultamos el modal
                 setShowModal(false);
@@ -122,12 +113,7 @@ function Registro_Ubicaciones_Content() {
             console.error('Error al registrar:', err);
             console.log("Detalles del error:", err?.response?.data);
 
-            Swal.fire({
-                title: '¡Error!',
-                text: 'Hubo un problema al registrar', err,
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-            });
+            toast.error('Hubo un problema al registrar la ubicación', { autoClose: 4000 });
         }
     };
 
@@ -168,14 +154,14 @@ function Registro_Ubicaciones_Content() {
                     await Ubicaciones_services.BorrarUbicacion(id)
 
                     // mostramos un mensaje de exito
-                    Swal.fire('Ubicacion eliminada', 'La ubicacion ha sido eliminado.', 'success');
+                    toast.success('La ubicación ha sido eliminada.', { autoClose: 4000 });
 
                     // refrescamos la lista
                     fetchUbicaciones();
 
                 } catch (err) {
                     console.error('error al eliminar: ', err);
-                    Swal.fire('Error', 'No se pudo eliminar la ubicacion', 'error');
+                    toast.error('No se pudo eliminar la ubicación', { autoClose: 4000 });
                 }
 
 
@@ -256,30 +242,11 @@ function Registro_Ubicaciones_Content() {
                         <div className="row justify-content-center align-items-center">
                             <div className='d-flex align-items-center'>
 
-                                <button type='button' className='btn btn-primary bx bxs-message-square-add' onClick={() => setShowModal(true)}>
+                                <button type='button' className='btn btn-primary bx bxs-message-square-add mb-1' onClick={() => setShowModal(true)}>
                                     Agregar
                                 </button>
 
-                                {/* From Uiverse.io by Cksunandh  */}
-                                <div className="tooltip-container">
-                                    <div className="icon">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            width="30"
-                                            height="30"
-                                        >
-                                            <path
-                                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.518 0-10-4.482-10-10s4.482-10 10-10 10 4.482 10 10-4.482 10-10 10zm-1-16h2v6h-2zm0 8h2v2h-2z"
-                                            ></path>
-                                        </svg>
-                                    </div>
-                                    <div className="tooltip">
-                                        <p>Debido al plan de uso, no es posible subir archivos mayores a 10MB. En el caso de imágenes, se recomienda utilizar el formato WebP para una mejor optimización.</p>
-
-                                        <p>https://convertio.co/es/download/9cdbb519f54e24d475ec0b1e24fbd1c4eb6db7/</p>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 

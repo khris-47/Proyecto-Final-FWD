@@ -3,6 +3,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 
 function RutasPrivadas({ children, requiereAdmin = false }) {
@@ -18,18 +19,13 @@ function RutasPrivadas({ children, requiereAdmin = false }) {
 
         const decoded = jwtDecode(token); // decodificamos el token
         
+        console.log("decodificacion", decoded?.user_id)
 
-        const esAdmin = decoded?.user_id === 1;  // preguntamos si es el admin
+        const esAdmin = decoded?.user_id == 1;  // preguntamos si es el admin
 
         // verifica que si sea el admin
         if (requiereAdmin && !esAdmin) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Acceso denegado',
-                text: 'Necesitás permisos de administrador para entrar acá.',
-                timer: 3000,
-                showConfirmButton: false
-            });
+            toast.warning('Necesitás permisos de administrador para entrar acá.', { autoClose: 3000 });
             return <Navigate to="/index" />;
         }
 

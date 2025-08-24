@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import '../../styles/forms.css';
 import Fondo from '../../assets/img/fondos/fondo_login.jpg';
 import NavBar from '../navegacion/navBar';
@@ -72,18 +73,18 @@ function Registro_Cuentos() {
         formPayload.append("cuento", formData.cuento);
       }
 
+console.log("Datos enviados al crear cuento:");
+for (let [key, value] of formPayload.entries()) {
+  console.log(`${key}:`, value);
+}
+      
       // pregunta si se esta editando
       if (isEditing && editId) {
 
         // enviamos los datos para la edicion
         await Cuentos_Services.editarCuentos(editId, formPayload);
 
-        Swal.fire({
-          title: '¡Éxito!',
-          text: 'Cuento actualizado correctamente',
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-        });
+        toast.success('Cuento actualizado correctamente', { autoClose: 4000 });
 
 
       } else {
@@ -97,12 +98,7 @@ function Registro_Cuentos() {
         // caso contrario, enviamos los datos a creacion
         await Cuentos_Services.crearCuentos(formPayload);
 
-        Swal.fire({
-          title: '¡Éxito!',
-          text: 'Cuento registrado correctamente',
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-        });
+        toast.success('Cuento registrado correctamente', { autoClose: 4000 });
 
         // ocultamos el modal
         setShowModal(false);
@@ -124,12 +120,7 @@ function Registro_Cuentos() {
 
       console.log("Detalles del error:", err?.response?.data);
 
-      Swal.fire({
-        title: '¡Error!',
-        text: 'Hubo un problema al registrar el cuento',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
+      toast.error('Hubo un problema al registrar el cuento', { autoClose: 4000 });
 
     }
   };
@@ -171,14 +162,14 @@ function Registro_Cuentos() {
 
           // cambia el esatdo del objeto a 2 (inactivo)
           await Cuentos_Services.cambiarEstadoCuentos(id, 2);
-          Swal.fire('Cuento desactivado', 'El cuento ha sido desactivado correctamente.', 'success');
+          toast.success('El cuento ha sido desactivado correctamente.', { autoClose: 4000 });
 
           // Recargar la lista de cuentos
           fetchCuentos();
 
         } catch (error) {
           console.error('Error al desactivar el cuento:', error);
-          Swal.fire('Error', 'No se pudo desactivar el cuento.', 'error');
+          toast.error('No se pudo desactivar el cuento.', { autoClose: 4000 });
         }
       }
     });
@@ -205,14 +196,14 @@ function Registro_Cuentos() {
           // ambia el estado de vuelta a 1 (activo)
           await Cuentos_Services.cambiarEstadoCuentos(id, 1);
 
-          Swal.fire('Cuento activado', 'El cuento ha sido activado correctamente.', 'success');
+          toast.success('El cuento ha sido activado correctamente.', { autoClose: 4000 });
 
           // Recargar la lista de cuento
           fetchCuentos();
 
         } catch (error) {
           console.error('Error al activar el cuento:', error);
-          Swal.fire('Error', 'No se pudo activar el cuento.', 'error');
+          toast.error('No se pudo activar el cuento.', { autoClose: 4000 });
         }
       }
     });
@@ -311,9 +302,8 @@ function Registro_Cuentos() {
                   </div>
                   <div className="tooltip">
 
-                    <p>Debido al plan de uso, no es posible subir archivos mayores a 10MB. En el caso de imágenes, se recomienda utilizar el formato WebP para una mejor optimización.</p>
+                    <p>Sube imágenes con proporción similar a portadas de libro o fondo de teléfono, para que se vean bien en las cards. Evita usar fondos de escritorio completos o con un largo mayor al alto.</p>
 
-                    <p>https://convertio.co/es/download/9cdbb519f54e24d475ec0b1e24fbd1c4eb6db7/</p>
                   </div>
                 </div>
 

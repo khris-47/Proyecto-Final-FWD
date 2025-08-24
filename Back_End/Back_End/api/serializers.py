@@ -1,9 +1,64 @@
 from rest_framework import serializers
 from .models import *
-import cloudinary.uploader
+from django.conf import settings
+import boto3
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
+
+# ===========================================================================
+# Funciones auxiliares para subir archivos a S3 -----------------------------
+# ===========================================================================
+
+# Funcion para subir/actualizar las imagenes
+def _upload_to_s3(file, folder=""):
+    # esta funcion se encarga de subir el archivo s3 y retornar la URL publica
+    # file: archivo recibido del front. folder: subcarpeta dentro del bucket
+     
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id = settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME,
+    ) 
+
+    # generar la clave del objeto: folder/nombre
+    file_key = f"{folder}/{file.name}"
+
+    # subir archivos al s3
+    s3.upload_fileobj(
+        file,
+        settings.AWS_STORAGE_BUCKET_NAME,
+        file_key,
+    )
+
+    # construir la url publica
+    url = f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{file_key}"
+    return url 
+
+# Funcion para subir/actualizar los pdf de los cuentos
+def _upload_pdf_to_s3(file, folder=""):
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id = settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key = settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME,
+    )
+
+    file_key = f"{folder}/{file.name}"
+
+    s3.upload_fileobj(
+        file,
+        settings.AWS_STORAGE_BUCKET_NAME,
+        file_key,
+        ExtraArgs={
+            'ContentType': 'application/pdf', 
+        }
+    )
+
+    url = f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{file_key}"
+    return url
 
 
 # ===========================================================================
@@ -90,14 +145,9 @@ class UbicacionesSerializer(serializers.ModelSerializer):
         # ya que el modelo espera URLs (TextField), no archivos directamente.
         portada_file = validated_data.pop('portada', None)
 
-        # en caso de que, se haya recibido una imagen, se sube a cloudinary
+        # Si hay imagen, la subimos a S3
         if portada_file:
-            result =  cloudinary.uploader.upload(
-                portada_file,               # el archivo recibido
-                resource_type='image')      # indicamos que es una imagen
-            
-            # guardamos la URL segura de la imagen subida en el campo de portada
-            validated_data['portada'] = result.get('secure_url')
+            validated_data['portada'] = _upload_to_s3(portada_file, folder="ubicaciones")
 
         # creamos y retornamos la instacia del modelo con las URLs ya listas
         return super().create(validated_data)
@@ -109,8 +159,7 @@ class UbicacionesSerializer(serializers.ModelSerializer):
 
         # tambien valida si el archivo es una cadena vacia
         if portada_file and portada_file != "":
-            result = cloudinary.uploader.upload(portada_file, resource_type='image')
-            instance.portada = result.get('secure_url')
+            instance.portada = _upload_to_s3(portada_file, folder="ubicaciones")
 
         # Para cualquier otro campo, se actualiza normalmente
         for attr, value in validated_data.items():
@@ -145,6 +194,7 @@ class CuentosSerializer(serializers.ModelSerializer):
     # Salida: Mostrar URL guardada
     portada_url = serializers.CharField(source='portada', read_only=True)
     cuento_url = serializers.CharField(source='cuento', read_only=True)
+    
     # mostrar nombre de la ubicacion
     ubicacion_nombre = serializers.CharField(source='ubicacion.nombre', read_only=True)
 
@@ -178,25 +228,15 @@ class CuentosSerializer(serializers.ModelSerializer):
         portada_file = validated_data.pop('portada', None)
         cuento_file = validated_data.pop('cuento', None)
 
-        # en caso de que, se haya recibido una imagen, se sube a cloudinary
+        # En caso de recibir una imagen, se sube a S3
         if portada_file:
-            result =  cloudinary.uploader.upload(
-                portada_file,               # el archivo recibido
-                resource_type='image')      # indicamos que es una imagen
-            
-            # guardamos la URL segura de la imagen subida en el campo de portada
-            validated_data['portada'] = result.get('secure_url')
+            validated_data['portada'] = _upload_to_s3(portada_file, folder="portadas")
 
-        # en caso de haber recibido un cuento en PDF, se sube a Cloudinary
+        # En caso de recibir un cuento en PDF, se sube a S3
         if cuento_file:
-            result =  cloudinary.uploader.upload(
-                cuento_file,                # archibo recibido
-                resource_type='auto')        # raw permite subir archivos como PDF, ZIP, DOC, etc.
-            
-            # guardmos la URL del archivo PDF en el campo de cuento
-            validated_data['cuento'] = result.get('secure_url')
+            validated_data['cuento'] = _upload_pdf_to_s3(cuento_file, folder="cuentos")
 
-        # creamos y retornamos la instacia del modelo con las URLs ya listas
+        # Creamos y retornamos la instancia del modelo con las URLs ya listas
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
@@ -207,12 +247,10 @@ class CuentosSerializer(serializers.ModelSerializer):
 
         # tambien valida si el archivo es una cadena vacia ("")
         if portada_file and portada_file != "":
-            result = cloudinary.uploader.upload(portada_file, resource_type='image')
-            instance.portada = result.get('secure_url')
+             instance.portada = _upload_to_s3(portada_file, folder="portadas")
 
         if cuento_file and cuento_file != "":
-            result = cloudinary.uploader.upload(cuento_file, resource_type='auto')
-            instance.cuento = result.get('secure_url')
+            instance.cuento = _upload_pdf_to_s3(cuento_file, folder="cuentos")
 
         # Para cualquier otro campo, se actualiza normalmente
         for attr, value in validated_data.items():
@@ -280,12 +318,8 @@ class EmprendimientoSerializer(serializers.ModelSerializer):
         foto_file =  validated_data.pop('foto', None)
 
         if foto_file:
-            result =  cloudinary.uploader.upload(
-                foto_file,
-                resource_type = 'image'
-            )
-
-            validated_data['foto'] = result.get('secure_url')
+            # Subir a S3 en lugar de Cloudinary
+            validated_data['foto'] = _upload_to_s3(foto_file, folder="emprendimientos")
 
         return super().create(validated_data)
     
@@ -330,7 +364,6 @@ class RecoveryBlockSerializer(serializers.ModelSerializer):
 # ===========================================================================
 # -- Auditorias -------------------------------------------------------------
 # ===========================================================================
-
 
 # -- Serializer para la Auditoria de Entrevistas ---------
 class AudEntrevistasSerializer(serializers.ModelSerializer):

@@ -1,0 +1,7 @@
+20/8/2025
+Iniciamos con investigación 
+
+Jostin Espinoza: Toasty Notification importado y utilizado en Mi Peril Content 
+Se debe instalar con: npm install react-toastify(va más dirigio a Chris por los errores)
+Los he añadido con restricciones de tiempo individules para mayor control 
+y he comenzado a utilizar el modo oscuro, aclaro que no lo he usado como tal en el proyecto
