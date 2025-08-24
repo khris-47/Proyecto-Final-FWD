@@ -9,6 +9,23 @@ function Ubicaciones_content() {
   const [animacionFondo, setAnimacionFondo] = useState("");
   const [setAnimacionImagen] = useState("entrando");
   const [datosCargados, setDatosCargados] = useState(false);
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
+
+  const [inicioScroll, setInicioScroll] = useState(0);
+  const thumbnailsVisibles = 3;
+
+
+  const subir = () => {
+    const nuevoInicio = (inicioScroll - 1 + ubicaciones.length) % ubicaciones.length;
+    setInicioScroll(nuevoInicio);
+  };
+
+  const bajar = () => {
+    const nuevoInicio = (inicioScroll + 1) % ubicaciones.length;
+    setInicioScroll(nuevoInicio);
+  };
+
+
 
   useEffect(() => {
     const cargarUbicaciones = async () => {
@@ -35,18 +52,7 @@ function Ubicaciones_content() {
     cargarUbicaciones();
   }, []);
 
-  const siguienteUbicacion = () => {
-    setAnimacionFondo("");
 
-    setTimeout(() => {
-      const nuevoIndice = (indiceActual + 1) % ubicaciones.length;
-      setIndiceActual(nuevoIndice);
-
-      setTimeout(() => {
-        setAnimacionFondo("expandida");
-      }, 30);
-    }, 50);
-  };
 
   if (!datosCargados) return <p>Cargando ubicaciones...</p>;
 
@@ -69,7 +75,7 @@ function Ubicaciones_content() {
         <main className="mainLugares">
           <div className="seccion izquierda-lugares">
             <div className="texto-ubicacion">
-              
+
               <h1 className={`texto-animado titulo ${indiceActual % 2 === 0 ? 't1' : 't2'}`}>{ubicaciones[indiceActual].nombre}</h1>
               <p className={`texto-animado descripcion ${indiceActual % 2 === 0 ? 't1' : 't2'}`}>{ubicaciones[indiceActual].descripcion}</p>
 
@@ -78,16 +84,40 @@ function Ubicaciones_content() {
 
           <div className="seccion derecha-lugares">
             <div className="contenedor-imagen-boton">
-              {/* <img
-                className={`siguiente-imagen ${animacionImagen}`}
-                src={ubicaciones[(indiceActual + 1) % ubicaciones.length].portada}
-                alt="Siguiente ubicación"
-              /> */}
-              <button className="next-btn" onClick={siguienteUbicacion}>
-                Siguiente
-              </button>
+              {/* Si dejas algo más aquí */}
             </div>
           </div>
+
+          {/* Botón y Sidebar independientes */}
+          <button className="toggle-sidebar" onClick={() => setSidebarAbierto(!sidebarAbierto)}>
+            ☰
+          </button>
+
+          <div className={`sidebar ${sidebarAbierto ? "abierta" : ""}`}>
+            <button onClick={subir} className="flecha-scroll">▲</button>
+
+            {ubicaciones
+              .slice(inicioScroll, inicioScroll + thumbnailsVisibles)
+              .map((ubicacion, index) => (
+                <div
+                  key={inicioScroll + index}
+                  className="thumbnail-wrapper"
+                  onClick={() => setIndiceActual(inicioScroll + index)}
+                >
+                  <div
+                    className={`thumbnail ${indiceActual === inicioScroll + index ? "activo" : ""}`}
+                    style={{ backgroundImage: `url(${ubicacion.portada})` }}
+                  />
+                  <span className="thumbnail-label">{ubicacion.nombre}</span>
+                </div>
+              ))}
+
+            <button onClick={bajar} className="flecha-scroll">▼</button>
+          </div>
+
+
+
+
         </main>
       </div>
     </div>

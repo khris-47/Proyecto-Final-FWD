@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NavBar from '../navegacion/navBar'
-import fondo from '../../assets/img/fondos/fondo_principal.JPG'
-import Contacto from '../../assets/img/cards/contacto.jpg'
+import fondo from '../../assets/img/fondos/fondo nocturno.png';
+import Contacto from '../../assets/img/fondos/garza2.png'
 
 import '../../styles/contacto.css'
 

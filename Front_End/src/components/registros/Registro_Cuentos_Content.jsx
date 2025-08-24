@@ -72,11 +72,6 @@ function Registro_Cuentos() {
       if (formData.cuento) {
         formPayload.append("cuento", formData.cuento);
       }
-
-console.log("Datos enviados al crear cuento:");
-for (let [key, value] of formPayload.entries()) {
-  console.log(`${key}:`, value);
-}
       
       // pregunta si se esta editando
       if (isEditing && editId) {
@@ -86,14 +81,7 @@ for (let [key, value] of formPayload.entries()) {
 
         toast.success('Cuento actualizado correctamente', { autoClose: 4000 });
 
-
       } else {
-
-        // ver como se estan enviando los datos
-        // console.log("Datos del formulario:");
-        // for (let [key, value] of formPayload.entries()) {
-        //   console.log(`${key}:`, value);
-        // }
 
         // caso contrario, enviamos los datos a creacion
         await Cuentos_Services.crearCuentos(formPayload);

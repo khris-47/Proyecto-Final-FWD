@@ -29,10 +29,7 @@ function Entrevistas_content() {
         cargarEntrevistas();
     }, []);
 
-
-
     return (
-
         <div className='bodyEntrevistas'>
             {/* Fondo de la pagina */}
             <img alt="" className="background-image-entrevistas" src={fondo} />
@@ -75,12 +72,10 @@ function Entrevistas_content() {
 
                                                 </div>
 
-
                                                 <div className="card-body">
                                                     <h5 className="card-title" style={{ color: "#0094ff", fontWeight: "bold" }} >Entrevista a {item.nombre_Persona} <span style={{ color: "rgb(255, 255, 255)" }} >||</span> <span style={{ color: "#00d4ff" }} > {item.ubicacion_nombre} </span>  </h5>
                                                     <p className="card-text text-md-center">{item.descripcion}</p>
                                                 </div>
-
 
                                             </div>
                                         </div>

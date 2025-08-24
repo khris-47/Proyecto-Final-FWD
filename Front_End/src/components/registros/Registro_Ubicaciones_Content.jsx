@@ -251,7 +251,7 @@ function Registro_Ubicaciones_Content() {
                         </div>
 
 
-                        <div className='row justify-content-center align-items-center g-2'>
+                        <div className='row justify-content-center align-items-center g-2 table-dark'>
                             <div className='col'>
                                 <div className='table-responsive'>
                                     {loading ? (
@@ -301,6 +301,7 @@ function Registro_Ubicaciones_Content() {
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </main>
