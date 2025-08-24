@@ -17,6 +17,7 @@ function Registro_Ubicaciones_Content() {
     const [isEditing, setIsEditing] = useState(false);  // determina si el modal se usara para editar 
     const [editId, setEditId] = useState(null);         // guarda el ID del objeto a editar
     const [showModal, setShowModal] = useState(false); //  controla la visibilidad del modal
+     const [overlayColor, setOverlayColor] = useState('black');
 
     const [ordenAscendente, setOrdenAscendente] = useState(true);
 
@@ -169,6 +170,10 @@ function Registro_Ubicaciones_Content() {
         });
     };
 
+     const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
+
     const handleBusquedaChange = (e) => {
         setBusqueda(e.target.value);
     };
@@ -206,9 +211,21 @@ function Registro_Ubicaciones_Content() {
         <div className='bodyForm'>
 
             <div className="background-container-form">
+                 <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
                 <img className="background-image-form" src={Fondo} alt=".." />
                 <header className="headerAbout">
-                    <NavBar />
+                      <NavBar
+                        className='headerIndex'
+                        onToggleOverlayColor={toggleOverlayColor}
+                        overlayColor={overlayColor}
+                    />
                 </header>
             </div>
 

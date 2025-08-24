@@ -27,6 +27,7 @@ function MiPerfilContent() {
 
   const decoded = jwtDecode(token); // decodificamos el token
   const userId = decoded.user_id // obtenemos el id de ese token
+    const [overlayColor, setOverlayColor] = useState('black');
 
   const [formData, setFormData] = useState({       //    formulario editable (rellnado con datos del usuario)
     username: '',
@@ -261,13 +262,28 @@ function MiPerfilContent() {
         }
       }
     };
+     const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
 
     return (
       <div className="mi-perfil-container">
         <div className="background-container">
+           <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
           <img className="background-image" src={Fondo} alt=".." />
           <header className="headerAbout">
-            <NavBar />
+              <NavBar
+                        className='headerIndex'
+                        onToggleOverlayColor={toggleOverlayColor}
+                        overlayColor={overlayColor}
+                    />
           </header>
         </div>
 

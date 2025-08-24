@@ -3,7 +3,7 @@ import NavBar from '../navegacion/navBar';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import fondo from '../../assets/img/fondos/fondo_manglar.png';
+import fondo from '../../assets/img/fondos/fondo nocturno.png';
 import '../../styles/cuentos.css';
 import { getPublicCuentos } from '../../services/Cuentos_Services';
 import { getRatingsCuentos, createOrUpdateRating } from '../../services/Rating_Services';

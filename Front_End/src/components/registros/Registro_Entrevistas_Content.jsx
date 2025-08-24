@@ -25,7 +25,7 @@ function Registro_Entrevistas() {
         descripcion: '',
         ubicacion: ''
     });
-
+ const [overlayColor, setOverlayColor] = useState('black');
     const [ordenAscendente, setOrdenAscendente] = useState(true);
 
 
@@ -213,15 +213,30 @@ function Registro_Entrevistas() {
         // actualizamos el estado
         setEntrevistas(listaOrdenada);
     };
-
+ const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
 
     return (
         <div className='bodyForm'>
 
-            <div className="background-container-form">
+            <div className="background-container-form"
+            > <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
+                
                 <img className="background-image-form" src={Fondo} alt=".." />
                 <header className="headerAbout">
-                    <NavBar />
+                     <NavBar
+                        className='headerIndex'
+                        onToggleOverlayColor={toggleOverlayColor}
+                        overlayColor={overlayColor}
+                    />
                 </header>
             </div>
 

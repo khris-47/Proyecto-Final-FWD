@@ -23,6 +23,7 @@ function Lista_Usuarios_Content() {
 
     const [emprendimientos, setEmprendimientos] = useState([]);
     const [mostrarEmprendimiento, setMostrarEmprendimiento] = useState(false);
+     const [overlayColor, setOverlayColor] = useState('black');
 
     const fetchUsuarios = async () => {
         try {
@@ -105,22 +106,36 @@ function Lista_Usuarios_Content() {
         setUsuarios(usuariosOrdenados);
     };
 
+      const toggleOverlayColor = () => {
+        setOverlayColor(prev => prev === 'black' ? 'white' : 'black');
+    };
 
     return (
 
         <div className='bodyForm'>
 
             <div className="background-container-form">
-
+ <div
+                className="overlay-bg"
+                style={{
+                    background: overlayColor === 'black'
+                        ? 'rgba(0,0,0,0.6)'
+                        : 'rgba(255,255,255,0.15)'
+                }}
+            />
                 <img className="background-image-form" src={Fondo} alt=".." />
 
                 <header className="headerAbout">
-                    <NavBar />
+                     <NavBar
+                        className='headerIndex'
+                        onToggleOverlayColor={toggleOverlayColor}
+                        overlayColor={overlayColor}
+                    />
                 </header>
 
 
             </div>
-            <div className='capa'></div>
+         
 
 
             <main className='mainForm'>

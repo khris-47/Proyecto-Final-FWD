@@ -25,6 +25,17 @@
       justify-content: space-around;
   }
 
+  .overlay-bg-entrevistas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  transition: background 0.3s;
+
+}
 
   .mainEntrevistas {
       margin-top: 3%;

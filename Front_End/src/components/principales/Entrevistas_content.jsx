@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from '../navegacion/navBar';
-import fondo from '../../assets/img/fondos/fondo_manglar.png';
+import fondo from '../../assets/img/fondos/fondo nocturno.png';
 import '../../styles/entrevistas.css';
 import { getPublicEntrevistas } from '../../services/Entrevistas_Services';
 
@@ -47,7 +47,7 @@ function Entrevistas_content() {
 
         <div className='bodyEntrevistas'>
             <div
-                className="overlay-bg"
+                className="overlay-bg-entrevistas"
                 style={{
                     background: overlayColor === 'black'
                         ? 'rgba(0,0,0,0.6)'
